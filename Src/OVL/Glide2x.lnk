@@ -1,0 +1,7 @@
+system dos4g dll
+option manyautodata
+#option nodefaultlib
+#libfile clib3r
+file Obj\glide2x.obj, Obj\dllstart.obj
+option start=GlideDLLStartUp
+name glide2x.ovl

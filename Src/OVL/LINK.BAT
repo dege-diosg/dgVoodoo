@@ -1,0 +1,1 @@
+wlink @glide2x.lnk

@@ -1,0 +1,1 @@
+@tasm32 dgw.asm, Obj\dgw.obj /m/ml
