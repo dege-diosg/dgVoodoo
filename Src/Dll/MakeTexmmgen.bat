@@ -1,1 +1,0 @@
-@tasm32 texmmgen.asm, Obj\Texmmgen.obj /m/ml

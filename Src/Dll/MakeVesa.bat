@@ -1,1 +1,0 @@
-@tasm32 vesa.asm, Obj\Vesa.obj /m/ml

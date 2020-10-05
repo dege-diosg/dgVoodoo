@@ -1,1 +1,0 @@
-@tasm32 texture.asm, Obj\Texture.obj /m/ml

@@ -1,1 +1,0 @@
-@tasm32 file.asm, Obj\File.obj /m/ml
