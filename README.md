@@ -96,14 +96,14 @@ need that, all other is done in C++.)
 
 ## 3. How to compile
 
-<br>dgVesa</br>:                Can only be compiled with TASM with the included batch file, manually.<br>
+<b>dgVesa</b>:                Can only be compiled with TASM with the included batch file, manually.<br>
                        (Since real mode DOS version of TASM is required here, you must use 32 bit Windows or DosBox!)<br>
-<br>dgVoodoo.vxd</br>           Can only be compiled with old version MASM (one from VS6 or VS2003) with the included batch file, manually.<br>
-<br>dgVoodoo.ovl</br>           Can only be compiled with Watcom C++ compiler, with the included batch files, manually.<br>
-<br>dgVoodoo.exe</br>           Use the attached MSVC solution and compile it with configurations 'Debug' or 'Release'.<br>
-<br>dgVoodooSetup.exe</br>      Use the attached MSVC solution and compile it with configurations 'Debug' or 'Release'.<br>
-<br>Glide.dll</br>              Use the attached MSVC solution and compile it with configurations 'Glide 211 Debug' or 'Glide 211 Release'.<br>
-<br>Glide2x.dll</br>            Use the attached MSVC solution and compile it with configurations 'Glide 243 Debug' or 'Glide 243 Release'.<br>
+<b>dgVoodoo.vxd</b>           Can only be compiled with old version MASM (one from VS6 or VS2003) with the included batch file, manually.<br>
+<b>dgVoodoo.ovl</b>           Can only be compiled with Watcom C++ compiler, with the included batch files, manually.<br>
+<b>dgVoodoo.exe</b>           Use the attached MSVC solution and compile it with configurations 'Debug' or 'Release'.<br>
+<b>dgVoodooSetup.exe</b>      Use the attached MSVC solution and compile it with configurations 'Debug' or 'Release'.<br>
+<b>Glide.dll</b>              Use the attached MSVC solution and compile it with configurations 'Glide 211 Debug' or 'Glide 211 Release'.<br>
+<b>Glide2x.dll</b>            Use the attached MSVC solution and compile it with configurations 'Glide 243 Debug' or 'Glide 243 Release'.<br>
 
 
 Dege
