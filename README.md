@@ -1,8 +1,9 @@
-# dgVoodoo
 dgVoodoo 1.x series with source code
-------------------------------------
+====================================
 
--1. Important (this section is added in 2020)
+---
+
+-1. Important (this section was added in 2020)
 ---------------------------------------------
 
 dgVoodoo 1.x series has nothing to do with dgVoodoo 2.x series that is still in development.
@@ -10,18 +11,19 @@ If I had knew that dgVoodoo 2.x would become popular and exceed itself then I'm 
 
 dgVoodoo 1.x implements only the following modules:
 <ul>
-<li>Glide.dll (Windows)</li>
-<li>Glide2x.dll (Windows)</li>
-<li>Glide2x.ovl (DOS)</li>
-<li>dgVesa (DOS) (VESA interface implementation)</li>
-<li>dgVoodoo.exe (Windows) (The server app for DOS)</li>
-<li>dgVoodoo.vxd (Windows) (The Win9x kernel component for the server app)</li>
-<li>dgVoodooSetup (Windows) (The CPL app)</li>
+<li><b>Glide.dll</b> (Windows)</li>
+<li><b>Glide2x.dll</b> (Windows)</li>
+<li><b>Glide2x.ovl</b> (DOS)</li>
+<li><b>dgVesa</b> (DOS) (VESA interface implementation)</li>
+<li><b>dgVoodoo.exe</b> (Windows) (The server app for DOS)</li>
+<li><b>dgVoodoo.vxd</b> (Windows) (The Win9x kernel component for the server app)</li>
+<li><b>dgVoodooSetup</b> (Windows) (The CPL app)</li>
 </ul>
 
 dgVoodoo 1.x is no longer supported. That's why I released its source years ago.
 dgVoodoo 2.x is still in development and doesn't shares any code from 1.x.
 
+---
 
 0. License
 ----------
@@ -30,7 +32,7 @@ I release this source under GNU LESSER GENERAL PUBLIC LICENSE Version 2.1.
 To complete the reqirements, I inserted a short description along with the license text into each
 source file.
 
-
+---
 
 1. Some thoughts
 ----------------
@@ -45,7 +47,7 @@ fixed function pipeline, very simple shaders, and so on. There are better implem
 
 If this stuff is useful for somebody after all, then I'm glad to be helpful. :)
 
-
+---
 
 2. About the source
 -------------------
@@ -66,22 +68,17 @@ instead of bool, etc.
 
 
 And, sorry about the comments. As far as I remember, later I partly englishized them but not entirely (update: I was wrong...).
-(Once I'm speaking about languages: did you know that the language closest now to hungarian is english?
- Even if you are rolling on the floor laughing when reading this. It was not clear but only suspicious (and funny)
- to me for a long time until did not read a book of a philologist on the subject.
- But nothing surprising, since all languages in Europe originate in the same common ancient language and took
- their own changing and evolution in different ways.)
 
 
 Used tools:
 
-- MASM (VS6 or VS2003)         (needed for the Win9x virtual device driver, dgVoodoo.vxd)
+- <b>MASM (VS6 or VS2003)</b>         (needed for the Win9x virtual device driver, dgVoodoo.vxd)
 
-- Visual Studio 2010           (for glide.dll, glide2x.dll, dgVoodoo.exe, dgVoodooSetup.exe)
-- TASM                         (it was my favourite assembler, RIP :) needed for real mode DOS code like dgVesa.com)
+- <b>Visual Studio 2010</b>           (for glide.dll, glide2x.dll, dgVoodoo.exe, dgVoodooSetup.exe)
+- <b>TASM</b>                         (it was my favourite assembler, RIP :) needed for real mode DOS code like dgVesa.com)
 
-- Watcom C++
-- Watcom Assembler             (glide2x.ovl)
+- <b>Watcom C++</b>
+- <b>Watcom Assembler</b>             (glide2x.ovl)
 
 Important: when looking at the code, its awful style and some aged programming techniques, keep in mind
 that it is not me. I mean, it is an earlier version of me, Dege 1.x. I was kid when wrote it. :)
@@ -99,7 +96,7 @@ I still maintain this claim, I still use assembly for fast, time critical codes 
 instructions with instruction pairing. The only difference now is that I use assembly for things that really
 need that, all other is done in C++.)
 
-
+---
 
 3. How to compile
 -----------------
