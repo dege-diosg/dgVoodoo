@@ -1,6 +1,6 @@
 # dgVoodoo 1.x series with source code
 
----
+
 
 ## -1. Important (this section was added in 2020)
 
@@ -18,10 +18,10 @@ dgVoodoo 1.x implements only the following modules:
 <li><b>dgVoodooSetup</b> (Windows) (The CPL app)</li>
 </ul>
 
-dgVoodoo 1.x is no longer supported. That's why I released its source years ago.
+dgVoodoo 1.x is no longer supported. That's why I released its source years ago.<br>
 dgVoodoo 2.x is still in development and doesn't shares any code from 1.x.
 
----
+
 
 ## 0. License
 
@@ -29,7 +29,7 @@ I release this source under GNU LESSER GENERAL PUBLIC LICENSE Version 2.1.
 To complete the reqirements, I inserted a short description along with the license text into each
 source file.
 
----
+
 
 ## 1. Some thoughts
 
@@ -43,7 +43,7 @@ fixed function pipeline, very simple shaders, and so on. There are better implem
 
 If this stuff is useful for somebody after all, then I'm glad to be helpful. :)
 
----
+
 
 ## 2. About the source
 
@@ -92,7 +92,7 @@ I still maintain this claim, I still use assembly for fast, time critical codes 
 instructions with instruction pairing. The only difference now is that I use assembly for things that really
 need that, all other is done in C++.)
 
----
+
 
 ## 3. How to compile
 
