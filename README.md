@@ -19,7 +19,7 @@ dgVoodoo 1.x implements only the following modules:
 </ul>
 
 dgVoodoo 1.x is no longer supported. That's why I released its source years ago.<br>
-dgVoodoo 2.x is still in development and doesn't shares any code from 1.x.
+dgVoodoo 2.x is still in development and doesn't share any code from 1.x.
 
 
 
