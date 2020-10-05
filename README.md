@@ -1,8 +1,8 @@
-#dgVoodoo 1.x series with source code
+# dgVoodoo 1.x series with source code
 
 ---
 
-##-1. Important (this section was added in 2020)
+## -1. Important (this section was added in 2020)
 
 dgVoodoo 1.x series has nothing to do with dgVoodoo 2.x series that is still in development.
 If I had knew that dgVoodoo 2.x would become popular and exceed itself then I'm sure I wouldn't have branded it under the name of dgVoodoo.
@@ -23,7 +23,7 @@ dgVoodoo 2.x is still in development and doesn't shares any code from 1.x.
 
 ---
 
-##0. License
+## 0. License
 
 I release this source under GNU LESSER GENERAL PUBLIC LICENSE Version 2.1.
 To complete the reqirements, I inserted a short description along with the license text into each
@@ -31,7 +31,7 @@ source file.
 
 ---
 
-##1. Some thoughts
+## 1. Some thoughts
 
 Well, when Stiletto decided to collect all available graphics wrappers, with all of their related stuffs, into a
 big package, I thought of it as making a wrapper museum. A museum? Yes, because most of the wrappers are not supposed
@@ -45,7 +45,7 @@ If this stuff is useful for somebody after all, then I'm glad to be helpful. :)
 
 ---
 
-##2. About the source
+## 2. About the source
 
 
 This version was ported from MSVC 6 to MSVC 2010 so that most assembly files is been ported to MASM as well!
@@ -94,7 +94,7 @@ need that, all other is done in C++.)
 
 ---
 
-##3. How to compile
+## 3. How to compile
 
 dgVesa:                Can only be compiled with TASM with the included batch file, manually.
                        (Since real mode DOS version of TASM is required here, you must use 32 bit Windows or DosBox!)
