@@ -19,7 +19,6 @@
 /*--------------------------------------------------------------------------------- */
 
 
-
 /*------------------------------------------------------------------------------------------*/
 /* dgVoodoo: DosServer9x.c																	*/
 /*			 9x/Me alatti implementáció szerver része										*/
@@ -35,22 +34,18 @@
 #include	<stdio.h>
 #include	<windows.h>
 #include	<winuser.h>
-#include	"DDraw.h"
-#include	"D3d.h"
-#include	"Movie.h"
 #include	"Main.h"
 #include	"Dos.h"
 #include	"VxdComm.h"
 #include	"DosMouseNt.h"
 #include	"Vesa.h"
+#include	"dgVoodooGlide.h"
 
 #include	"debug.h"
 #include	"Log.h"
 
 #include	"DosCommon.h"
 #include	"Resource.h"
-
-
 
 #ifndef GLIDE3
 
@@ -60,10 +55,11 @@
 /*...................................... Globálisok ........................................*/
 
 
-HANDLE		hDevice;							/* a DGVOODOO.VXD device handle-je */
+/*static */ HANDLE	hDevice;					/* a DGVOODOO.VXD device handle-je */
 static	HANDLE		workerThreadHandle;			/* A kommunikációs (dolgozó) szál handle-je */
 static	DWORD		workerThreadID;				/* A kommunikációs (dolgozó) szál id-je */
-static	int			workerExit = 0;				/* 1=kommunikációs szál terminál */
+static	int			workerExit = 0;				/* 1=a kommunikációs szál terminál */
+static  int			workerResumed = 0;			/* 1=a kommunikációs szál kreálás óta felébresztve */
 
 
 /*------------------------------------------------------------------------------------------*/
@@ -92,31 +88,36 @@ void UnBlockVirtualMachine()
 
 DWORD WINAPI WorkerThread(LPVOID lpParameter)
 {
-
-	DeviceIoControl(hDevice, DGSERVER_BLOCKWORKERTHREAD, NULL, 0, NULL, 0, NULL, NULL);
-	while(1)	{
-		if (workerExit) ExitThread(0);
-		if (c != NULL) SendMessage(serverCmdHwnd, DGSM_PROCEXECBUFF, 0, 0);
-		DeviceIoControl(hDevice, DGSERVER_RETURNVM, NULL, 0, NULL, 0, NULL, NULL);
+	if (!workerExit)	{
+		DeviceIoControl(hDevice, DGSERVER_BLOCKWORKERTHREAD, NULL, 0, NULL, 0, NULL, NULL);
+		while (!workerExit)	{
+			if (c != NULL)
+				SendMessage(serverCmdHwnd, DGSM_PROCEXECBUFF, 0, 0);
+			DeviceIoControl(hDevice, DGSERVER_RETURNVM, NULL, 0, NULL, 0, NULL, NULL);
+		}
 	}
-
+	return (0);
 }
 
 
-void CleanUp()
+void CleanUp ()
 {
 	
 	workerExit = 1;
-	DeviceIoControl(hDevice, DGSERVER_WAKEUPWORKERTHREAD, NULL, 0, NULL, 0, NULL, NULL);
-	WaitForSingleObject(workerThreadHandle, INFINITE);
-	CloseHandle(workerThreadHandle);
+	if (!workerResumed) {
+		ResumeThread (workerThreadHandle);
+	} else {
+		DeviceIoControl (hDevice, DGSERVER_WAKEUPWORKERTHREAD, NULL, 0, NULL, 0, NULL, NULL);
+	}
+	WaitForSingleObject (workerThreadHandle, INFINITE);
+	CloseHandle (workerThreadHandle);
 	DestroyServerCommandWindow ();
 }
 
 
 int EXPORT Dos9xEntryPoint()
 {
-DDSURFACEDESC2	temp;
+int				currDispModeBitDepth;
 VxdRegInfo		regInfo;
 MSG				msg;
 DWORD			locktime, flashcount;
@@ -129,10 +130,11 @@ unsigned char	errorMsg[MAXSTRINGLENGTH];
 	
 	platform = PLATFORM_DOSWIN9X;
 	
+	ReCreateRenderer ();
 
 	GetString (errorTitle, IDS_INITERRORTITLE);
 
-	if (!GetActDispMode(NULL, &temp))	{
+	if (!IsRendererApiAvailable ()) {
 		GetString (errorMsg, IDS_NODIRECTXINSTALLED);
 		MessageBox(NULL, errorMsg, errorTitle, MB_OK | MB_ICONSTOP);
 		return(0);
@@ -147,14 +149,14 @@ unsigned char	errorMsg[MAXSTRINGLENGTH];
 		return(0);
 	}		
 
-	CreateWarningBox();
+	CreateWarningBox ();
 
-	ZeroMemory(&movie, sizeof(MOVIEDATA));
-	RegisterMainClass();
+	RegisterMainClass ();
 
 	CreateServerCommandWindow ();
 	
-	workerThreadHandle = CreateThread(NULL, 32768, WorkerThread, 0, 0, &workerThreadID);
+	workerThreadHandle = CreateThread (NULL, 32768, WorkerThread, 0, CREATE_SUSPENDED, &workerThreadID);
+	workerResumed = 0;
 	
 	regInfo.workerThread = workerThreadHandle;
 	regInfo.commAreaPtr = &c;
@@ -162,7 +164,8 @@ unsigned char	errorMsg[MAXSTRINGLENGTH];
 	regInfo.configPtr = &config;
 
 	if (config.Flags & CFG_WINDOWED) {
-		if ( (temp.ddpfPixelFormat.dwRGBBitCount != 16) && (temp.ddpfPixelFormat.dwRGBBitCount != 32) )	{
+		currDispModeBitDepth = GetCurrentDisplayModeBitDepth (config.dispdev, config.dispdriver);
+		if ((currDispModeBitDepth != 16) && (currDispModeBitDepth != 32) )	{
 			GetString (errorMsg, IDS_INCOMPATIBLEDESKTOPMODE);
 			MessageBox(NULL, errorMsg, errorTitle, MB_OK | MB_ICONSTOP);
 			CleanUp();
@@ -186,6 +189,9 @@ unsigned char	errorMsg[MAXSTRINGLENGTH];
 		CloseHandle(hDevice);
 		return(0);
 	}
+
+	ResumeThread (workerThreadHandle);
+	workerResumed = 1;
 
 	InitVESA();
 

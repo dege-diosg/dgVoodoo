@@ -18,6 +18,7 @@
 ; Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ;-----------------------------------------------------------------------------
 
+
 .586p
 .model FLAT
 .mmx
@@ -286,7 +287,7 @@ _cm_p8x:
         movq    mm0,[esi+2*ecx-8]
         pand    mm0,mm1
         packuswb mm0,mm0
-        movd    [edi+ecx-4],mm0
+        movd    DWORD PTR [edi+ecx-4],mm0
         sub     ecx,4h
         jne     _cm_p8x
         lea     esi,[esi+4*ebp]
@@ -482,7 +483,7 @@ _cm_rgb565x:
         psrad   mm0,16             ;
         sub     ecx,2
         packssdw mm0,mm0           ;
-        movd    [edi+2*ecx],mm0    ;
+        movd    DWORD PTR [edi+2*ecx],mm0    ;
         jne     _cm_rgb565x
         lea     esi,[esi+8*eax]
         lea     edi,[edi+2*eax]

@@ -1,0 +1,297 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\..\Src\Dll\Debug.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Dll\DosClientNt.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Dll\DosCommon.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Dll\DosMouseNt.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Dll\DosServer9x.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Dll\DosServerNT.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Dll\Draw.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Dll\GlideImp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Dll\Grabber.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Dll\LfbDepth.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Dll\Log.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Dll\Main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Dll\Notimp.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Dll\other.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Dll\texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Dll\Vesa.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Dll\RendererImpl\DX7\DX7Drawing.cpp">
+      <Filter>Source Files\DX7</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Dll\RendererImpl\DX7\DX7Texturing.cpp">
+      <Filter>Source Files\DX7</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Dll\RendererImpl\DX7\DX7FFPixelShaders.cpp">
+      <Filter>Source Files\DX7</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Dll\RendererImpl\DX7\DX7General.cpp">
+      <Filter>Source Files\DX7</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Dll\RendererImpl\DX7\DX7LfbDepth.cpp">
+      <Filter>Source Files\DX7</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Dll\RendererImpl\DX7\DX7RendererBase.cpp">
+      <Filter>Source Files\DX7</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Dll\RendererImpl\DX9\DX914PixelShaders.cpp">
+      <Filter>Source Files\DX9</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Dll\RendererImpl\DX9\DX9Texturing.cpp">
+      <Filter>Source Files\DX9</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Dll\RendererImpl\DX9\DX9Drawing.cpp">
+      <Filter>Source Files\DX9</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Dll\RendererImpl\DX9\DX9FFPixelShaders.cpp">
+      <Filter>Source Files\DX9</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Dll\RendererImpl\DX9\DX9General.cpp">
+      <Filter>Source Files\DX9</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Dll\RendererImpl\DX9\DX9LfbDepth.cpp">
+      <Filter>Source Files\DX9</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Dll\RendererImpl\DX9\DX9RendererBase.cpp">
+      <Filter>Source Files\DX9</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Dll\RendererImpl\Renderer.cpp">
+      <Filter>Source Files\RendererInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Dll\RendererImpl\DX9\RendererDX9.cpp">
+      <Filter>Source Files\RendererInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Dll\RendererImpl\DX7\RendererDX7.cpp">
+      <Filter>Source Files\RendererInterface</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Src\Dll\debug.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Inc\dgVoodooConfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Dll\dgVoodooGlide.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Inc\Dos.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Dll\DosMouseNt.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Dll\Draw.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Dll\Grabber.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Dll\LfbDepth.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Dll\Log.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Dll\Main.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Dll\NotImp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Dll\texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Dll\Vesa.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Dll\DosCommon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\DXBaseFunctions\DX7BaseFunctions.h">
+      <Filter>Header Files\DX7</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Dll\RendererImpl\DX7\DX7Texturing.hpp">
+      <Filter>Header Files\DX7</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Dll\RendererImpl\DX7\DX7Drawing.hpp">
+      <Filter>Header Files\DX7</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Dll\RendererImpl\DX7\DX7FFPixelShaders.h">
+      <Filter>Header Files\DX7</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Dll\RendererImpl\DX7\DX7General.hpp">
+      <Filter>Header Files\DX7</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Dll\RendererImpl\DX7\DX7LfbDepth.hpp">
+      <Filter>Header Files\DX7</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Dll\RendererImpl\DX7\DX7RendererBase.hpp">
+      <Filter>Header Files\DX7</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Dll\RendererImpl\DX9\DX914PixelShaders.h">
+      <Filter>Header Files\DX9</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Dll\RendererImpl\DX9\DX9Texturing.hpp">
+      <Filter>Header Files\DX9</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\DXBaseFunctions\DX9BaseFunctions.h">
+      <Filter>Header Files\DX9</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Dll\RendererImpl\DX9\DX9Drawing.hpp">
+      <Filter>Header Files\DX9</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Dll\RendererImpl\DX9\DX9FFPixelShaders.h">
+      <Filter>Header Files\DX9</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Dll\RendererImpl\DX9\DX9General.hpp">
+      <Filter>Header Files\DX9</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Dll\RendererImpl\DX9\DX9LfbDepth.hpp">
+      <Filter>Header Files\DX9</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Dll\RendererImpl\DX9\DX9RendererBase.hpp">
+      <Filter>Header Files\DX9</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Dll\RendererImpl\Renderer.hpp">
+      <Filter>Header Files\RendererInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Dll\RendererImpl\RendererTexturing.hpp">
+      <Filter>Header Files\RendererInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Dll\RendererImpl\RendererDrawing.hpp">
+      <Filter>Header Files\RendererInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Dll\RendererImpl\RendererGeneral.hpp">
+      <Filter>Header Files\RendererInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Dll\RendererImpl\RendererLfbDepth.hpp">
+      <Filter>Header Files\RendererInterface</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\Src\Dll\MMConv\MMConv16to16.asm">
+      <Filter>Source Files\MultiMediaConv</Filter>
+    </None>
+    <None Include="..\..\Src\Dll\MMConv\MMConv16to16CK.asm">
+      <Filter>Source Files\MultiMediaConv</Filter>
+    </None>
+    <None Include="..\..\Src\Dll\MMConv\MMConv16to32.asm">
+      <Filter>Source Files\MultiMediaConv</Filter>
+    </None>
+    <None Include="..\..\Src\Dll\MMConv\MMConv16to32CK.asm">
+      <Filter>Source Files\MultiMediaConv</Filter>
+    </None>
+    <None Include="..\..\Src\Dll\MMConv\MMConv32to16.asm">
+      <Filter>Source Files\MultiMediaConv</Filter>
+    </None>
+    <None Include="..\..\Src\Dll\MMConv\MMConv32to16CK.asm">
+      <Filter>Source Files\MultiMediaConv</Filter>
+    </None>
+    <None Include="..\..\Src\Dll\MMConv\MMConv32to32.asm">
+      <Filter>Source Files\MultiMediaConv</Filter>
+    </None>
+    <None Include="..\..\Src\Dll\MMConv\MMConv32to32CK.asm">
+      <Filter>Source Files\MultiMediaConv</Filter>
+    </None>
+    <None Include="..\..\Src\Dll\MMConv\MMConv8toXX.asm">
+      <Filter>Source Files\MultiMediaConv</Filter>
+    </None>
+    <None Include="..\..\Src\Dll\MMConv\MMConvCopy.asm">
+      <Filter>Source Files\MultiMediaConv</Filter>
+    </None>
+    <None Include="..\..\Src\Dll\TexCK.asm">
+      <Filter>Source Files\Asm</Filter>
+    </None>
+    <None Include="..\..\Src\Bitmaps\Icon.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{8999773a-32b7-42e7-b85b-a7864d1273d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{9d38e7d2-cd81-4bb8-bdfe-6cb521c2b97c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\DX7">
+      <UniqueIdentifier>{f1afa2a6-5656-434f-9813-95bba4a6b9e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\DX9">
+      <UniqueIdentifier>{55e35c5c-2233-4408-90b3-0a8d49c99115}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\RendererInterface">
+      <UniqueIdentifier>{4b5881ea-eb38-4484-b746-b9b749f88bd2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\DX7">
+      <UniqueIdentifier>{d83273bf-b1f5-4404-8210-5812e7c3b6fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\DX9">
+      <UniqueIdentifier>{f6e2daa4-fbbe-473e-b265-f7c98970dcdf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\RendererInterface">
+      <UniqueIdentifier>{3e3eecf5-7dc6-47bd-937f-f70e52fa0b4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Asm">
+      <UniqueIdentifier>{69d9e085-7920-4b4a-b080-7e208b6cbf3c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\MultiMediaConv">
+      <UniqueIdentifier>{284e0bc6-f055-4463-8157-4b41cb9f6da2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{86ffb3df-08b6-412a-a37b-27fc2766319a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\..\Src\Dll\MMConv\MMConv.asm">
+      <Filter>Source Files\MultiMediaConv</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\..\Src\Dll\texmmgen.asm">
+      <Filter>Source Files\Asm</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\..\Src\Dll\TextureUtil.asm">
+      <Filter>Source Files\Asm</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\..\Src\Dll\VesaPalette.asm">
+      <Filter>Source Files\Asm</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\..\Src\Dll\Dll.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

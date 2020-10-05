@@ -18,53 +18,47 @@
 ; Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ;-----------------------------------------------------------------------------
 
-;A kiterjesztìbìl (DGPM) Windows32 al† port†lt fÅggvÇnyek:
-;       - Mem¢riakezelÇs
-;(egyelìre ennyi)
+;Ported functions to Win32 from my good old DOS-extender, DGPM:
+;       - Memory management
+;(that's all)
 ;----------------------------------------------------------------------------
 
 INCLUDE MACROS.INC
 
-DGWTYPE         EQU     STANDALONE_OMF
-
-;Mem¢ri†t kezelì utility: az egyes heap-ekbìl allok†l mem¢ri†t, a heapeknek
-;csak azon rÇszeihez rendelÅnk fizikai t†rol¢t, amelyek tÇnylegesen foglaltak
+;Memory management: allocating memory from heaps, committing physical memory
+;only to reserved memory blocks in the address range of heaps
 ;----------------------------------------------------------------------------
 
-HeapMaxSize     EQU     8192            ;Egy Heap max. mÇrete
-HeapNum         EQU     8               ;Heapek max. sz†ma
+HeapMaxSize     EQU     8192            ;Max heap size
+HeapNum         EQU     8               ;Max num of heaps
 
-ALIGNMENT       EQU     16              ;Mem¢riablokkok igaz°t†sa 16 byte-ra
+ALIGNMENT       EQU     16              ;Aligning memory blocks to 16 byte
 
 ;----------------------------------------------------------------------------
-;A heapek blokkjait le°r¢ strukt£ra
+;A heapek blokkjait leÌrÛ strukt˙ra
 
 dgwBlockHeader  STRUC
 
-dgwState        DD      ?     ;DGxy †llapot: foglalt - szabad, utols¢ - nem az
+dgwState        DD      ?				;DGxy †llapot: foglalt - szabad, utols¢ - nem az
 dgwLength       DD      ?               ;blokk mÇrete
 dgwBlockID      DD      ?               ;nem egyedi blokkazonos°t¢
 dgwBackLink     DD      ?               ;pointer a megelìzì blokkra
 
 dgwBlockHeader  ENDS
 
-IF      (DGWTYPE  EQ  STANDALONE_OMF) OR (DGWTYPE  EQ  NEEDEDONLY_OMF)
-
 .386
 .model  FLAT
 
-UNICODE EQU 0
-INCLUDE W32MAIN.INC
-
-ENDIF
+;UNICODE EQU 0
+INCLUDE WIN.INC
 
 .code
 
 ;----------------------------------------------------------------------------
-;Mem¢ria foglal†sa
-;Be:    EAX     -       mem¢ria b†jtokban
-;Ki:    Carry=1 -       Hiba
-;       EAX     -       terÅlet kezdìc°me
+;Allocating memory
+;In:     EAX     -       block size in bytes
+;Out:    Carry=1 -       Error
+;        EAX     -       address of allocated block
 
 PUBLIC  _GetMem
 _GetMem:pushad
@@ -73,7 +67,7 @@ _GetMem:pushad
 
         push    eax
         push    LARGE OFFSET dgwSysInfo
-        W32     GetSystemInfo,1                ;Sysinfo lekÇrdez
+        W32     GetSystemInfo,1                ;Sysinfo lekÈrdez
         pop     eax
 
 dgwGMSysInfoOK:
@@ -87,9 +81,11 @@ dgwLookAtNextHeap:
         je      memHeapNotAllocated
         lea     ebx,[HeapHandles+4*ecx]
         or      DWORD PTR [ebx],0h
-        jne     memHeapAllocated                ;Heap m†r allok†lva
+        jne     memHeapAllocated                ;Heap m·r allok·lva
 
-        push    eax ebx ecx
+		push    eax
+		push	ebx
+		push	ecx
         mov     ebp,HeapMaxSize*1024
         cmp     eax,ebp
         jbe     dgwHeapMaxSizeOK
@@ -99,61 +95,67 @@ dgwHeapMaxSizeOK:
         push    LARGE MEM_RESERVE
         push    ebp ;LARGE HeapMaxSize*1024
         push    LARGE NULL
-        W32     VirtualAlloc,4                  ;£j heap allok†l†sa
-        pop     ecx ebx
+        W32     VirtualAlloc,4                  ;⁄j heap allok·l·sa
+        pop     ecx
+        pop		ebx
         or      [ebx],eax
         pop     eax
         je      memHeapNotAllocated
         push    DWORD PTR [ebx]
-        push    eax ebx ecx
+        push    eax
+        push	ebx
+        push	ecx
 
         push    LARGE PAGE_READWRITE
         push    LARGE MEM_COMMIT
         push    LARGE dgwSysInfo.dwPageSize
         push    DWORD PTR [ebx]
-        W32     VirtualAlloc,4                  ;Elsì lap COMITTED
-        pop     ecx ebx eax edx
+        W32     VirtualAlloc,4                  ;Elsı lap COMITTED
+        pop     ecx
+        pop		ebx
+        pop		eax
+        pop		edx
         cmp     eax,NULL
         jne     memHeapSetFirstMCB
 
-;----- ha nem b°r az elsì laphoz sem fizikai t†rol¢t rendelni, akkor a
-;      c°mterÅletet eldobjuk, Çs hiba
+;----- ha nem bÌr az elsı laphoz sem fizikai t·rolÛt rendelni, akkor a
+;      cÌmter¸letet eldobjuk, Ès hiba
 
         push    LARGE MEM_RELEASE
         push    LARGE 0h
         push    DWORD PTR edx
-        W32     VirtualFree,3                   ;c°mterÅlet eldob†sa
+        W32     VirtualFree,3                   ;cÌmter¸let eldob·sa
         jmp     memHeapNotAllocated
 
 memHeapSetFirstMCB:
-        mov     [edx.dgwState],'DGLF'
-        mov     [edx.dgwLength],ebp ;(HeapMaxSize*1024)-SIZE dgwBlockHeader
-        mov     [edx.dgwBackLink],0h
-                                                ;Elsì MCB kitîltÇse
+        mov     (dgwBlockHeader PTR [edx]).dgwState,'DGLF'
+        mov     (dgwBlockHeader PTR [edx]).dgwLength,ebp ;(HeapMaxSize*1024)-SIZE dgwBlockHeader
+        mov     (dgwBlockHeader PTR [edx]).dgwBlockHeader.dgwBackLink,0h
+                                                ;Elsı MCB kitˆltÈse
 memHeapAllocated:
         inc     ecx
         mov     ebx,[ebx]
         xor     ebp,ebp
 _CheckNextHiBlock_:
-        mov     edx,[ebx.dgwState]
+        mov     edx,(dgwBlockHeader PTR [ebx]).dgwState
         cmp     dl,'F'
         jne     SHORT HiMBlockGot
-        cmp     eax,[ebx.dgwLength]
+        cmp     eax,(dgwBlockHeader PTR [ebx]).dgwLength
         jbe     SHORT _ResHiMem_
 HiMBlockGot:
         cmp     dh,'L'
         je      dgwLookAtNextHeap
         mov     ebp,ebx
-        add     ebx,[ebx.dgwLength]
+        add     ebx,(dgwBlockHeader PTR [ebx]).dgwLength
         jmp     SHORT _CheckNextHiBlock_
 _ResHiMem_:
         xor     edi,edi
         cmp     dh,'L'
         je      dgwGMNoNextBlock
         mov     edi,ebx
-        add     edi,[ebx].dgwLength
+        add     edi,(dgwBlockHeader PTR [ebx]).dgwLength
 dgwGMNoNextBlock:
-        mov     ecx,[ebx.dgwLength]
+        mov     ecx,(dgwBlockHeader PTR [ebx]).dgwLength
         push    edx
         sub     ecx,eax
         cmp     ecx, SIZE dgwBlockHeader
@@ -161,11 +163,11 @@ dgwGMNoNextBlock:
         add     eax,ecx
         xor     ecx,ecx
 dgwGMCreateNewBlock:
-        mov     [ebx.dgwBackLink],ebp
-        mov     [ebx.dgwLength],eax
+        mov     (dgwBlockHeader PTR [ebx]).dgwBackLink,ebp
+        mov     (dgwBlockHeader PTR [ebx]).dgwLength,eax
 
         pushad
-        lea     eax,[eax+SIZE dgwBlockHeader]   ;kîv. MCB is COMITTED lapon
+        lea     eax,[eax+SIZE dgwBlockHeader]   ;kˆv. MCB is COMITTED lapon
                                                 ;legyen
         push    LARGE PAGE_READWRITE
         push    LARGE MEM_COMMIT
@@ -175,7 +177,7 @@ dgwGMCreateNewBlock:
         popad
 
         mov     ebp,BlockMarker
-        mov     [ebx.dgwBlockID],ebp
+        mov     (dgwBlockHeader PTR [ebx]).dgwBlockID,ebp
         cmp     dh,'N'
         mov     dx,'NR'
         je      _ItsLastHiBlock_
@@ -183,67 +185,68 @@ dgwGMCreateNewBlock:
         jne     SHORT _ItsLastHiBlock_
         mov     dh,'L'
 _ItsLastHiBlock_:
-        mov     [ebx.dgwState],edx
+        mov     (dgwBlockHeader PTR [ebx]).dgwState,edx
         pop     edx
         jecxz   SHORT _HiMemGet_
-        mov     [ebx+eax.dgwLength],ecx
-        mov     [ebx+eax.dgwState],edx
-        mov     [ebx+eax.dgwBackLink],ebx
+        mov     (dgwBlockHeader PTR [ebx+eax]).dgwLength,ecx
+        mov     (dgwBlockHeader PTR [ebx+eax]).dgwState,edx
+        mov     (dgwBlockHeader PTR [ebx+eax]).dgwBackLink,ebx
         or      edi,edi
         je      _HiMemGet_
         lea     edx,[eax+ebx]
-        mov     [edi].dgwBackLink,edx
+        mov     (dgwBlockHeader PTR [edi]).dgwBackLink,edx
 _HiMemGet_:
         lea     eax,[ebx+ SIZE dgwBlockHeader]
         mov     [esp+4*7],eax
 _HiBlockFree:
-	clc
-	db 0B0h
+		clc
+		db 0B0h
 memHeapNotAllocated:
-	stc
-	popad
+		stc
+		popad
 _RET32: ret
+
 PUBLIC  _RET32
 
 ;----------------------------------------------------------------------------
-;Mem¢ria felszabad°t†sa
-;Be:    EAX     -       terÅlet kezdìc°me
-;Ki:    Carry=1 -       Hiba
+;Releasing memory block
+;In:     EAX     -       address of memory block
+;Out:    Carry=1 -       Error
         
 PUBLIC  _FreeMem
 _FreeMem:
         pushad
         lea     ebx,[eax-SIZE dgwBlockHeader]
-	xor     edi,edi
-        mov     eax,[ebx.dgwLength]
-        mov     edx,[ebx.dgwState]
-	cmp     dl,'F'
+		xor     edi,edi
+        mov     eax,(dgwBlockHeader PTR [ebx]).dgwLength
+        mov     edx,(dgwBlockHeader PTR [ebx]).dgwState
+		cmp     dl,'F'
         je      _HiBlockFree
-	cmp     dh,'L'
-	je      _NoNextHiBlock
+		cmp     dh,'L'
+		je      _NoNextHiBlock
         lea     esi,[ebx+eax]
         mov     edi,esi  
-        mov     ecx,[esi.dgwState]
-	cmp     cl,'F'
-	jne     _NoNextHiBlock
-	mov     edx,ecx
-        add     edi,[esi.dgwLength]
-	cmp     ch,'L'
-	jne     _NoLastFreeHiBlock
-	xor     edi,edi
+        mov     ecx,(dgwBlockHeader PTR [esi]).dgwState
+		cmp     cl,'F'
+		jne     _NoNextHiBlock
+		mov     edx,ecx
+        add     edi,(dgwBlockHeader PTR [esi]).dgwLength
+		cmp     ch,'L'
+		jne     _NoLastFreeHiBlock
+		xor     edi,edi
 _NoLastFreeHiBlock:
-        add     eax,[esi.dgwLength]
+        add     eax,(dgwBlockHeader PTR [esi]).dgwLength
 _NoNextHiBlock:
-        mov     ecx,[ebx.dgwBackLink]
-	jecxz   _NoPrevHiBlock
-        cmp     BYTE PTR [ecx.dgwState],'F'
-	jne     _NoPrevHiBlock
-        add     eax,[ecx.dgwLength]
-	mov     ebx,ecx
+        mov     ecx,(dgwBlockHeader PTR [ebx]).dgwBackLink
+		jecxz   _NoPrevHiBlock
+        cmp     BYTE PTR (dgwBlockHeader PTR [ecx]).dgwState,'F'
+		jne     _NoPrevHiBlock
+        add     eax,(dgwBlockHeader PTR [ecx]).dgwLength
+		mov     ebx,ecx
 _NoPrevHiBlock:
-        mov     [ebx.dgwLength],eax
-	mov     dl,'F'
-        mov     [ebx.dgwState],edx
+        mov     (dgwBlockHeader PTR [ebx]).dgwLength,eax
+		mov     dl,'F'
+        mov     (dgwBlockHeader PTR [ebx]).dgwState,edx
 
         lea     edx,[ebx+eax]
         mov     eax,dgwSysInfo.dwPageSize
@@ -255,24 +258,26 @@ _NoPrevHiBlock:
         and     edx,eax
         sub     edx,ebp
         jbe     dgwFMnoPagesToDeCommit
-        push    edi ebx
+        push    edi
+        push	ebx
         push    LARGE MEM_DECOMMIT
         push    edx
         push    ebp
         W32     VirtualFree,3
-        pop     ebx edi
+        pop     ebx
+        pop		edi
 dgwFMnoPagesToDeCommit:
-	or      edi,edi
+		or      edi,edi
         je      _HiBlockFree
-        mov     [edi.dgwBackLink],ebx
-	clc
-	db 0B0h
-	stc
-	popad
+        mov     (dgwBlockHeader PTR [edi]).dgwBackLink,ebx
+		clc
+		db 0B0h
+		stc
+		popad
         ret
 
 ;----------------------------------------------------------------------------
-;EAX    -       azonos°t¢
+;EAX    -       identifier
 
 PUBLIC  _FreeMemWithMarker
 _FreeMemWithMarker:
@@ -287,7 +292,7 @@ dgwCheckNextBlock:
         mov     edx,[ebx]
         cmp     dl,'R'
         jne     dgwSetToNextHiBlock
-        cmp     eax,[ebx.dgwBlockID]
+        cmp     eax,(dgwBlockHeader PTR [ebx]).dgwBlockID
         jne     dgwSetToNextHiBlock
         push    eax
         lea     eax,[ebx+SIZE dgwBlockHeader]
@@ -295,7 +300,7 @@ dgwCheckNextBlock:
         pop     eax
         jmp     dgwLookAtAllHeaps
 dgwSetToNextHiBlock:
-        add     ebx,[ebx.dgwLength]
+        add     ebx,(dgwBlockHeader PTR [ebx]).dgwLength
         cmp     dh,'L'
         jne     dgwCheckNextBlock
 dgwEmptyHeap:
@@ -305,32 +310,33 @@ dgwEmptyHeap:
         ret
 
 ;----------------------------------------------------------------------------
-;Blokkazonos°t¢ be†ll°t†sa
-;Be:    EAX     -       £j blokkazonos°t¢
+;Setting global block identifier (called 'Marker' here...) inherited in
+;subsequent memory allocating calls
+;In:    EAX     -       New identifier
 
 PUBLIC  _SetBlockMarker
 _SetBlockMarker:
         mov     BlockMarker,eax
         ret
 ;----------------------------------------------------------------------------
-;Blokkazonos°t¢ be†ll°t†sa egy adott blokkban
-;Be:    EAX     -       blokk c°me
-;       EBX     -       £j azonos°t¢
-;Ki:    Carry=0 -       OK
-;            =1 -       ÇrvÇnytelen c°m
+;Setting the ID of a particular, allocated memory block
+;In:     EAX     -       address of memory block
+;        EBX     -       new ID
+;Out:    Carry=0 -       OK
+;             =1 -       Invalid address
 
 PUBLIC  _SetBlockID
 _SetBlockID:
-        cmp     WORD PTR [eax.dgwState+2-SIZE dgwBlockHeader],'DG'
+        cmp     WORD PTR (dgwBlockHeader PTR [eax+2-SIZE dgwBlockHeader]).dgwState,'DG'
         stc
         jne     memSBIDinvalid
-        mov     [eax.dgwBlockID-SIZE dgwBlockHeader],ebx
+        mov     (dgwBlockHeader PTR [eax-SIZE dgwBlockHeader]).dgwBlockID,ebx
         clc
 memSBIDinvalid:
         ret
 
 ;----------------------------------------------------------------------------
-;Az îsszes lefoglalt mem¢ria felszabad°t†sa
+;Releasing all of the reserved memory blocks
 ;Be:    -
 ;Ki:    -
 
@@ -362,20 +368,7 @@ memNoMoreHeaps:
         ret
 
 ;----------------------------------------------------------------------------
-;KilÇpÇs a programb¢l
-;Be:    EAX     -       KilÇpÇsi k¢d
-
-IF      (DGWTYPE  EQ  ASSEMBLY_INCLUDE)
-_ExitProtProgram:
-        push    eax
-        call    _FreeAllMem
-        W32     ExitProcess,1
-ENDIF
-
-;----------------------------------------------------------------------------
-;C-interfÇsz a fÅggvÇnyekhez
-
-IF      (DGWTYPE  EQ  STANDALONE_OMF) OR (DGWTYPE  EQ  NEEDEDONLY_OMF)
+;C-interface functions
 
 ;C-szintaxis:   int _GetMem(dword bytes);
 PUBLIC  __GetMem@4
@@ -445,8 +438,6 @@ __FreeAllMem@0:
 __FreeAllMem:
         jmp     _FreeAllMem               
 
-ENDIF
-
 .data
 
 BlockMarker     DD      0h
@@ -457,8 +448,4 @@ dgwSysInfoAVL   DD      -1h
 
 dgwSysInfo      SYSTEM_INFO     <>
 
-IF      (DGWTYPE  EQ  STANDALONE_OMF) OR (DGWTYPE  EQ  NEEDEDONLY_OMF)
-
 END
-
-ENDIF

@@ -23,7 +23,6 @@
 ; Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ;-----------------------------------------------------------------------------
 
-
 INCLUDE	..\..\Inc\VesaDefs.inc
 
 DEFAULT_STATIC_VIDEOMEMORY      EQU     2048*1024
@@ -312,7 +311,6 @@ ServerVS_regifneeded:
 ServerVS_AlreadyReg:
 
         movzx   eax,al
-;	jmp $
         call    [VESAservices+4*eax]
 ServerVSEnd:
         mov     eax,V86Handler
@@ -1690,23 +1688,24 @@ RevisionStr     DB      'v1.1',0h
 ENDOEMSTRINGS   LABEL BYTE
 
 VESAModeListWindowed    LABEL BYTE
-                dgvoodooModeInfo <013h, 320, 200, 8>
-                dgVoodooModeInfo <100h, 640, 400, 8>
-                dgVoodooModeInfo <101h, 640, 480, 8>
-                dgVoodooModeInfo <103h, 800, 600, 8>
-                dgVoodooModeInfo <105h, 1024, 768, 8>
-                dgVoodooModeInfo <107h, 1280, 1024, 8>
-                dgVoodooModeInfo <10Eh, 320, 200, 16>
-                dgVoodooModeInfo <10Fh, 320, 200, 32>
-                dgVoodooModeInfo <111h, 640, 480, 16>
-                dgVoodooModeInfo <112h, 640, 480, 32>
-                dgVoodooModeInfo <114h, 800, 600, 16>
-                dgVoodooModeInfo <115h, 800, 600, 32>
-                dgVoodooModeInfo <117h, 1024, 768, 16>
-                dgVoodooModeInfo <118h, 1024, 768, 32>
-                dgVoodooModeInfo <11Ah, 1280, 1024, 16>
-                dgVoodooModeInfo <11Bh, 1280, 1024, 32>
-                DW      0FFFFh
+                dgvoodooModeInfo <-1, 013h, 320, 200, 8>
+                dgVoodooModeInfo <-1, 100h, 640, 400, 8>
+                dgVoodooModeInfo <-1, 101h, 640, 480, 8>
+                dgVoodooModeInfo <-1, 103h, 800, 600, 8>
+                dgVoodooModeInfo <-1, 105h, 1024, 768, 8>
+                dgVoodooModeInfo <-1, 107h, 1280, 1024, 8>
+                dgVoodooModeInfo <-1, 10Eh, 320, 200, 16>
+                dgVoodooModeInfo <-1, 10Fh, 320, 200, 32>
+                dgVoodooModeInfo <-1, 111h, 640, 480, 16>
+                dgVoodooModeInfo <-1, 112h, 640, 480, 32>
+                dgVoodooModeInfo <-1, 114h, 800, 600, 16>
+                dgVoodooModeInfo <-1, 115h, 800, 600, 32>
+                dgVoodooModeInfo <-1, 117h, 1024, 768, 16>
+                dgVoodooModeInfo <-1, 118h, 1024, 768, 32>
+                dgVoodooModeInfo <-1, 11Ah, 1280, 1024, 16>
+                dgVoodooModeInfo <-1, 11Bh, 1280, 1024, 32>
+				dgVoodooModeInfo <-1, 0FFFFh>
+
 ActVideoMode    dgVoodooModeInfo <0EEEEh>
 
 VESAservices    DD      ReturnVBEControllerInfo

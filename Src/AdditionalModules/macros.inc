@@ -1,3 +1,23 @@
+;-----------------------------------------------------------------------------
+; MACROS.INC - General macro defs for ASM
+;
+; Copyright (C) 2001 Dege
+;
+; This library is free software; you can redistribute it and/or
+; modify it under the terms of the GNU Lesser General Public
+; License as published by the Free Software Foundation; either
+; version 2.1 of the License, or (at your option) any later version.
+;
+; This library is distributed in the hope that it will be useful,
+; but WITHOUT ANY WARRANTY; without even the implied warranty of
+; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+; Lesser General Public License for more details.
+;
+; You should have received a copy of the GNU Lesser General Public
+; License along with this library; if not, write to the Free Software
+; Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+;-----------------------------------------------------------------------------
+
 ;----------------------------------------------------------------------------
 ;Macro include
 
@@ -5,16 +25,13 @@
 
 DGMACROS        EQU     1
 
+LARGE			EQU 	<DWORD PTR>
+NULL			EQU		0
+
 M_TRUE          EQU     1
 M_FALSE         EQU     0
 
 VISUALC         EQU     M_TRUE ;M_FALSE          ;Visual C function naming convention
-
-;-------------- Defs for module type
-
-ASSEMBLY_INCLUDE        EQU     1h      ;Adott forr s assembly include-k‚nt
-STANDALONE_OMF          EQU     2h      ;Adott forr s beszerkeszthet“ objectk‚nt
-NEEDEDONLY_OMF          EQU     3h      ;Adott forr s objectk‚nt
 
 ;-------------- Macro for Windows API function calling and naming convention
 

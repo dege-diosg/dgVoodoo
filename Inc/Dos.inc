@@ -38,7 +38,13 @@ dxres           DW      ?
 dyres           DW      ?
 dispdev         DW      ?
 dispdriver      DW      ?
-reserved_c      DD      4 DUP(?)
+refreshRate		DD		?
+flags2			DD		?
+dosTimerBoostPeriod DW	?
+alphaCKRefValue DB		?
+language		DB		?
+rendererApi		DB		?
+reserved_c      DB      3 DUP(?)
 
 dgVoodooConfig  ENDS
 
@@ -126,6 +132,7 @@ PLATFORM_DOSWINNT         EQU   2
 
 dgVoodooModeInfo        STRUC
 
+modeIndex				DD		?
 ModeNumber              DW      ?
 XRes                    DW      ?
 YRes                    DW      ?
@@ -192,6 +199,7 @@ videoMemoryClient DD	?
 BytesPerScanLine DD     ?
 DisplayOffset   DD      ?
 actmodeinfo     dgVoodooModeInfo <>
+vesaModeinfo    dgVoodooModeInfo <>
 ;mouseinfo       MouseInfo <>
 
 ExeCodes        DD      EXEBUFFSIZE DUP(?)
@@ -279,92 +287,93 @@ GRCONSTANTCOLORVALUE            EQU             52
                                         
 GRALPHABLENDFUNCTION            EQU             53
 GRALPHACOMBINE                  EQU             54
-GUALPHASOURCE                   EQU             55
-GRALPHATESTFUNCTION             EQU             56
-GRALPHATESTREFERENCEVALUE       EQU             57
+GRALPHACONTROLSITRGBLIGHTING	EQU				55
+GUALPHASOURCE                   EQU             56
+GRALPHATESTFUNCTION             EQU             57
+GRALPHATESTREFERENCEVALUE       EQU             58
 
-GRFOGCOLORVALUE                 EQU             58
-GRFOGMODE                       EQU             59
-GRFOGTABLE                      EQU             60
-GLIDEGETINDTOWTABLE             EQU             61
-GUFOGTABLEINDEXTOW              EQU             62
-GUFOGGENERATEEXP                EQU             63
-GUFOGGENERATEEXP2               EQU             64
-GUFOGGENERATELINEAR             EQU             65
+GRFOGCOLORVALUE                 EQU             59
+GRFOGMODE                       EQU             60
+GRFOGTABLE                      EQU             61
+GLIDEGETINDTOWTABLE             EQU             62
+GUFOGTABLEINDEXTOW              EQU             63
+GUFOGGENERATEEXP                EQU             64
+GUFOGGENERATEEXP2               EQU             65
+GUFOGGENERATELINEAR             EQU             66
 
-GRRENDERBUFFER                  EQU             66
-GRSSTORIGIN                     EQU             67
-GRCLIPWINDOW                    EQU             68
-GRCULLMODE                      EQU             69
-GRDISABLEALLEFFECTS             EQU             70
-GRDITHERMODE                    EQU             71
-GRGAMMACORRECTIONVALUE          EQU             72
-GRGLIDEGETSTATE                 EQU             73
-GRGLIDESETSTATE                 EQU             74
-GRHINTS                         EQU             75
+GRRENDERBUFFER                  EQU             67
+GRSSTORIGIN                     EQU             68
+GRCLIPWINDOW                    EQU             69
+GRCULLMODE                      EQU             70
+GRDISABLEALLEFFECTS             EQU             71
+GRDITHERMODE                    EQU             72
+GRGAMMACORRECTIONVALUE          EQU             73
+GRGLIDEGETSTATE                 EQU             74
+GRGLIDESETSTATE                 EQU             75
+GRHINTS                         EQU             76
 
-GRSSTSCREENWIDTH                EQU             76
-GRSSTSCREENHEIGHT               EQU             77
-GRSSTSTATUS                     EQU             78
-GRSSTVIDEOLINE                  EQU             79
-GRSSTVRETRACEON                 EQU             80
-GRSSTCONTROLMODE                EQU             81
-GRBUFFERNUMPENDING              EQU             82
-GRRESETTRISTATS                 EQU             83
-GRTRISTATS                      EQU             84
+GRSSTSCREENWIDTH                EQU             77
+GRSSTSCREENHEIGHT               EQU             78
+GRSSTSTATUS                     EQU             79
+GRSSTVIDEOLINE                  EQU             80
+GRSSTVRETRACEON                 EQU             81
+GRSSTCONTROLMODE                EQU             82
+GRBUFFERNUMPENDING              EQU             83
+GRRESETTRISTATS                 EQU             84
+GRTRISTATS                      EQU             85
                                         
-GRDEPTHBUFFERMODE               EQU             85
-GRDEPTHBUFFERFUNCTION           EQU             86
-GRDEPTHMASK                     EQU             87
-GRLFBCONSTANTALPHA              EQU             88
-GRLFBREADREGION                 EQU             89
-GRLFBWRITEREGION                EQU             90
-GRDEPTHBIASLEVEL                EQU             91
-GLIDEGETCONVBUFFXRES            EQU             92
+GRDEPTHBUFFERMODE               EQU             86
+GRDEPTHBUFFERFUNCTION           EQU             87
+GRDEPTHMASK                     EQU             88
+GRLFBCONSTANTALPHA              EQU             89
+GRLFBREADREGION                 EQU             90
+GRLFBWRITEREGION                EQU             91
+GRDEPTHBIASLEVEL                EQU             92
+GLIDEGETCONVBUFFXRES            EQU             93
 
-GRCHROMAKEYMODE                 EQU             93
-GRCHROMAKEYVALUE                EQU             94
+GRCHROMAKEYMODE                 EQU             94
+GRCHROMAKEYVALUE                EQU             95
 
-GRLFBLOCK                       EQU             95
-GRLFBUNLOCK                     EQU             96
-GRLFBWRITECOLORFORMAT           EQU             97
-GRLFBWRITECOLORSWIZZLE          EQU             98
-GLIDESETUPLFBDOSBUFFERS         EQU             99
+GRLFBLOCK                       EQU             96
+GRLFBUNLOCK                     EQU             97
+GRLFBWRITECOLORFORMAT           EQU             98
+GRLFBWRITECOLORSWIZZLE          EQU             99
+GLIDESETUPLFBDOSBUFFERS         EQU             100
 
 ;Glide1-fÅggvÇnyek
-GRSSTOPEN                       EQU             100
-GRLFBBYPASSMODE                 EQU             101
-GRLFBORIGIN                     EQU             102
-GRLFBWRITEMODE                  EQU             103
-GRLFBBEGIN                      EQU             104
-GRLFBEND                        EQU             105
-GRLFBGETREADPTR                 EQU             106
-GRLFBGETWRITEPTR                EQU             107
-GUFBREADREGION                  EQU             108
-GUFBWRITEREGION                 EQU             109
+GRSSTOPEN                       EQU             101
+GRLFBBYPASSMODE                 EQU             102
+GRLFBORIGIN                     EQU             103
+GRLFBWRITEMODE                  EQU             104
+GRLFBBEGIN                      EQU             105
+GRLFBEND                        EQU             106
+GRLFBGETREADPTR                 EQU             107
+GRLFBGETWRITEPTR                EQU             108
+GUFBREADREGION                  EQU             109
+GUFBWRITEREGION                 EQU             110
 
 
 ;VESA-f¸ggvÈnyek
-VESASETVBEMODE                  EQU             110
-VESAUNSETVBEMODE                EQU             111
-VESAFRESH                       EQU             112
+VESASETVBEMODE                  EQU             111
+VESAUNSETVBEMODE                EQU             112
+VESAFRESH                       EQU             113
 
 ;Ezeket a f˚ggvÈnyeket a kernelmodul hivja
-DGVOODOOCLIENTCRASHED           EQU             113
-DGVOODOONEWCLIENTREGISTERING    EQU             114
+DGVOODOOCLIENTCRASHED           EQU             114
+DGVOODOONEWCLIENTREGISTERING    EQU             115
 
 ;EgyÈb f¸ggvÈnyek
-DGVOODOOGETCONFIG               EQU             115
-DGVOODOORELEASEFOCUS            EQU             116
+DGVOODOOGETCONFIG               EQU             116
+DGVOODOORELEASEFOCUS            EQU             117
 
-GLIDEINSTALLMOUSE		EQU		117
-GLIDEUNINSTALLMOUSE		EQU		118
-GLIDEISMOUSEINSTALLED		EQU		119
+GLIDEINSTALLMOUSE				EQU				118
+GLIDEUNINSTALLMOUSE				EQU				119
+GLIDEISMOUSEINSTALLED			EQU				120
 
-VESAGETXRES			EQU		120
-VESAGETYRES			EQU		121
+VESAGETXRES						EQU				121
+VESAGETYRES						EQU				122
 
-PORTLOG_IN			EQU		122
-PORTLOG_OUT			EQU		123
+PORTLOG_IN						EQU				123
+PORTLOG_OUT						EQU				124
 
 GLIDEENDITEM                    EQU             0FFFFFFFFh

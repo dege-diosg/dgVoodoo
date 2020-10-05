@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\..\Src\dgVoodooSetup\CmdLine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\dgVoodooSetup\ConfigExport.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\dgVoodooSetup\ConfigTree.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\dgVoodooSetup\DgVoodooSetup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\dgVoodooSetup\DgVoodooSetupClassicView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\dgVoodooSetup\DgVoodooSetupTopBottomPages.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\dgVoodooSetup\DX7AdapterHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\dgVoodooSetup\DX9AdapterHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Src\dgVoodooSetup\AdapterHandler.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\dgVoodooSetup\CmdLine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\dgVoodooSetup\ConfigTree.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\dgVoodooSetup\DgVoodooSetup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\DXBaseFunctions\DX7BaseFunctions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\dgVoodooSetup\resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\dgVoodooSetup\ResourceFix.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\..\Src\dgVoodooSetup\dgVoodooSetupLoc.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+    <ResourceCompile Include="..\..\Src\dgVoodooSetup\dgVoodooSetupFix.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\Src\Bitmaps\dgVoodoo.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\Src\Bitmaps\IconSetup.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\Src\dgVoodooSetup\FormatStrEng.txt">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\Src\dgVoodooSetup\FormatStrHun.txt">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\Src\dgVoodooSetup\CustomResources\Help.txt">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{17dc00c1-5fda-43e7-bb9e-54db879d15b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{8effd214-debe-4fc8-9f35-48610b3f28a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{ff1dc361-d913-4c6a-9e25-77bcd347231a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="..\..\Src\dgVoodooSetup\dgVoodooSetup.manifest">
+      <Filter>Resource Files</Filter>
+    </Manifest>
+  </ItemGroup>
+</Project>

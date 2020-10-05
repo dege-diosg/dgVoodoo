@@ -126,7 +126,7 @@ _MMCCPTOBGRA_Next:
 		pop		edi
 		ret		8
 
-BeginOf8toXXConvs		LABEL
+BeginOf8toXXConvs		LABEL	NEAR
 
 ;-------------------------------------------------------------------
 ;Egy ARGB palettát egy adott PixFmt formátumú palettává konvertál
@@ -139,7 +139,7 @@ _8toXX_ConvertPalette:
 		call	_8toXXInitConvCode
 _8toXXCP_format_cached:
 		pop		ecx
-		mov		eax,[ebx].BitPerPixel
+		mov		eax,(_pixfmt PTR [ebx]).BitPerPixel
         cmp     eax,16
         je      _8toXXCP_OK
         cmp     eax,32
@@ -150,7 +150,7 @@ _8toXXCP_OK:
 		movq	mm5,_8toXXARGBEntry_GreenMask
 		movq	mm6,_8toXXARGBEntry_BlueMask
 		mov		edx,ecx
-		cmp		[ebx].ABitCount,0h
+		cmp		(_pixfmt PTR [ebx]).ABitCount,0h
 		jne		_8toXXCP_PaletteWithAlpha
 		shr		ecx,1h
 		je		_8toXXCP_OneEntry
@@ -175,7 +175,7 @@ _8toXX_BlueShift1:
 		test	dl,1h
 		je		_8toXXCP_END
 _8toXXCP_OneEntry:
-		movd	mm0,[esi+4*edx-4]	;
+		movd	mm0, DWORD PTR [esi+4*edx-4]	;
 		movq	mm1,mm0			;
 		pand	mm0,mm4
 _8toXX_RedShift2:
@@ -189,7 +189,7 @@ _8toXX_BlueShift2:
 		pslld	mm2,0h			;	;Blue shl/shr
 		por		mm0,mm1
 		por		mm0,mm2			;
-		movd	[edi+4*edx-4],mm0	;
+		movd	DWORD PTR [edi+4*edx-4],mm0	;
 		jmp		_8toXXCP_END
 
 _8toXXCP_PaletteWithAlpha:
@@ -222,7 +222,7 @@ _8toXX_AlphaShiftWA1:
 		test	dl,1h
 		je		_8toXXCP_END
 _8toXXCP_WAOneEntry:
-		movd	mm0,[esi+4*edx-4]	;
+		movd	mm0,DWORD PTR [esi+4*edx-4]	;
 		movq	mm1,mm0			;
 		pand	mm0,mm4
 _8toXX_RedShiftWA2:
@@ -241,7 +241,7 @@ _8toXX_BlueShiftWA2:
 _8toXX_AlphaShiftWA2:
 		pslld	mm3,0h			;	;Alpha shl/shr
 		por		mm0,mm3			;
-		movd	[edi+4*edx-4],mm0	;
+		movd	DWORD PTR [edi+4*edx-4],mm0	;
 	
 _8toXXCP_END:
 		emms
@@ -254,7 +254,7 @@ _general8to16converter:
 		mov		_8toXXConverter, OFFSET _8to16_
 		mov		_8toXXMiniConverter, OFFSET _8to16mini_
 		mov		cl,1h
-		or		[ebx].ABitCount,0h
+		or		(_pixfmt PTR [ebx]).ABitCount,0h
 		je		_general8toXXconverter
 
 		mov		_8toXXConverter, OFFSET _AP88to16_
@@ -277,7 +277,7 @@ _general8to32converter:
 		mov		_8toXXConverter, OFFSET _8to32_
 		mov		_8toXXMiniConverter, OFFSET _8to32mini_
 		mov		cl,2h
-		or		[ebx].ABitCount,0h
+		or		(_pixfmt PTR [ebx]).ABitCount,0h
 		je		_general8toXXconverter
 
 		mov		_8toXXConverter, OFFSET _AP88to32_
@@ -310,14 +310,18 @@ _8toXXESPOK:
 		mov		ebx,palette
 		cmp		eax,PALETTETYPE_CONVERTED
 		je		_8toXXDontConvertPalette
-		push	esi edi ecx
+		push	esi
+		push	edi
+		push	ecx
 		mov		esi,ebx
 		mov		ebx,edx
 		lea		edi,[esp+4*4]
 		mov		ecx,100h
 		call	_8toXX_ConvertPalette
 		mov		ebx,edi
-		pop		ecx edi esi
+		pop		ecx
+		pop		edi
+		pop		esi
 _8toXXDontConvertPalette:
 
 		mov		ebp,x
@@ -358,10 +362,13 @@ _8to16_:
 		add		esi,ebp
 		lea		edi,[edi+2*ebp]
 		neg		ebp
-		push	esi edi
+		push	esi
+		push	edi
 		push	DWORD PTR y
 _8to16_bY8NextY:
-		push	ebp esi edi
+		push	ebp
+		push	esi
+		push	edi
 _8to16_bY8NextX:
 		movq	mm0,[esi+ebp]	;
 		xor		edx,edx
@@ -372,14 +379,14 @@ _8to16_bY8NextX:
 		mov		dl,al		;
 		mov		cl,ah
 		shr		eax,16		;
-		movd	mm4,[ebx+4*edx]
+		movd	mm4, DWORD PTR [ebx+4*edx]
 		mov		dl,al		;
-		movd	mm5,[ebx+4*ecx]
+		movd	mm5, DWORD PTR [ebx+4*ecx]
 		psllq	mm5,16		;
 		mov		cl,ah
 		por		mm4,mm5		;
-		movd	mm5,[ebx+4*edx]
-		movd	mm6,[ebx+4*ecx] ;
+		movd	mm5, DWORD PTR [ebx+4*edx]
+		movd	mm6, DWORD PTR [ebx+4*ecx] ;
 		psllq	mm5,32
 		psllq	mm6,48		;
 		por		mm4,mm5
@@ -389,14 +396,14 @@ _8to16_bY8NextX:
 		mov		dl,al		;
 		mov		cl,ah
 		shr		eax,16		;
-		movd	mm2,[ebx+4*edx]
+		movd	mm2, DWORD PTR [ebx+4*edx]
 		mov		dl,al		;
-		movd	mm5,[ebx+4*ecx]
+		movd	mm5, DWORD PTR [ebx+4*ecx]
 		psllq	mm5,16		;
 		mov		cl,ah
 		por		mm2,mm5		;
-		movd	mm5,[ebx+4*edx]
-		movd	mm6,[ebx+4*ecx] ;
+		movd	mm5, DWORD PTR [ebx+4*edx]
+		movd	mm6, DWORD PTR [ebx+4*ecx] ;
 		psllq	mm5,32
 		psllq	mm6,48		;
 		por		mm2,mm5
@@ -406,18 +413,24 @@ _8to16_bY8NextX:
 		nop
 		add		ebp,8h		;
 		js		_8to16_bY8NextX
-		pop		edi esi ebp
+		pop		edi
+		pop		esi
+		pop		ebp
 		add		esi,srcpitch
 		add		edi,dstpitch
 		dec		DWORD PTR [esp]
 		jne		_8to16_bY8NextY
-		pop		eax edi esi ebp
+		pop		eax
+		pop		edi
+		pop		esi
+		pop		ebp
 		ret
 
 _8to16mini_:
 		add		esi,ebp
 		lea		edi,[edi+2*ebp]
-		push	edi esi
+		push	edi
+		push	esi
 		neg		ebp
 		xor		eax,eax
 		mov		edx,y
@@ -425,7 +438,9 @@ _8to16mini_:
 		or		ecx,ecx
 		jne		_8to16mini_withpalmap
 _8to16miniNextY:
-		push	edi esi ebp
+		push	edi
+		push	esi
+		push	ebp
 _8to16miniNextX:
 		mov		al,[esi+ebp]
 		nop
@@ -433,22 +448,27 @@ _8to16miniNextX:
 		inc		ebp
 		mov		[edi+2*ebp-2],cx
 		jne		_8to16miniNextX
-		pop		ebp esi edi
+		pop		ebp
+		pop		esi
+		pop		edi
 		add		esi,srcpitch
 		add		edi,dstpitch
 		dec		edx
 		jne		_8to16miniNextY
-		pop		esi edi
+		pop		esi
+		pop		edi
 		ret
 
 _8to16_withpalmap:
-		push	esi edi
+		push	esi
+		push	edi
 		xchg	eax,ebp
 		mov		ebp,paletteMap
 		push	DWORD PTR y
 		xchg	ebx,ebp
 _8to16_bY8NextY_wp:
-		push	esi edi
+		push	esi
+		push	edi
 		push	eax
 		shr		eax,3h
 		push	eax
@@ -462,18 +482,18 @@ _8to16_bY8NextX_wp:
 		mov		dl,al			;
 		mov		cl,ah
 		mov		BYTE PTR [ebx+edx],1h	;
-		movd	mm4,[ebp+4*edx]
+		movd	mm4, DWORD PTR [ebp+4*edx]
 		shr		eax,16			;
 		mov		BYTE PTR [ebx+ecx],1h
 		mov		dl,al			;
-		movd	mm5,[ebp+4*ecx]
+		movd	mm5, DWORD PTR [ebp+4*ecx]
 		psllq	mm5,16			;
 		mov		cl,ah
 		por		mm4,mm5			;
-		movd	mm5,[ebp+4*edx]
-		movd	mm6,[ebp+4*ecx]		;
+		movd	mm5, DWORD PTR [ebp+4*edx]
+		movd	mm6, DWORD PTR [ebp+4*ecx]		;
 		psllq	mm5,32
-		mov			BYTE PTR [ebx+edx],1h	;
+		mov		BYTE PTR [ebx+edx],1h	;
 		psllq	mm6,48
 		mov		BYTE PTR [ebx+ecx],1h	;
 		por		mm4,mm5
@@ -483,18 +503,18 @@ _8to16_bY8NextX_wp:
 		mov		dl,al			;
 		mov		cl,ah
 		shr		eax,16			;
-		movd	mm2,[ebp+4*edx]
+		movd	mm2, DWORD PTR [ebp+4*edx]
 		mov		BYTE PTR [ebx+edx],1h	;
 		mov		dl,al
-		movd	mm5,[ebp+4*ecx]		;
+		movd	mm5, DWORD PTR [ebp+4*ecx]		;
 		mov		BYTE PTR [ebx+ecx],1h
 		psllq	mm5,16			;
 		mov		cl,ah
 		mov		BYTE PTR [ebx+edx],1h	;
 		por		mm2,mm5
-		movd	mm5,[ebp+4*edx]		;
+		movd	mm5, DWORD PTR [ebp+4*edx]		;
 		add		esi,8h
-		movd	mm6,[ebp+4*ecx]		;
+		movd	mm6, DWORD PTR [ebp+4*ecx]		;
 		psllq	mm5,32
 		mov		BYTE PTR [ebx+ecx],1h	;
 		psllq	mm6,48
@@ -506,13 +526,18 @@ _8to16_bY8NextX_wp:
 		nop
 		dec		DWORD PTR [esp]		;
 		jne		_8to16_bY8NextX_wp
-		pop		edx eax
-		pop		edi esi
+		pop		edx
+		pop		eax
+		pop		edi
+		pop		esi
 		add		esi,srcpitch
 		add		edi,dstpitch
 		dec		DWORD PTR [esp]
 		jne		_8to16_bY8NextY_wp
-		pop		edx edi esi ebp
+		pop		edx
+		pop		edi
+		pop		esi
+		pop		ebp
 		add		esi,eax
 		lea		edi,[edi+2*eax]
 		ret
@@ -520,7 +545,9 @@ _8to16_bY8NextX_wp:
 _8to16mini_withpalmap:
 		xor		eax,eax
 _8to16miniNextY_wp:
-		push	edi esi ebp
+		push	edi
+		push	esi
+		push	ebp
 _8to16miniNextX_wp:
 		mov		al,[esi+ebp]		;
 		mov		BYTE PTR [ecx+eax],1h	;
@@ -529,12 +556,15 @@ _8to16miniNextX_wp:
 		inc		ebp
 		mov		eax,0h			;
 		jne		_8to16miniNextX_wp
-		pop		ebp esi edi
+		pop		ebp
+		pop		esi
+		pop		edi
 		add		esi,srcpitch
 		add		edi,dstpitch
 		dec		edx
 		jne		_8to16miniNextY_wp
-		pop		esi edi
+		pop		esi
+		pop		edi
 		ret
 
 ;-------------------------------------------------------------------
@@ -549,10 +579,13 @@ _8to32_:
 		add		esi,ebp
 		lea		edi,[edi+4*ebp]
 		neg		ebp
-		push	esi edi	
+		push	esi
+		push	edi	
 		push	DWORD PTR y
 _8to32_bY8NextY:
-		push	ebp esi edi
+		push	ebp
+		push	esi
+		push	edi
 _8to32_bY8NextX:
 		movq	mm0,[esi+ebp]	;
 		xor		edx,edx
@@ -563,14 +596,14 @@ _8to32_bY8NextX:
 		mov		dl,al		;
 		mov		cl,ah
 		shr		eax,16		;
-		movd	mm5,[ebx+4*ecx]
+		movd	mm5, DWORD PTR [ebx+4*ecx]
 		mov		cl,ah		;
-		movd	mm4,[ebx+4*edx]
+		movd	mm4, DWORD PTR [ebx+4*edx]
 		psllq	mm5,32		;
 		mov		dl,al
 		por		mm4,mm5		;
-		movd	mm5,[ebx+4*edx]
-		movd	mm6,[ebx+4*ecx] ;
+		movd	mm5, DWORD PTR [ebx+4*edx]
+		movd	mm6, DWORD PTR [ebx+4*ecx] ;
 		movd	eax,mm0
 		movq	[edi+4*ebp],mm4 ;
 		psllq	mm6,32
@@ -580,14 +613,14 @@ _8to32_bY8NextX:
 		movq	[edi+4*ebp+8],mm5
 
 		shr		eax,16		;
-		movd	mm2,[ebx+4*edx]
+		movd	mm2, DWORD PTR [ebx+4*edx]
 		mov		dl,al		;
-		movd	mm5,[ebx+4*ecx]
+		movd	mm5, DWORD PTR [ebx+4*ecx]
 		psllq	mm5,32		;
 		mov		cl,ah
 		por		mm2,mm5		;
-		movd	mm6,[ebx+4*ecx]
-		movd	mm5,[ebx+4*edx] ;
+		movd	mm6, DWORD PTR [ebx+4*ecx]
+		movd	mm5, DWORD PTR [ebx+4*edx] ;
 		psllq	mm6,32
 		por		mm5,mm6		;
 		movq	[edi+4*ebp+16],mm2
@@ -595,26 +628,33 @@ _8to32_bY8NextX:
 		nop
 		add		ebp,8h		;
 		js		_8to32_bY8NextX
-		pop		edi esi ebp
+		pop		edi
+		pop		esi
+		pop		ebp
 		add		esi,srcpitch
 		add		edi,dstpitch
 		dec		DWORD PTR [esp]
 		jne		_8to32_bY8NextY
 		pop		eax
-		pop		edi esi ebp
+		pop		edi
+		pop		esi
+		pop		ebp
 		ret
 
 _8to32mini_:
 		add		esi,ebp
 		lea		edi,[edi+4*ebp]
-		push	edi esi
+		push	edi
+		push	esi
 		neg		ebp
 		xor		eax,eax
 		mov		edx,y
 		cmp		paletteMap,0h
 		jne		_8to32mini_withpalmap
 _8to32miniNextY:
-		push	edi esi ebp
+		push	edi
+		push	esi
+		push	ebp
 _8to32miniNextX:
 		mov		al,[esi+ebp]		;
 		nop
@@ -622,23 +662,28 @@ _8to32miniNextX:
 		inc		ebp
 		mov		[edi+4*ebp-4],ecx	;
 		jne		_8to32miniNextX
-		pop		ebp esi edi
+		pop		ebp
+		pop		esi
+		pop		edi
 		add		esi,srcpitch
 		add		edi,dstpitch
 		dec		edx
 		jne		_8to32miniNextY
-		pop		esi edi
+		pop		esi
+		pop		edi
 		ret
 
 _8to32_withpalmap:
-		push	esi edi
+		push	esi
+		push	edi
 		xchg	eax,ebp
 		xor		edx,edx
 		mov		ebp,paletteMap
 		push	DWORD PTR y
 		xchg	ebx,ebp
 _8to32_bY8NextY_wp:
-		push	esi edi
+		push	esi
+		push	edi
 		push	eax
 		shr		eax,3h
 		push	eax
@@ -653,17 +698,17 @@ _8to32_bY8NextX_wp:
 		mov		cl,ah
 		shr		eax,16			;
 		mov		BYTE PTR [ebx+edx],1h
-		movd	mm5,[ebp+4*ecx] 	;
+		movd	mm5, DWORD PTR [ebp+4*ecx] 	;
 		mov		BYTE PTR [ebx+ecx],1h
 		mov		cl,ah			;
 		psllq	mm5,32
-		movd	mm4,[ebp+4*edx] 	;
+		movd	mm4, DWORD PTR [ebp+4*edx] 	;
 		mov		dl,al
 		por		mm4,mm5			;
 		mov		BYTE PTR [ebx+edx],1h
-		movd	mm5,[ebp+4*edx] 	;
+		movd	mm5, DWORD PTR [ebp+4*edx] 	;
 		movd	eax,mm0
-		movd	mm6,[ebp+4*ecx] 	;
+		movd	mm6, DWORD PTR [ebp+4*ecx] 	;
 		movq	[edi],mm4
 		mov		BYTE PTR [ebx+ecx],1h 	;
 		psllq	mm6,32
@@ -674,17 +719,17 @@ _8to32_bY8NextX_wp:
 
 		shr		eax,16			;
 		mov		BYTE PTR [ebx+edx],1h
-		movd	mm2,[ebp+4*edx] 	;
+		movd	mm2, DWORD PTR [ebp+4*edx] 	;
 		mov		BYTE PTR [ebx+ecx],1h
 		mov		dl,al			;
-		movd	mm5,[ebp+4*ecx]
+		movd	mm5, DWORD PTR [ebp+4*ecx]
 		mov		BYTE PTR [ebx+edx],1h 	;
 		psllq	mm5,32
 		mov		cl,ah			;
 		por		mm2,mm5
 		mov		BYTE PTR [ebx+ecx],1h 	;
-		movd	mm6,[ebp+4*ecx]
-		movd	mm5,[ebp+4*edx] 	;
+		movd	mm6, DWORD PTR [ebp+4*ecx]
+		movd	mm5, DWORD PTR [ebp+4*edx] 	;
 		psllq	mm6,32
 		por		mm5,mm6			;
 		movq	[edi+16],mm2
@@ -692,13 +737,18 @@ _8to32_bY8NextX_wp:
 		add		edi,32
 		dec		DWORD PTR [esp]		;
 		jne		_8to32_bY8NextX_wp
-		pop		ecx eax
-		pop		edi esi
+		pop		ecx
+		pop		eax
+		pop		edi
+		pop		esi
 		add		esi,srcpitch
 		add		edi,dstpitch
 		dec		DWORD PTR [esp]
 		jne		_8to32_bY8NextY_wp
-		pop		ecx edi esi ebp
+		pop		ecx
+		pop		edi
+		pop		esi
+		pop		ebp
 		add		esi,eax
 		lea		edi,[edi+4*eax]
 		ret
@@ -707,7 +757,9 @@ _8to32mini_withpalmap:
 		mov		ecx,paletteMap
 		xor		eax,eax
 _8to32miniNextY_wp:
-		push	edi esi ebp
+		push	edi
+		push	esi
+		push	ebp
 _8to32miniNextX_wp:
 		mov		al,[esi+ebp]		;
 		mov		BYTE PTR [ecx+eax],1h	;
@@ -716,12 +768,15 @@ _8to32miniNextX_wp:
 		inc		ebp
 		mov		eax,0h			;
 		jne		_8to32miniNextX_wp
-		pop		ebp esi edi
+		pop		ebp
+		pop		esi
+		pop		edi
 		add		esi,srcpitch
 		add		edi,dstpitch
 		dec		edx
 		jne		_8to32miniNextY_wp
-		pop		esi edi
+		pop		esi
+		pop		edi
 		ret
 
 ;-------------------------------------------------------------------
@@ -737,14 +792,17 @@ _AP88to16_:
 		lea		edi,[edi+2*ebp]
 		shr		ebp,2h
 		neg		ebp
-		push	esi edi
+		push	esi
+		push	edi
 		push	DWORD PTR y
 		mov		ecx,paletteMap
 		xor		edx,edx
 		or		ecx,ecx
 		jne		_AP88to16_withpalmap
 _AP88to16_bY4NextY:
-		push	ebp esi edi
+		push	ebp
+		push	esi
+		push	edi
 _AP88to16_bY4NextX:
 		movq	mm0,[esi+8*ebp]	;	;a3p3a2p2a1p1a0p0
 		movq	mm1,mm0		;
@@ -754,13 +812,13 @@ _AP88to16_bY4NextX:
 		mov		dl,al		;
 _AP88to16_AlphaShift1:
 		psrlq	mm4,0h			;a0 shr
-		movd	mm3,[ebx+4*edx]	;	;p0
+		movd	mm3, DWORD PTR [ebx+4*edx]	;	;p0
 		pand	mm4,mm7			;a0 mask
 		shr		eax,16		;
 		por		mm3,mm4
 		mov		dl,al		;
 		movq	mm4,mm1
-		movd	mm2,[ebx+4*edx]	;	;p1
+		movd	mm2, DWORD PTR [ebx+4*edx]	;	;p1
 _AP88to16_AlphaShift2:
 		psrlq	mm4,0h			;a1 shr
 		movd	eax,mm0		;
@@ -769,7 +827,7 @@ _AP88to16_AlphaShift2:
 		por		mm2,mm4
 		shr		eax,16		;
 		psllq	mm2,16
-		movd	mm5,[ebx+4*edx]	;	;p2
+		movd	mm5, DWORD PTR [ebx+4*edx]	;	;p2
 		por		mm3,mm2
 		movq	mm4,mm1		;
 _AP88to16_AlphaShift3:
@@ -779,7 +837,7 @@ _AP88to16_AlphaShift4:
 		mov		dl,al
 		pand	mm4,mm7		;	;a2 mask
 		pand	mm1,mm7			;a3 mask
-		movd	mm2,[ebx+4*edx] ;	;p3
+		movd	mm2, DWORD PTR [ebx+4*edx] ;	;p3
 		por		mm5,mm1
 		psllq	mm5,32		;
 		por		mm2,mm4
@@ -789,25 +847,33 @@ _AP88to16_AlphaShift4:
 		inc		ebp
 		movq	[edi+8*ebp-8],mm3	;
 		jnz		_AP88to16_bY4NextX
-		pop		edi esi ebp
+		pop		edi
+		pop		esi
+		pop		ebp
 		add		esi,srcpitch
 		add		edi,dstpitch
 		dec		DWORD PTR [esp]
 		jne		_AP88to16_bY4NextY
-		pop		eax edi esi ebp
+		pop		eax
+		pop		edi
+		pop		esi
+		pop		ebp
 		ret
 
 _AP88to16mini_:
 		lea		esi,[esi+2*ebp]
 		lea		edi,[edi+2*ebp]
-		push	edi esi
+		push	edi
+		push	esi
 		neg		ebp
 		mov		edx,y
 		mov		ecx,paletteMap
 		or		ecx,ecx
 		jne		_AP88to16mini_withpalmap
 _AP88to16miniNextY:
-		push	edi esi ebp
+		push	edi
+		push	esi
+		push	ebp
 _AP88to16miniNextX:
 		mov		ax,[esi+2*ebp]		;
 		mov		cl,al			;
@@ -819,17 +885,22 @@ _AP88to16mini_AlphaMask:
 		inc		ebp
 		mov		[edi+2*ebp-2],ax
 		jne		_AP88to16miniNextX
-		pop		ebp esi edi
+		pop		ebp
+		pop		esi
+		pop		edi
 		add		esi,srcpitch
 		add		edi,dstpitch
 		dec		edx
 		jne		_AP88to16miniNextY
-		pop		esi edi
+		pop		esi
+		pop		edi
 		ret
 
 _AP88to16_withpalmap:
 _AP88to16_bY4NextY_withpalmap:
-		push	ebp esi edi
+		push	ebp
+		push	esi
+		push	edi
 _AP88to16_bY4NextX_withpalmap:
 		movq	mm0,[esi+8*ebp]	;	;a3p3a2p2a1p1a0p0
 		movq	mm1,mm0		;
@@ -839,7 +910,7 @@ _AP88to16_bY4NextX_withpalmap:
 		mov	dl,al		;
 _AP88to16_AlphaShift1_withpalmap:
 		psrlq	mm4,0h			;a0 shr
-		movd	mm3,[ebx+4*edx]	;	;p0
+		movd	mm3, DWORD PTR [ebx+4*edx]	;	;p0
 		pand	mm4,mm7			;a0 mask
 		shr		eax,16		;
 		mov		BYTE PTR [ecx+edx],1h
@@ -847,7 +918,7 @@ _AP88to16_AlphaShift1_withpalmap:
 		mov		dl,al
 		movq	mm4,mm1		;
 		mov		BYTE PTR [ecx+edx],1h
-		movd	mm2,[ebx+4*edx]	;	;p1
+		movd	mm2, DWORD PTR [ebx+4*edx]	;	;p1
 _AP88to16_AlphaShift2_withpalmap:
 		psrlq	mm4,0h			;a1 shr
 		movd	eax,mm0		;
@@ -856,7 +927,7 @@ _AP88to16_AlphaShift2_withpalmap:
 		por		mm2,mm4
 		shr		eax,16		;
 		mov		BYTE PTR [ecx+edx],1h
-		movd	mm5,[ebx+4*edx]	;	;p2
+		movd	mm5, DWORD PTR [ebx+4*edx]	;	;p2
 		psllq	mm2,16
 		por		mm3,mm2		;
 		movq	mm4,mm1
@@ -868,7 +939,7 @@ _AP88to16_AlphaShift4_withpalmap:
 		mov		BYTE PTR [ecx+edx],1h
 		pand	mm4,mm7		;
 		pand	mm1,mm7
-		movd	mm2,[ebx+4*edx] ;	;p3
+		movd	mm2, DWORD PTR [ebx+4*edx] ;	;p3
 		por		mm5,mm1
 		psllq	mm5,32		;
 		por		mm2,mm4
@@ -878,19 +949,26 @@ _AP88to16_AlphaShift4_withpalmap:
 		inc		ebp
 		movq	[edi+8*ebp-8],mm3	;
 		jnz		_AP88to16_bY4NextX_withpalmap
-		pop		edi esi ebp
+		pop		edi
+		pop		esi
+		pop		ebp
 		add		esi,srcpitch
 		add		edi,dstpitch
 		dec		DWORD PTR [esp]
 		jne		_AP88to16_bY4NextY_withpalmap
-		pop		eax edi esi ebp
+		pop		eax
+		pop		edi
+		pop		esi
+		pop		ebp
 		ret
 
 _AP88to16mini_withpalmap:
 		push	edx
 		xor		edx,edx
 _AP88to16miniNextY_withpalmap:
-		push	edi esi ebp
+		push	edi
+		push	esi
+		push	ebp
 _AP88to16miniNextX_withpalmap:
 		mov		ax,[esi+2*ebp]		;
 		mov		dl,al			;
@@ -903,12 +981,16 @@ _AP88to16mini_AlphaMask_withpalmap:
 		inc		ebp
 		mov		[edi+2*ebp-2],ax	;
 		jnz		_AP88to16miniNextX_withpalmap
-		pop		ebp esi edi
+		pop		ebp
+		pop		esi
+		pop		edi
 		add		esi,srcpitch
 		add		edi,dstpitch
 		dec		DWORD PTR [esp]
 		jne		_AP88to16miniNextY_withpalmap
-		pop		eax esi edi
+		pop		eax
+		pop		esi
+		pop		edi
 		ret
 
 ;-------------------------------------------------------------------
@@ -924,14 +1006,17 @@ _AP88to32_:
 		lea		edi,[edi+4*ebp]
 		shr		ebp,1h
 		neg		ebp
-		push	esi edi
+		push	esi
+		push	edi
 		push	DWORD PTR y
 		mov		ecx,paletteMap
 		xor		edx,edx
 		or		ecx,ecx
 		jne		_AP88to32_withpalmap
 _AP88to32_bY4NextY:
-		push	ebp esi edi
+		push	ebp
+		push	esi
+		push	edi
 _AP88to32_bY4NextX:
 		movq	mm0,[esi+4*ebp]	;	;a3p3a2p2a1p1a0p0
 		movq	mm1,mm0		;
@@ -941,13 +1026,13 @@ _AP88to32_bY4NextX:
 		mov		dl,al		;
 _AP88to32_AlphaShift1:
 		psrlq	mm4,0h			;a0 shl/shr
-		movd	mm3,[ebx+4*edx]	;	;p0
+		movd	mm3, DWORD PTR [ebx+4*edx]	;	;p0
 		pand	mm4,mm7			;a0 mask
 		shr		eax,16		;
 		por		mm3,mm4
 		mov		dl,al		;
 		movq	mm4,mm1
-		movd	mm2,[ebx+4*edx]	;	;p1
+		movd	mm2, DWORD PTR [ebx+4*edx]	;	;p1
 _AP88to32_AlphaShift2:
 		psrlq	mm4,0h			;a1 shr
 		movd	eax,mm0		;
@@ -956,7 +1041,7 @@ _AP88to32_AlphaShift2:
 		por		mm2,mm4
 		shr		eax,16		;
 		psllq	mm2,32
-		movd	mm5,[ebx+4*edx]	;	;p2
+		movd	mm5, DWORD PTR [ebx+4*edx]	;	;p2
 		por		mm3,mm2
 		movq	mm4,mm1		;
 _AP88to32_AlphaShift3:
@@ -966,7 +1051,7 @@ _AP88to32_AlphaShift4:
 	psrlq	mm4,0h			;a3 shr
 		pand	mm4,mm7		;	;a3 mask
 		mov		dl,al
-		movd	mm2,[ebx+4*edx]	;	;p3
+		movd	mm2, DWORD PTR [ebx+4*edx]	;	;p3
 		pand	mm1,mm7			;a2 mask
 		por		mm2,mm4		;
 		por		mm5,mm1
@@ -975,25 +1060,33 @@ _AP88to32_AlphaShift4:
 		por		mm2,mm5		;
 		movq	[edi+8*ebp-8],mm2	;
 		jnz		_AP88to32_bY4NextX
-		pop		edi esi ebp
+		pop		edi
+		pop		esi
+		pop		ebp
 		add		esi,srcpitch
 		add		edi,dstpitch
 		dec		DWORD PTR [esp]
 		jne		_AP88to32_bY4NextY
-		pop		eax edi esi ebp
+		pop		eax
+		pop		edi
+		pop		esi
+		pop		ebp
 		ret
 
 _AP88to32mini_:
 		lea		esi,[esi+2*ebp]
 		lea		edi,[edi+4*ebp]
-		push	edi esi
+		push	edi
+		push	esi
 		neg		ebp
 		mov		edx,y
 		mov		ecx,paletteMap
 		or		ecx,ecx
 		jne		_AP88to32mini_withpalmap
 _AP88to32miniNextY:
-		push	edi esi ebp
+		push	edi
+		push	esi
+		push	ebp
 _AP88to32miniNextX:
 		mov		ax,[esi+2*ebp]		;
 		mov		cl,al			;
@@ -1005,17 +1098,22 @@ _AP88to32mini_AlphaMask:
 		inc		ebp
 		mov		[edi+4*ebp-4],eax
 		jnz		_AP88to32miniNextX
-		pop		ebp esi edi
+		pop		ebp
+		pop		esi
+		pop		edi
 		add		esi,srcpitch
 		add		edi,dstpitch
 		dec		edx
 		jne		_AP88to32miniNextY
-		pop		esi edi
+		pop		esi
+		pop		edi
 		ret
 
 _AP88to32_withpalmap:
 _AP88to32_bY4NextY_withpalmap:
-		push	ebp esi edi
+		push	ebp
+		push	esi
+		push	edi
 _AP88to32_bY4NextX_withpalmap:
 		movq	mm0,[esi+4*ebp]	;	;a3p3a2p2a1p1a0p0
 		movq	mm1,mm0		;
@@ -1025,13 +1123,13 @@ _AP88to32_bY4NextX_withpalmap:
 		mov		dl,al		;
 _AP88to32_AlphaShift1_withpalmap:
 		psrlq	mm4,0h			;a0 shl/shr
-		movd	mm3,[ebx+4*edx]	;	;p0
+		movd	mm3, DWORD PTR [ebx+4*edx]	;	;p0
 		pand	mm4,mm7			;a0 mask
 		shr		eax,16		;
 		mov		BYTE PTR [ecx+edx],1h
 		por		mm3,mm4		;
 		mov		dl,al
-		movd	mm2,[ebx+4*edx]	;	;p1
+		movd	mm2, DWORD PTR [ebx+4*edx]	;	;p1
 		movq	mm4,mm1
 _AP88to32_AlphaShift2_withpalmap:
 		psrlq	mm4,0h		;	;a1 shr
@@ -1042,7 +1140,7 @@ _AP88to32_AlphaShift2_withpalmap:
 		por		mm2,mm4
 		shr		eax,16		;
 		psllq	mm2,32
-		movd	mm5,[ebx+4*edx]	;	;p2
+		movd	mm5, DWORD PTR [ebx+4*edx]	;	;p2
 		por		mm3,mm2
 		movq	mm4,mm1		;
 _AP88to32_AlphaShift3_withpalmap:
@@ -1054,7 +1152,7 @@ _AP88to32_AlphaShift4_withpalmap:
 		mov		BYTE PTR [ecx+edx],1h
 		mov		dl,al		;
 		pand	mm1,mm7			;a2 mask
-		movd	mm2,[ebx+4*edx] ;	;p3
+		movd	mm2, DWORD PTR [ebx+4*edx] ;	;p3
 		por		mm5,mm1
 		por		mm2,mm4		;
 		mov		BYTE PTR [ecx+edx],1h
@@ -1063,19 +1161,26 @@ _AP88to32_AlphaShift4_withpalmap:
 		por		mm2,mm5		;
 		movq	[edi+8*ebp-8],mm2	;
 		jnz		_AP88to32_bY4NextX_withpalmap
-		pop		edi esi ebp
+		pop		edi
+		pop		esi
+		pop		ebp
 		add		esi,srcpitch
 		add		edi,dstpitch
 		dec		DWORD PTR [esp]
 		jne		_AP88to32_bY4NextY_withpalmap
-		pop		eax edi esi ebp
+		pop		eax
+		pop		edi
+		pop		esi
+		pop		ebp
 		ret
 
 _AP88to32mini_withpalmap:
 		push	edx
 		xor		edx,edx
 _AP88to32miniNextY_withpalmap:
-		push	edi esi ebp
+		push	edi
+		push	esi
+		push	ebp
 _AP88to32miniNextX_withpalmap:
 		mov		ax,[esi+2*ebp]		;
 		mov		dl,al			;
@@ -1088,15 +1193,19 @@ _AP88to32mini_AlphaMask_withpalmap:
 		inc		ebp
 		mov		[edi+4*ebp-4],eax
 		jnz		_AP88to32miniNextX_withpalmap
-		pop		ebp esi edi
+		pop		ebp
+		pop		esi
+		pop		edi
 		add		esi,srcpitch
 		add		edi,dstpitch
 		dec		DWORD PTR [esp]
 		jne		_AP88to32miniNextY_withpalmap
-		pop		eax esi edi
+		pop		eax
+		pop		esi
+		pop		edi
 		ret
 
-EndOf8toXXConvs		LABEL
+EndOf8toXXConvs		LABEL	NEAR
 
 ;-------------------------------------------------------------------
 ;Init kód a palettakonverterhez
@@ -1106,34 +1215,34 @@ _8toXXInitConvCode:
 		push	OFFSET _8toXXlastUsedPixFmt
 		push	ebx
 		call	CopyPixFmt
-		mov		eax,[ebx].RBitCount
+		mov		eax,(_pixfmt PTR [ebx]).RBitCount
 		mov		al,_masktable_up[eax]
 		shl		eax,16
 		mov		DWORD PTR _8toXXARGBEntry_RedMask[0],eax	
 		mov		DWORD PTR _8toXXARGBEntry_RedMask[4],eax
-		mov		eax,[ebx].GBitCount
+		mov		eax,(_pixfmt PTR [ebx]).GBitCount
 		mov		al,_masktable_up[eax]
 		shl		eax,8
 		mov		DWORD PTR _8toXXARGBEntry_GreenMask[0],eax	
 		mov		DWORD PTR _8toXXARGBEntry_GreenMask[4],eax
-		mov		eax,[ebx].BBitCount
+		mov		eax,(_pixfmt PTR [ebx]).BBitCount
 		mov		al,_masktable_up[eax]
 		mov		DWORD PTR _8toXXARGBEntry_BlueMask[0],eax
 		mov		DWORD PTR _8toXXARGBEntry_BlueMask[4],eax
-		mov		eax,[ebx].ABitCount
+		mov		eax,(_pixfmt PTR [ebx]).ABitCount
 		mov		al,_masktable_up[eax]
 		shl		eax,24
 		mov		DWORD PTR _8toXXARGBEntry_AlphaMask[0],eax
 		mov		DWORD PTR _8toXXARGBEntry_AlphaMask[4],eax
 
-		GetShiftCode_8xx	16+8, [ebx].RPos, [ebx].RBitCount
+		GetShiftCode_8xx	16+8, (_pixfmt PTR [ebx]).RPos, (_pixfmt PTR [ebx]).RBitCount
 		push	eax
-		GetShiftCode_8xx	8+8, [ebx].GPos, [ebx].GBitCount
+		GetShiftCode_8xx	8+8, (_pixfmt PTR [ebx]).GPos, (_pixfmt PTR [ebx]).GBitCount
 		push	eax
-		GetShiftCode_8xx	0+8, [ebx].BPos, [ebx].BBitCount
+		GetShiftCode_8xx	0+8, (_pixfmt PTR [ebx]).BPos, (_pixfmt PTR [ebx]).BBitCount
 		push	eax
 
-		or		[ebx].ABitCount,0h
+		or		(_pixfmt PTR [ebx]).ABitCount,0h
 		jne		_8toXXInitConvCode_Alpha
 
 		pop		eax
@@ -1174,7 +1283,7 @@ _8toXXInitConvCode_Alpha:
 		and		WORD PTR _8toXX_RedShiftWA2+2, NOT MMXCODESHIFTMASK
 		or		WORD PTR _8toXX_RedShiftWA2+2, ax
 
-		GetShiftCode_8xx	24+8, [ebx].APos, [ebx].ABitCount
+		GetShiftCode_8xx	24+8, (_pixfmt PTR [ebx]).APos, (_pixfmt PTR [ebx]).ABitCount
 		and		WORD PTR _8toXX_AlphaShiftWA1+2, NOT MMXCODESHIFTMASK
 		or		WORD PTR _8toXX_AlphaShiftWA1+2, ax
 		and		WORD PTR _8toXX_AlphaShiftWA2+2, NOT MMXCODESHIFTMASK
@@ -1189,8 +1298,8 @@ _AP88to16InitConvCode:
 		push	edx
 		call	CopyPixFmt
 
-		mov		eax,[edx].ABitCount
-		mov		ecx,[edx].APos
+		mov		eax,(_pixfmt PTR [edx]).ABitCount
+		mov		ecx,(_pixfmt PTR [edx]).APos
 		mov		al,_masktable[eax]
 		shl		eax,cl
 		mov		DWORD PTR _AP88to16AlphaMask,eax
@@ -1198,7 +1307,7 @@ _AP88to16InitConvCode:
 		mov		DWORD PTR _AP88to16mini_AlphaMask+1,eax
 		mov		DWORD PTR _AP88to16mini_AlphaMask_withpalmap+1,eax
 
-		GetSingleShiftCode_8xx	16, [edx].APos, [edx].ABitCount
+		GetSingleShiftCode_8xx	16, (_pixfmt PTR [edx]).APos, (_pixfmt PTR [edx]).ABitCount
 		mov		BYTE PTR _AP88to16_AlphaShift1+3,al
 		mov		BYTE PTR _AP88to16_AlphaShiftmini+2,al
 		mov		BYTE PTR _AP88to16_AlphaShift1_withpalmap+3,al
@@ -1223,8 +1332,8 @@ _AP88to32InitConvCode:
 		push	edx
 		call	CopyPixFmt
 
-		mov		eax,[edx].ABitCount
-		mov		ecx,[edx].APos
+		mov		eax,(_pixfmt PTR [edx]).ABitCount
+		mov		ecx,(_pixfmt PTR [edx]).APos
 		mov		al,_masktable[eax]
 		shl		eax,cl
 		mov		DWORD PTR _AP88to32AlphaMask,eax
@@ -1232,12 +1341,12 @@ _AP88to32InitConvCode:
 		mov     DWORD PTR _AP88to32mini_AlphaMask+1,eax
 		mov     DWORD PTR _AP88to32mini_AlphaMask_withpalmap+1,eax
 
-		GetShiftCode_8xx	16, [edx].APos, [edx].ABitCount
+		GetShiftCode_8xx	16, (_pixfmt PTR [edx]).APos, (_pixfmt PTR [edx]).ABitCount
 		and		WORD PTR _AP88to32_AlphaShift1+2, NOT MMXCODESHIFTMASK
 		or		WORD PTR _AP88to32_AlphaShift1+2,ax
 		and		WORD PTR _AP88to32_AlphaShift1_withpalmap+2, NOT MMXCODESHIFTMASK
 		or		WORD PTR _AP88to32_AlphaShift1_withpalmap+2,ax
-		GetSingleShiftCode_8xx	16, [edx].APos, [edx].ABitCount
+		GetSingleShiftCode_8xx	16, (_pixfmt PTR [edx]).APos, (_pixfmt PTR [edx]).ABitCount
 		mov		BYTE PTR _AP88to32_AlphaShiftmini+2,al
 		mov		BYTE PTR _AP88to32_AlphaShiftmini_withpalmap+2,al
 		
@@ -1256,17 +1365,19 @@ _AP88to32InitConvCode:
 ;A palettakonverter lapja írhatóvá tétele
 
 _8toXX_doinit:
-        push    ecx edx
+        push    ecx
+        push	edx
         push    eax
-
         push    esp
         push    LARGE PAGE_EXECUTE_READWRITE
-        push    LARGE EndOf8toXXConvs - BeginOf8toXXConvs
+        push    LARGE (EndOf8toXXConvs - BeginOf8toXXConvs)
         push    OFFSET BeginOf8toXXConvs
         W32     VirtualProtect,4
         mov     _8toXXInit,0FFh
 
-        pop     eax edx ecx
+        pop     eax
+        pop		edx
+        pop		ecx
         ret
 
 

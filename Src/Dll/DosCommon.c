@@ -32,9 +32,6 @@
 #include	<windows.h>
 #include	<winuser.h>
 #include	"resource.h"
-#include	"DDraw.h"
-#include	"D3d.h"
-#include	"movie.h"
 #include	"dgVoodooGlide.h"
 #include	"Dos.h"
 #include	"VxdComm.h"
@@ -105,7 +102,6 @@ const char			MutexEventName[] = "dgVoodooMTX20040719";	/* A rajzoláshoz használt
 
 
 LRESULT CALLBACK MovieWindowFunction(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)	{
-WNDPROC			movieDefWinProc;
 static int		ctrldown;
 int				retCode;
 RECT			oldRect, newRect;
@@ -114,6 +110,7 @@ int				code;
 int				sizeDirection;
 unsigned char	errorTitle[MAXSTRINGLENGTH];
 unsigned char	errorMsg[MAXSTRINGLENGTH];
+PAINTSTRUCT		paintStruct;
 
 
 	switch(uMsg)	{
@@ -222,8 +219,12 @@ unsigned char	errorMsg[MAXSTRINGLENGTH];
 							//}
 						}
 					}
+					DosRendererStatus (wParam);
 				}
 				return(0);
+
+//			case WM_WINDOWPOSCHANGING:
+//				break;
 			
 			case WM_LBUTTONUP:
 				if ( (config.Flags & (CFG_SETMOUSEFOCUS | CFG_CTRLALT)) == (CFG_SETMOUSEFOCUS | CFG_CTRLALT) )	{
@@ -346,11 +347,34 @@ unsigned char	errorMsg[MAXSTRINGLENGTH];
 				}
 				break;
 			
-			default:
+			case WM_SIZE:
 				if ((runflags & RF_INITOK) || c->VESASession)	{
+					if (RefreshDisplayByFrontBuffer ())
+						ValidateRgn (hWnd, NULL);
+				}
+				break;
+
+			case WM_PAINT:
+				if ((runflags & RF_INITOK) || c->VESASession)	{
+					if (!RefreshDisplayByFrontBuffer ()) {
+						if (!OwnFocus) {
+							InvalidateRgn (hWnd, NULL, FALSE);
+							BeginPaint (hWnd, &paintStruct);
+							FillRect (paintStruct.hdc, &paintStruct.rcPaint, (HBRUSH) GetStockObject (BLACK_BRUSH));
+							EndPaint (hWnd, &paintStruct);
+						}
+					} else {
+						ValidateRgn (hWnd, NULL);
+					}
+				}
+				break;
+
+			default:
+				break;
+				/*if ((runflags & RF_INITOK) || c->VESASession)	{
 					movieDefWinProc = (WNDPROC) GetDefMovieWinProc();
 					return(movieDefWinProc(hWnd, uMsg, wParam, lParam));
-				} else return(DefWindowProc(hWnd, uMsg, wParam, lParam));
+				} else return(DefWindowProc(hWnd, uMsg, wParam, lParam));*/
 		}
 	}
 	return(DefWindowProc(hWnd, uMsg, wParam, lParam));
@@ -510,17 +534,20 @@ void RegisterMainClass()	{
 }
 
 
-void CreateRenderingWindow()	{
+HWND CreateRenderingWindow()	{
 
 	renderingWinHwnd = CreateWindowEx(mainWndStyleEx, "DGVOODOOWINDOWCLASS", "", mainWndStyle, \
 									  CW_USEDEFAULT, CW_USEDEFAULT, 250,250, NULL, NULL, \
 									  hInstance, NULL);
-	movie.cmiWinHandle = renderingWinHwnd;
-	movie.cmiFlags = MV_3D;
-	if (actRenderingWinRect.right != -1) SetWindowPos(renderingWinHwnd, renderingWinHwnd,
-													  actRenderingWinRect.left, actRenderingWinRect.top,
-													  actRenderingWinRect.right - actRenderingWinRect.left,
-													  actRenderingWinRect.bottom - actRenderingWinRect.top, SWP_NOZORDER);
+	//movie.cmiWinHandle = renderingWinHwnd;
+	//movie.cmiFlags = MV_3D;
+	if (actRenderingWinRect.right != -1)
+		SetWindowPos(renderingWinHwnd, renderingWinHwnd,
+					 actRenderingWinRect.left, actRenderingWinRect.top,
+					 actRenderingWinRect.right - actRenderingWinRect.left,
+					 actRenderingWinRect.bottom - actRenderingWinRect.top, SWP_NOZORDER);
+	
+	return (renderingWinHwnd);
 }
 
 
@@ -571,7 +598,7 @@ float			*t;
 unsigned long	*execbuff;
 
 	if (c->kernelflag & KFLAG_SCREENSHOT)
-		GrabberHookDos();
+		GrabberHookDos(0);
 	c->kernelflag &= ~KFLAG_SCREENSHOT;	
 	execbuff = c->ExeCodes;
 	while(execbuff[0] != GLIDEENDITEM)	{
@@ -766,6 +793,11 @@ unsigned long	*execbuff;
 							   (GrCombineOther_t) execbuff[4],
 							   (FxBool) execbuff[5]);
 				execbuff += 6;
+				break;
+
+			case GRALPHACONTROLSITRGBLIGHTING:
+				grAlphaControlsITRGBLighting ((FxBool) execbuff[1]);
+				execbuff += 2;
 				break;
 
 			case GRCONSTANTCOLORVALUE:				
@@ -1389,6 +1421,17 @@ unsigned long	*execbuff;
 void DosSendSetTimerMessage()	{
 	
 	SendMessage(serverCmdHwnd, DGSM_SETTIMER, 0, 0);
+}
+
+
+void DosRendererStatus (int status)
+{
+	if (!(config.Flags & CFG_WINDOWED)) {
+		/*if (status && IsZoomed (renderingWinHwnd)) {
+			return;
+		}*/
+		ShowWindow (renderingWinHwnd, status ? SW_MAXIMIZE : SW_MINIMIZE);
+	}
 }
 
 

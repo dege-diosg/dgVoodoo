@@ -1,0 +1,94 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Dll", "Dll\Dll.vcxproj", "{81C21F26-AC8D-41E4-B36B-1E3C550C410F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6B61F93B-177A-40CC-8978-DDFFB629284C} = {6B61F93B-177A-40CC-8978-DDFFB629284C}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dgVoodoo", "dgVoodoo\dgVoodoo.vcxproj", "{B3CA182F-FF9F-4AAC-96CD-F1101DB3297D}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dgVoodooSetup", "dgVoodooSetup\dgVoodooSetup.vcxproj", "{2ACE220C-60DB-47BF-B28C-0D2750DC0C31}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6B61F93B-177A-40CC-8978-DDFFB629284C} = {6B61F93B-177A-40CC-8978-DDFFB629284C}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DXBaseFunctions", "DXBaseFunctions\DXBaseFunctions.vcxproj", "{A117927D-A50C-4A70-9928-119F12A69A93}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AdditionalModules", "AdditionalModules\AdditionalModules.vcxproj", "{6B61F93B-177A-40CC-8978-DDFFB629284C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Glide 211 Debug|Win32 = Glide 211 Debug|Win32
+		Glide 211 Release|Win32 = Glide 211 Release|Win32
+		Glide 243 Debug|Win32 = Glide 243 Debug|Win32
+		Glide 243 Release|Win32 = Glide 243 Release|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{81C21F26-AC8D-41E4-B36B-1E3C550C410F}.Debug|Win32.ActiveCfg = Glide 243 Debug|Win32
+		{81C21F26-AC8D-41E4-B36B-1E3C550C410F}.Debug|Win32.Build.0 = Glide 243 Debug|Win32
+		{81C21F26-AC8D-41E4-B36B-1E3C550C410F}.Glide 211 Debug|Win32.ActiveCfg = Glide 211 Debug|Win32
+		{81C21F26-AC8D-41E4-B36B-1E3C550C410F}.Glide 211 Debug|Win32.Build.0 = Glide 211 Debug|Win32
+		{81C21F26-AC8D-41E4-B36B-1E3C550C410F}.Glide 211 Release|Win32.ActiveCfg = Glide 211 Release|Win32
+		{81C21F26-AC8D-41E4-B36B-1E3C550C410F}.Glide 211 Release|Win32.Build.0 = Glide 211 Release|Win32
+		{81C21F26-AC8D-41E4-B36B-1E3C550C410F}.Glide 243 Debug|Win32.ActiveCfg = Glide 243 Debug|Win32
+		{81C21F26-AC8D-41E4-B36B-1E3C550C410F}.Glide 243 Debug|Win32.Build.0 = Glide 243 Debug|Win32
+		{81C21F26-AC8D-41E4-B36B-1E3C550C410F}.Glide 243 Release|Win32.ActiveCfg = Glide 243 Release|Win32
+		{81C21F26-AC8D-41E4-B36B-1E3C550C410F}.Glide 243 Release|Win32.Build.0 = Glide 243 Release|Win32
+		{81C21F26-AC8D-41E4-B36B-1E3C550C410F}.Release|Win32.ActiveCfg = Glide 211 Release|Win32
+		{81C21F26-AC8D-41E4-B36B-1E3C550C410F}.Release|Win32.Build.0 = Glide 211 Release|Win32
+		{B3CA182F-FF9F-4AAC-96CD-F1101DB3297D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B3CA182F-FF9F-4AAC-96CD-F1101DB3297D}.Debug|Win32.Build.0 = Debug|Win32
+		{B3CA182F-FF9F-4AAC-96CD-F1101DB3297D}.Glide 211 Debug|Win32.ActiveCfg = Debug|Win32
+		{B3CA182F-FF9F-4AAC-96CD-F1101DB3297D}.Glide 211 Debug|Win32.Build.0 = Debug|Win32
+		{B3CA182F-FF9F-4AAC-96CD-F1101DB3297D}.Glide 211 Release|Win32.ActiveCfg = Release|Win32
+		{B3CA182F-FF9F-4AAC-96CD-F1101DB3297D}.Glide 211 Release|Win32.Build.0 = Release|Win32
+		{B3CA182F-FF9F-4AAC-96CD-F1101DB3297D}.Glide 243 Debug|Win32.ActiveCfg = Debug|Win32
+		{B3CA182F-FF9F-4AAC-96CD-F1101DB3297D}.Glide 243 Debug|Win32.Build.0 = Debug|Win32
+		{B3CA182F-FF9F-4AAC-96CD-F1101DB3297D}.Glide 243 Release|Win32.ActiveCfg = Release|Win32
+		{B3CA182F-FF9F-4AAC-96CD-F1101DB3297D}.Glide 243 Release|Win32.Build.0 = Release|Win32
+		{B3CA182F-FF9F-4AAC-96CD-F1101DB3297D}.Release|Win32.ActiveCfg = Release|Win32
+		{B3CA182F-FF9F-4AAC-96CD-F1101DB3297D}.Release|Win32.Build.0 = Release|Win32
+		{2ACE220C-60DB-47BF-B28C-0D2750DC0C31}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2ACE220C-60DB-47BF-B28C-0D2750DC0C31}.Debug|Win32.Build.0 = Debug|Win32
+		{2ACE220C-60DB-47BF-B28C-0D2750DC0C31}.Glide 211 Debug|Win32.ActiveCfg = Debug|Win32
+		{2ACE220C-60DB-47BF-B28C-0D2750DC0C31}.Glide 211 Debug|Win32.Build.0 = Debug|Win32
+		{2ACE220C-60DB-47BF-B28C-0D2750DC0C31}.Glide 211 Release|Win32.ActiveCfg = Release|Win32
+		{2ACE220C-60DB-47BF-B28C-0D2750DC0C31}.Glide 211 Release|Win32.Build.0 = Release|Win32
+		{2ACE220C-60DB-47BF-B28C-0D2750DC0C31}.Glide 243 Debug|Win32.ActiveCfg = Debug|Win32
+		{2ACE220C-60DB-47BF-B28C-0D2750DC0C31}.Glide 243 Debug|Win32.Build.0 = Debug|Win32
+		{2ACE220C-60DB-47BF-B28C-0D2750DC0C31}.Glide 243 Release|Win32.ActiveCfg = Release|Win32
+		{2ACE220C-60DB-47BF-B28C-0D2750DC0C31}.Glide 243 Release|Win32.Build.0 = Release|Win32
+		{2ACE220C-60DB-47BF-B28C-0D2750DC0C31}.Release|Win32.ActiveCfg = Release|Win32
+		{2ACE220C-60DB-47BF-B28C-0D2750DC0C31}.Release|Win32.Build.0 = Release|Win32
+		{A117927D-A50C-4A70-9928-119F12A69A93}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A117927D-A50C-4A70-9928-119F12A69A93}.Debug|Win32.Build.0 = Debug|Win32
+		{A117927D-A50C-4A70-9928-119F12A69A93}.Glide 211 Debug|Win32.ActiveCfg = Debug|Win32
+		{A117927D-A50C-4A70-9928-119F12A69A93}.Glide 211 Debug|Win32.Build.0 = Debug|Win32
+		{A117927D-A50C-4A70-9928-119F12A69A93}.Glide 211 Release|Win32.ActiveCfg = Release|Win32
+		{A117927D-A50C-4A70-9928-119F12A69A93}.Glide 211 Release|Win32.Build.0 = Release|Win32
+		{A117927D-A50C-4A70-9928-119F12A69A93}.Glide 243 Debug|Win32.ActiveCfg = Debug|Win32
+		{A117927D-A50C-4A70-9928-119F12A69A93}.Glide 243 Debug|Win32.Build.0 = Debug|Win32
+		{A117927D-A50C-4A70-9928-119F12A69A93}.Glide 243 Release|Win32.ActiveCfg = Release|Win32
+		{A117927D-A50C-4A70-9928-119F12A69A93}.Glide 243 Release|Win32.Build.0 = Release|Win32
+		{A117927D-A50C-4A70-9928-119F12A69A93}.Release|Win32.ActiveCfg = Release|Win32
+		{A117927D-A50C-4A70-9928-119F12A69A93}.Release|Win32.Build.0 = Release|Win32
+		{6B61F93B-177A-40CC-8978-DDFFB629284C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{6B61F93B-177A-40CC-8978-DDFFB629284C}.Debug|Win32.Build.0 = Debug|Win32
+		{6B61F93B-177A-40CC-8978-DDFFB629284C}.Glide 211 Debug|Win32.ActiveCfg = Debug|Win32
+		{6B61F93B-177A-40CC-8978-DDFFB629284C}.Glide 211 Debug|Win32.Build.0 = Debug|Win32
+		{6B61F93B-177A-40CC-8978-DDFFB629284C}.Glide 211 Release|Win32.ActiveCfg = Release|Win32
+		{6B61F93B-177A-40CC-8978-DDFFB629284C}.Glide 211 Release|Win32.Build.0 = Release|Win32
+		{6B61F93B-177A-40CC-8978-DDFFB629284C}.Glide 243 Debug|Win32.ActiveCfg = Debug|Win32
+		{6B61F93B-177A-40CC-8978-DDFFB629284C}.Glide 243 Debug|Win32.Build.0 = Debug|Win32
+		{6B61F93B-177A-40CC-8978-DDFFB629284C}.Glide 243 Release|Win32.ActiveCfg = Release|Win32
+		{6B61F93B-177A-40CC-8978-DDFFB629284C}.Glide 243 Release|Win32.Build.0 = Release|Win32
+		{6B61F93B-177A-40CC-8978-DDFFB629284C}.Release|Win32.ActiveCfg = Release|Win32
+		{6B61F93B-177A-40CC-8978-DDFFB629284C}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

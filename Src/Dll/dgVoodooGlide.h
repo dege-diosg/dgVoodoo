@@ -18,66 +18,67 @@
 /* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA   */
 /*--------------------------------------------------------------------------------- */
 
+
 #ifndef		DGVOODOOGLIDE_H
 #define		DGVOODOOGLIDE_H
 
 #include	"dgVoodooBase.h"
 #include	<windows.h>
 #include	<glide.h>
-//#include	"resource.h"
-#include	"DDraw.h"
-#include	"D3d.h"
-#include	"movie.h"
+#include	"RendererTypes.hpp"
 
 
 /*------------------------------------------------------------------------------------------*/
 /*............................ Definíciók az egyes állapotokhoz ............................*/
 
-#define MAX_TEXSTAGES				4				/* Direct3D-ben a használt textúra stage-ek max száma */
-
 /* különbözõ állapotflagek */
-#define STATE_NATIVECKMETHOD		0x1				/* Natív colorkeying használata (egyébként alfa alapú) */
-#define STATE_COLORKEYTNT			0x2				/* TNT-colorkeying éppen használatban (natív ck esetén) */
-#define STATE_ALPHACKUSED			0x4				/* Alfa alapú colorkeying éppen használatban (alpha based esetén) */
-#define STATE_CCACSTATECHANGED		0x8				/* A color vagy alpha combine függvény megváltozott */
-#define STATE_COLORTEXTUREUSED		0x10			/* A color combining használja a textúrát is */
-#define STATE_ALPHATEXTUREUSED		0x20			/* Az alpha combining használja a textúrát is */
-#define STATE_COLORDIFFUSEUSED		0x40			/* A color combining használja a diffuse komponenst */
-#define STATE_ALPHADIFFUSEUSED		0x80			/* Az alpha combining használja a diffuse komponenst */
-#define STATE_APMULTITEXTURING		0x100			/* Az alpha/paletta multitextúrázva */
-#define STATE_TCLOCALALPHA			0x200			/* A texture combining local alpha-t eredményez */
-#define STATE_TCCINVERT				0x400			/* A texture combining inverz color-t képez */
-#define STATE_TCAINVERT				0x800			/* A texture combining inverz alpha-t képez */
-#define STATE_USETMUW				0x1000			/* Z-buffer és táblás köd esetén a tmu w-t használjuk */
-#define STATE_DELTA0				0x2000			/* Delta0-mód: konstans iterált rgb */
-#define STATE_COMPAREDEPTH			0x4000
-#define STATE_ALPHABLENDCHANGED		0x8000			/* Alpha blending függvény megváltozott */
-#define STATE_ALPHATESTCHANGED		0x10000			/* Alpha testing függvény megváltozott */
+#define STATE_AITRGBLIGHTING			0x01			/* Alpha ITRGB lighting engedélyezve */
+#define STATE_COLORCOMBINEUSETEXTURE	0x10			/* A color combining használja a textúra valamely komponensét */
+#define STATE_ALPHACOMBINEUSETEXTURE	0x20			/* Az alpha combining használja a textúra valamely komponensét */
+#define STATE_COLORDIFFUSEUSED			0x40			/* A color combining használja a diffuse komponenst */
+#define STATE_ALPHADIFFUSEUSED			0x80			/* Az alpha combining használja a diffuse komponenst */
+#define STATE_APMULTITEXTURING			0x100			/* Az alpha/paletta multitextúrázva */
+#define STATE_TCLOCALALPHA				0x200			/* A texture combining local alpha-t eredményez */
+#define STATE_TCCINVERT					0x400			/* A texture combining inverz color-t képez */
+#define STATE_TCAINVERT					0x800			/* A texture combining inverz alpha-t képez */
+#define STATE_USETMUW					0x1000			/* Z-buffer és táblás köd esetén a tmu w-t használjuk */
+#define STATE_DELTA0					0x2000			/* Delta0-mód: konstans iterált rgb */
 
-#define STATE_TEXTURE0				0x20000
-#define STATE_TEXTURE1				0x40000
-#define STATE_TEXTURE2				0x80000
-#define STATE_TEXTURE3				0x100000
-#define STATE_TEXTUREUSAGEMASK		(STATE_TEXTURE0 | STATE_TEXTURE1 | STATE_TEXTURE2 | STATE_TEXTURE3)
+#define STATE_TEXTURE0					0x20000
+#define STATE_TEXTURE1					0x40000
+#define STATE_TEXTURE2					0x80000
+#define STATE_TEXTURE3					0x100000
+#define STATE_TEXTUREUSAGEMASK			(STATE_TEXTURE0 | STATE_TEXTURE1 | STATE_TEXTURE2 | STATE_TEXTURE3)
+
+#define STATE_NORENDERTARGET			0x200000
+#define STATE_TEXTUREALPHAUSED			0x400000
+#define STATE_TEXTURERGBUSED			0x800000
+
+#define	STATE_CKMUNDEFINED				0x0000000
+#define	STATE_CKMDISABLED				0x1000000
+#define	STATE_CKMNATIVE					0x2000000
+#define	STATE_CKMNATIVETNT				0x3000000
+#define	STATE_CKMALPHABASED				0x4000000
+#define	STATE_CKMMASK					0x7000000
 
 /* A Glide aktuális futásképes állapotát tükrözõ flagek */
-#define RF_INITOK					0x1				/* Az init sikerült */
-#define RF_SCENECANBEDRAWN			0x2				/* A scene-t meg lehet rajzolni (cooperative level ok, BeginScene ok) */
-#define RF_CANFULLYRUN				0x3				/* Ha az elõzõ két flag egyszerre be van állítva, a scene rajzolása mehet */
-#define RF_WINDOWCREATED			0x4				/* Windows platform: a wrapper létrehozott egy ablakot az alk. számára */
+#define RF_INITOK						0x1			/* Az init sikerült */
+#define RF_SCENECANBEDRAWN				0x2			/* A scene-t meg lehet rajzolni (cooperative level ok, BeginScene ok) */
+#define RF_CANFULLYRUN					0x3			/* Ha az elõzõ két flag egyszerre be van állítva, a scene rajzolása mehet */
+#define RF_WINDOWCREATED				0x4			/* Windows platform: a wrapper létrehozott egy ablakot az alk. számára */
 
 /* call flags: a primitívek megrajzolása elõtt meghívandó függvényekhez */
-#define CALLFLAG_COLORCOMBINE		0x1
-#define CALLFLAG_ALPHACOMBINE		0x2
-#define CALLFLAG_SETPALETTE			0x4
-#define CALLFLAG_SETNCCTABLE		0x8
-#define CALLFLAG_SETCOLORKEY		0x10
-#define CALLFLAG_SETCOLORKEYSTATE	0x20
-#define CALLFLAG_SETTEXTURE			0x40
-#define CALLFLAG_RESETTEXTURE		0x80
-
-
-#define	STATEDESC_DELIMITER			0xEEEEEEEE
+#define UPDATEFLAG_COLORCOMBINE			0x1
+#define UPDATEFLAG_ALPHACOMBINE			0x2
+#define UPDATEFLAG_SETPALETTE			0x4
+#define UPDATEFLAG_SETNCCTABLE			0x8
+#define UPDATEFLAG_AITRGBLIGHTING		0x10
+#define UPDATEFLAG_SETTEXTURE			0x40
+#define UPDATEFLAG_RESETTEXTURE			0x80
+#define UPDATEFLAG_TEXCOMBINE			0x100
+#define UPDATEFLAG_ALPHATESTFUNC		0x200
+#define UPDATEFLAG_ALPHATESTREFVAL		0x400
+#define UPDATEFLAG_COLORKEYSTATE		0x800
 
 /*------------------------------------------------------------------------------------------*/
 /*....................................... Struktúrák .......................................*/
@@ -86,36 +87,37 @@
 /* Saját GrState struktúra az eredeti helyett: nem lehet több 320 bájtnál! */
 typedef struct {
 
-	void					*acttex;
+	struct TexCacheEntry*	acttex;
 	unsigned int			actmmid;
-	LPDIRECTDRAWSURFACE7	lpDDTCCTex, lpDDTCATex;
-	LPDIRECTDRAWSURFACE7	lpDDTex[4];
+	TextureType				lpDDTCCTex, lpDDTCATex;
+	TextureType				lpDDTex[4];
 	FxU32					hints;
 	GrOriginLocation_t		locOrig;					/* Glide render origó */
-	unsigned int			flags, flagsold;
+	unsigned int			flags;
 	float					divx, divy;
-	DWORD					colorOp[MAX_TEXSTAGES];
-	DWORD					alphaOp[MAX_TEXSTAGES];
-	DWORD					colorArg1[MAX_TEXSTAGES];
-	DWORD					alphaArg1[MAX_TEXSTAGES];
-	DWORD					colorArg2[MAX_TEXSTAGES];
-	DWORD					alphaArg2[MAX_TEXSTAGES];
 	DWORD					constColorValue, delta0Rgb;
-	DWORD					colorMask;
-	DWORD					alocal, aother;
-	DWORD					mipMapMode;
-	unsigned char			srcBlend, dstBlend, alphaBlendEnable, colorKeyEnable;
-	DWORD					alpharef, alphatestfunc;
-	DWORD					depthbuffmode, zfunc, zenable;
+	DWORD					colorMask, alphaWriteMask;
+	GrMipMapMode_t			mipMapMode;
+	GrAlpha_t				alpharef;
+	GrCmpFnc_t				alphaTestFunc;
+	GrDepthBufferMode_t		depthBuffMode;
+	GrCmpFnc_t				depthFunction;
+	FxBool					depthMaskEnable;
 	int						depthbiaslevel;
-	DWORD					magfilter,minfilter;
-	DWORD					clampmodeu, clampmodev;
+	GrTextureFilterMode_t	magFilter, minFilter;
+	GrTextureClampMode_t	clampModeU, clampModeV;
 	float					lodBias;
-	DWORD					cullmode, gcullmode, vertexmode;
+	GrCullMode_t			gcullmode;
+	DWORD					vertexmode;
 	FxU32					minx, maxx, miny, maxy;
 	DWORD					perspective, colorkey;
 	DWORD					fogmode, fogcolor, fogmodifier;
 	FxU32					startAddress[4];
+	float					gammaCorrectionValue;
+	FxBool					lodBlend;
+	FxBool					multiBaseTexturing;
+	unsigned char			alphaBlendEnable, colorKeyEnable;
+	unsigned char			rgbSrcBlend, rgbDstBlend, alphaSrcBlend, alphaDstBlend;
 	unsigned char			smallLod, largeLod, aspectRatio, format;
 	unsigned char			cfuncp;						/* grColorCombine paraméterei */
 	unsigned char			cfactorp;
@@ -127,13 +129,14 @@ typedef struct {
 	unsigned char			alocalp;					/* Az alocal fontos a grColorCombine-hoz is */
 	unsigned char			aotherp;
 	unsigned char			ainvertp;	
-	unsigned char			astagesnum, cstagesnum;
 	unsigned char			rgb_function;				/* a grTexCombine paraméterei */
     unsigned char			rgb_factor;
     unsigned char			alpha_function;
     unsigned char			alpha_factor;
     unsigned char			rgb_invert;
     unsigned char			alpha_invert;
+	unsigned char			currCkMethod;
+	unsigned char			aItRGBLightingMode;
 	
 } _GrState, _GlideActState;
 
@@ -148,19 +151,15 @@ typedef struct {
 /*------------------------------------------------------------------------------------------*/
 /*.................................. Globális változók .....................................*/
 
-
-extern	LPDIRECTDRAW7				lpDD;
-extern	LPDIRECT3D7					lpD3D;
-extern	LPDIRECT3DDEVICE7			lpD3Ddevice;
-extern	LPDIRECTDRAWGAMMACONTROL	lpDDGamma;
-extern	LPDIRECTDRAWSURFACE7		lpDDFrontBuff;
-extern	LPDIRECTDRAWSURFACE7		lpDDBackBuff;
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 extern	GrColorFormat_t				cFormat;
 extern	unsigned int				buffswapnum;
 extern	unsigned char				*WToInd;
 
-extern	unsigned int				callflags;
+extern	unsigned int				updateFlags;
 extern	unsigned int				runflags;
 extern	int							renderbuffer;
 
@@ -170,10 +169,6 @@ extern	_stat						stats;
 extern	unsigned int				appXRes, appYRes;
 extern	int							drawresample;
 
-extern	float						depthBias_Z;
-extern	int							depthBias_W;
-extern	float						depthBias_cz, depthBias_cw;
-
 extern	float						xScale, yScale;
 extern	float						xConst, yConst;
 
@@ -182,13 +177,26 @@ extern	DWORD						cmpFuncLookUp[];
 extern	float						IndToW[GR_FOG_TABLE_SIZE+1];
 extern	GrFog_t						fogtable[GR_FOG_TABLE_SIZE+1];
 
+extern  unsigned int				needRecomposePixelPipeLine;
+
+extern	int							convbuffxres;
+
+#ifdef __cplusplus
+}
+#endif
+
 
 /*------------------------------------------------------------------------------------------*/
 /*............................. Belsõ függvények predeklarációja ...........................*/
 
+int				GetCurrentDisplayModeBitDepth (unsigned short adapter, unsigned short device);
+int				IsRendererApiAvailable ();
+int				RefreshDisplayByFrontBuffer ();
+
 void			GlideAlphaCombineUpdateVertexMode();
 void			GlideUpdateConstantColorKeyingState();
 void			GlideColorCombineUpdateVertexMode();
+void			GlideUpdateUsingTmuWMode ();
 unsigned long	GlideGetColor(GrColor_t color);
 void			GlideGetD3DState(DWORD *);
 void			GlideSetD3DState(DWORD *);
@@ -202,6 +210,10 @@ int				GlideSelectAndCreate3DDevice();
 void			GlideGetIndToWTable(float *table);
 void			GlideAlphaCombine();
 void			GlideColorCombine();
+void			GlideTexCombine();
+void			GlideAlphaItRGBLighting ();
+void			GlideUpdateAlphaTestState ();
+void			GlideRecomposePixelPipeLine ();
 
 
 /*------------------------------------------------------------------------------------------*/
@@ -234,6 +246,7 @@ void	EXPORT	grAlphaCombine(	GrCombineFunction_t func,
 								GrCombineLocal_t local, 
 								GrCombineOther_t other, 
 								FxBool invert);
+void	EXPORT grAlphaControlsITRGBLighting( FxBool enable );
 void	EXPORT	guColorCombineFunction( GrColorCombineFnc_t func );
 void	EXPORT	guAlphaSource( GrAlphaSource_t mode );
 FxU32	EXPORT	guEndianSwapWords(FxU32 value);
@@ -288,7 +301,5 @@ FxBool	EXPORT	grSstOpen(GrScreenResolution_t res, GrScreenRefresh_t ref, GrColor
 						  GrOriginLocation_t org_loc, GrSmoothingMode_t smoothing_mode, int num_buffers );
 
 #endif
-
-
 
 #endif

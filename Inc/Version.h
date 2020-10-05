@@ -27,7 +27,7 @@
 /*------------------------------------------------------------------------------------------*/
 /*........................................ Verzió ...... ...................................*/
 
-#define	DGVOODOOVERSION		0x140
-#define	DGVOODOOVERSION_STR	"1.40"
+#define	DGVOODOOVERSION		0x150
+#define	DGVOODOOVERSION_STR	"1.50 Beta2"
 
 #define	PRODUCTNAME			"dgVoodoo "DGVOODOOVERSION_STR

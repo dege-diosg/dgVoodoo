@@ -18,9 +18,10 @@
 ; Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ;-----------------------------------------------------------------------------
 
+
 .386
 
-CurrentProductVersion   EQU     140h
+CurrentProductVersion   EQU     150h
 
 ;Konstansok a konfig struktúra flagjeihez
 CFG_XPSTYLE	EQU	1h

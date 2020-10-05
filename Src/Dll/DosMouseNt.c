@@ -24,6 +24,7 @@
 /*			 Egértámogatás XP alá DOS-hoz													*/
 /*------------------------------------------------------------------------------------------*/
 
+#define DIRECTINPUT_VERSION	0x0700
 
 #include <windows.h>
 #include "Dinput.h"
@@ -135,9 +136,9 @@ LPDIRECTINPUTDEVICE lpDIdevice;
 DIPROPDWORD			DIPropDWORD;
 HANDLE				waitObjects[2];
 
-	DEBUG_THREAD_REGISTER(DebugMouseThreadId);
+	DEBUG_BEGINSCOPE("NTMouseThread", DebugMouseThreadId);
 
-	DEBUG_BEGIN("NTMouseThread", DebugMouseThreadId, 153);
+	DEBUG_THREAD_REGISTER(DebugMouseThreadId);
 
 	mouseinfo = (MouseDriverInfo *) realModeHandle;
 	if (!(config.Flags & CFG_NTVDDMODE)) SendMessage(clientCmdHwnd, DGCM_MOUSEDRIVERSTRUC, (WPARAM) mouseinfo, 0);
@@ -233,9 +234,12 @@ HANDLE				waitObjects[2];
 		DEBUGLOG (1,"\n   Hiba: NTMouseEventThread: Az emulált egér inicializálása nem sikerült: nem tudom megnyitni a DINPUT.DLL-t!");
 	}
 	SetEvent (ntMouseSyncEvent);
-	return(0);
 
-	DEBUG_END("NTMouseThread", DebugMouseThreadId, 153);
+	DEBUG_THREAD_UNREGISTER(DebugMouseThreadId);
+	
+	DEBUG_ENDSCOPE(DebugMouseThreadId);
+
+	return(0);
 }
 
 

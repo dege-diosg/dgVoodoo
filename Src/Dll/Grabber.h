@@ -31,12 +31,12 @@ void			GrabberRestoreFrontBuff();
 
 void			GrabberDrawLabel(int savelabelarea);
 void			GrabberCleanUnvisibleBuff();
-int				GrabberInit();
+int				GrabberInit(int createAuxBuffers);
 void			GrabberCleanUp();
-void			GrabberHookDos();
-void			GrabberGrabLFB(unsigned char *label, PALETTEENTRY *lpPalette);
+void			GrabberHookDos(int buffer);
+void			GrabberGrabLFB(int buffer, /*unsigned*/ char *label, PALETTEENTRY *lpPalette);
 void CALLBACK	GrabberTimerProc(HWND hwnd, UINT uMsg, UINT idEvent, DWORD dwTime);
-void			GrabberCreateLabel(unsigned char *label);
+void			GrabberCreateLabel(/*unsigned*/ char *label);
 void			GrabberDeleteLabel();
 
 #endif

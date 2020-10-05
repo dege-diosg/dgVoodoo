@@ -1,4 +1,4 @@
-//Microsoft Developer Studio generated resource script.
+// Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
 
@@ -27,18 +27,18 @@ LANGUAGE LANG_HUNGARIAN, SUBLANG_DEFAULT
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE DISCARDABLE 
+1 TEXTINCLUDE 
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE DISCARDABLE 
+2 TEXTINCLUDE 
 BEGIN
     "#include ""afxres.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE DISCARDABLE 
+3 TEXTINCLUDE 
 BEGIN
     "\r\n"
     "\0"
@@ -53,7 +53,7 @@ END
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO DISCARDABLE 
+GUIDELINES DESIGNINFO 
 BEGIN
     IDD_DIALOG1, DIALOG
     BEGIN
@@ -71,15 +71,13 @@ END
 // Dialog
 //
 
-IDD_DIALOG1 DIALOG DISCARDABLE  0, 0, 186, 62
-STYLE DS_MODALFRAME | DS_SETFOREGROUND | DS_CENTER | WS_POPUP | WS_CAPTION | 
-    WS_SYSMENU
+IDD_DIALOG1 DIALOG  0, 0, 186, 62
+STYLE DS_SETFONT | DS_MODALFRAME | DS_SETFOREGROUND | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Dialog"
 CLASS "DGCLASS"
 FONT 8, "MS Sans Serif"
 BEGIN
-    LTEXT           "Which version of Glide would you like to run?",
-                    IDC_STATIC,18,7,148,11
+    LTEXT           "Which version of Glide would you like to run?",IDC_STATIC,18,7,148,11
     PUSHBUTTON      "Glide 2.43 (GLIDE2X.DLL)",ID_GLIDE243,31,22,125,14
     PUSHBUTTON      "Glide 2.11 (GLIDE.DLL)",ID_GLIDE211,31,41,125,14
 END
@@ -92,9 +90,8 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDI_ICON1               ICON    DISCARDABLE     "Icon.ico"
+IDI_ICON1               ICON                    "Icon.ico"
 
-#ifndef _MAC
 /////////////////////////////////////////////////////////////////////////////
 //
 // Version
@@ -102,7 +99,7 @@ IDI_ICON1               ICON    DISCARDABLE     "Icon.ico"
 
 VS_VERSION_INFO VERSIONINFO
  FILEVERSION 1,0,0,0
- PRODUCTVERSION 1,40,1,0
+ PRODUCTVERSION 1,50,2,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -117,18 +114,15 @@ BEGIN
     BEGIN
         BLOCK "040e04b0"
         BEGIN
-            VALUE "Comments", "\0"
-            VALUE "CompanyName", "SuckSoftware\0"
-            VALUE "FileDescription", "dgVoodoo Server Stub\0"
-            VALUE "FileVersion", "1, 0, 0, 0\0"
-            VALUE "InternalName", "dgVoodoo\0"
-            VALUE "LegalCopyright", "by Dégé, Copyright ©2005\0"
-            VALUE "LegalTrademarks", "\0"
-            VALUE "OriginalFilename", "dgVoodoo.exe\0"
-            VALUE "PrivateBuild", "\0"
-            VALUE "ProductName", "dgVoodoo\0"
-            VALUE "ProductVersion", "1, 40, 1, 0\0"
-            VALUE "SpecialBuild", "\0"
+            VALUE "Comments", ""
+            VALUE "CompanyName", "I dunno... Just Dege's software"
+            VALUE "FileDescription", "dgVoodoo Server Stub"
+            VALUE "FileVersion", "1, 0, 0, 0"
+            VALUE "InternalName", "dgVoodoo"
+            VALUE "LegalCopyright", "by Dégé, Copyright ©2007"
+            VALUE "OriginalFilename", "dgVoodoo.exe"
+            VALUE "ProductName", "dgVoodoo"
+            VALUE "ProductVersion", "1, 50, 3, 0"
         END
     END
     BLOCK "VarFileInfo"
@@ -136,8 +130,6 @@ BEGIN
         VALUE "Translation", 0x40e, 1200
     END
 END
-
-#endif    // !_MAC
 
 #endif    // Hungarian resources
 /////////////////////////////////////////////////////////////////////////////

@@ -247,8 +247,6 @@ float EXPORT guFogTableIndexToW( int i ) { E("guFogTableIndexToW")}*/
 
 /* Amely függvényeket semmiképp sem lehet implementálni DirectX 7.0-ban: */
 
-void EXPORT grAlphaControlsITRGBLighting( FxBool enable ) { E("grAlphaControlsITRGBLighting")}
-
 void EXPORT grSstPerfStats( GrSstPerfStats_t *pStats ) {E("grSstPerfStats") }
 void EXPORT grSstResetPerfStats( void ) { E("grSstResetPerfStats")}
 void EXPORT grSstIdle( void ) {E("grSstIdle") }

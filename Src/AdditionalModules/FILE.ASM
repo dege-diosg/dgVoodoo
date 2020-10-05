@@ -18,17 +18,16 @@
 ; Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ;-----------------------------------------------------------------------------
 
-;            File utility Windows Assemblyhez (WinAPI-n keresztÅl)
+
+;            File utility Windows Assemblyhez (WinAPI-n kereszt¸l)
 ;----------------------------------------------------------------------------
 
 INCLUDE MACROS.INC
 
-FILEUTYPE       EQU     STANDALONE_OMF ;ASSEMBLY_INCLUDE
-
 Yes_    EQU     1h
 No_     EQU     0h
 ;----------------------------------------------------------------------------
-;Az egyes rutinok beinkl£doltassanak-e vagy sem
+;Az egyes rutinok beinkl˙doltassanak-e vagy sem
 CreateFileQ     EQU     Yes_
 OpenFileQ       EQU     Yes_
 CloseFileQ      EQU     Yes_
@@ -40,23 +39,18 @@ WriteFileQ      EQU     Yes_
 
 ;----------------------------------------------------------------------------
 
-IF      (FILEUTYPE  EQ  STANDALONE_OMF) OR (FILEUTYPE  EQ  NEEDEDONLY_OMF)
-
 .386
 .model  FLAT
 
-UNICODE EQU 0
-INCLUDE W32MAIN.INC
-
-ENDIF
+INCLUDE WIN.INC
 
 .code
 
 ;----------------------------------------------------------------------------
-;File lÇtrehoz†sa °r†shoz. Ha a file lÇtezik, akkor azt felÅl°rja.
+;File lÈtrehoz·sa Ìr·shoz. Ha a file lÈtezik, akkor azt fel¸lÌrja.
 
-;Be:    ESI             -       file nevÇnek c°me
-;       EAX             -       file attrib£tuma
+;Be:    ESI             -       file nevÈnek cÌme
+;       EAX             -       file attrib˙tuma
 ;Ki:    Carry=1         -       hiba
 ;       EAX             -       file handle
 
@@ -75,7 +69,7 @@ __CreateFile    PROC
         push    LARGE CREATE_ALWAYS
         push    LARGE NULL ;OFFSET fuSecAttribs
         push    LARGE 0h
-        push    LARGE GENERIC_WRITE
+        push    LARGE FILE_GENERIC_WRITE
         push    esi
         W32     CreateFileA,7
 ;        push    eax
@@ -93,7 +87,7 @@ __CreateFile    ENDP
 ENDIF
 
 ;----------------------------------------------------------------------------
-;file megnyit†sa olvas†sra
+;file megnyit·sa olvas·sra
 ;Be:    
 ;       ESI             -       file neve
 ;Ki:    Carry=1         -       hiba
@@ -104,7 +98,7 @@ IF      OpenFileQ  EQ  Yes_
 PUBLIC  __OpenFile@4
 PUBLIC  __OpenFile
 __OpenFile@4:
-__OpenFile      PROc
+__OpenFile      PROC
 
         pushad
         mov     esi,[esp+4+8*4]
@@ -113,7 +107,7 @@ __OpenFile      PROc
         push    LARGE OPEN_EXISTING
         push    LARGE NULL ;OFFSET fuSecAttribs
         push    LARGE FILE_SHARE_READ
-        push    LARGE GENERIC_READ
+        push    LARGE FILE_GENERIC_READ
         push    esi
         W32     CreateFileA,7
 ;        push    eax
@@ -131,7 +125,7 @@ __OpenFile      ENDP
 ENDIF
 
 ;----------------------------------------------------------------------------
-;file lez†r†sa
+;file lez·r·sa
 ;Be:    EAX     -       filehandle
 ;Ki     -
 
@@ -154,7 +148,7 @@ ENDIF
 ;----------------------------------------------------------------------------
 ;filepointer lekÇrdezÇse
 ;Be:    EDX     -       Filehandle
-;Ki:    EAX     -       Poz°ci¢ (=0FFFFFFFFFh: hiba)
+;Ki:    EAX     -       PozÌciÛ (=0FFFFFFFFFh: hiba)
 ;       Carry=1 -       Hiba
 
 ;C-szintaxis: dword _GetFilePos(HANDLE handle);
@@ -185,7 +179,7 @@ __GetFilePos    ENDP
 ENDIF
 
 ;----------------------------------------------------------------------------
-;File mÇretÇnek lekÇrdezÇse
+;File mÈretÈnek lekÈrdezÈse
 ;Be:    EAX     -       FileHandle
 ;Ki:    Carry=1 -       Hiba
 ;       EAX     -       file mÇrete
@@ -216,13 +210,13 @@ __GetFileSize   ENDP
 ENDIF
 
 ;----------------------------------------------------------------------------
-;filepointer be†ll°t†sa
-;Be:    EBX     -       Poz°ci¢ relat°v helye
+;filepointer be·llÌt·sa
+;Be:    EBX     -       PozÌciÛ relatÌv helye
 ;                       (FILE_BEGIN, FILE_CURRENT, FILE_END)
 ;       EDX     -       Filehandle
-;       EAX     -       Poz°ci¢
+;       EAX     -       PozÌciÛ
 ;Ki:    Carry=1 -       Hiba
-;       EAX     -       Akt. poz°ci¢
+;       EAX     -       Akt. pozÌciÛ
 
 ;C-szintaxis: dword _SetFilePos(HANDLE handle, dword pos, dword how);
 IF      SetFilePosQ  EQ  Yes_
@@ -237,7 +231,8 @@ __SetFilePos    PROC
         mov     ebx,[esp+12+8*4]
         push    ebx
         push    LARGE NULL
-        push    eax edx
+        push    eax
+        push	edx
         W32     SetFilePointer,4
 ;        cmp     eax,0FFFFFFFFh
 ;        stc
@@ -253,14 +248,14 @@ __SetFilePos    ENDP
 ENDIF
 
 ;----------------------------------------------------------------------------
-;Olvas†s fileb¢l
-;Be:    EBX     -       line†ris kezdìc°m
-;       ECX     -       olvasni k°v†nt byte-ok sz†ma
+;Olvas·s filebÛl
+;Be:    EBX     -       line·ris kezdıcÌm
+;       ECX     -       olvasni kÌv·nt byte-ok sz·ma
 ;       EAX     -       file handle
-;Ki:    CF=1    -       nem sikerÅlt
-;     CF=0,EAX  -       tÇnylegesen beolvasott byteok sz†ma
-;       ZF=1,   ha a megadott Çs tÇnylegesen beolvasott adatok mennyisÇge
-;               egyenlì
+;Ki:    CF=1    -       nem siker¸lt
+;     CF=0,EAX  -       tÈnylegesen beolvasott byteok sz·ma
+;       ZF=1,			ha a megadott Ès tÈnylegesen beolvasott adatok mennyisÈge
+;						egyenlı
 ;
 
 ;C-szintaxis: dword _ReadFile(HANDLE handle, void *mem, dword num);
@@ -277,7 +272,9 @@ __ReadFile      PROC
         push    ecx
         push    LARGE 0h
         push    LARGE OFFSET fuTempStore
-        push    ecx ebx eax
+        push    ecx
+        push	ebx
+        push	eax
         W32     ReadFile,5
         pop     ecx
         cmp     eax,TRUE
@@ -295,13 +292,13 @@ ENDIF
 
 ;----------------------------------------------------------------------------
 ;Ir†s fileba
-;Be:    EBX     -       line†ris kezdìc°m
-;       ECX     -       °rni k°v†nt byte-ok sz†ma
+;Be:    EBX     -       line·ris kezdıcÌm
+;       ECX     -       Ìrni kÌv·nt byte-ok sz·ma
 ;       EAX     -       file handle
-;Ki:    CF=1    -       nem sikerÅlt
-;     CF=0,EAX  -       tÇnylegesen ki°rt byteok sz†ma
-;       ZF=1, ha a megadott Çs tÇnylegesen ki°rt adatok mennyisÇge
-;              egyenlì
+;Ki:    CF=1    -       nem siker¸lt
+;     CF=0,EAX  -       tÈnylegesen kiÌrt byteok sz·ma
+;       ZF=1,			ha a megadott Ès tÈnylegesen kiÌrt adatok mennyisÈge
+;						egyenlı
 ;
 
 ;C-szintaxis: dword _WriteFile(HANDLE handle, void *mem, dword num);
@@ -318,7 +315,9 @@ __WriteFile     PROC
         push    ecx
         push    LARGE 0h
         push    LARGE OFFSET fuTempStore
-        push    ecx ebx eax
+        push    ecx
+        push	ebx
+        push	eax
         W32     WriteFile,5
         pop     ecx
         cmp     eax,TRUE
@@ -344,9 +343,5 @@ fuSecAttribs    DD      12
 
 fuTempStore     DD      ?
 
-IF      (FILEUTYPE  EQ  STANDALONE_OMF) OR (FILEUTYPE  EQ  NEEDEDONLY_OMF)
-
 END
-
-ENDIF
 

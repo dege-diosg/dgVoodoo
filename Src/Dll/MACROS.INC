@@ -5,10 +5,13 @@
 
 DGMACROS        EQU     1
 
+LARGE			EQU 	<DWORD PTR>
+NULL			EQU		0
+
 M_TRUE          EQU     1
 M_FALSE         EQU     0
 
-VISUALC         EQU     M_TRUE          ;Visual C function naming convention
+VISUALC         EQU     M_TRUE ;M_FALSE          ;Visual C function naming convention
 
 ;-------------- Defs for module type
 

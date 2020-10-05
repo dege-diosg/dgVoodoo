@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4393738d-6f90-49a7-9b7f-ae2e08f890d4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\Src\AdditionalModules\d3d.inc">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="..\..\Src\AdditionalModules\DDRAW.INC">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="..\..\Src\AdditionalModules\macros.inc">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="..\..\Src\AdditionalModules\MMSYSTEM.INC">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="..\..\Src\AdditionalModules\W32MAIN.INC">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="..\..\Src\AdditionalModules\Win.inc">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="..\..\Src\AdditionalModules\WINDOWS.INC">
+      <Filter>Header Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\..\Src\AdditionalModules\DGW.ASM">
+      <Filter>Source Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\..\Src\AdditionalModules\FILE.ASM">
+      <Filter>Source Files</Filter>
+    </CustomBuild>
+  </ItemGroup>
+</Project>

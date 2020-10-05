@@ -50,7 +50,7 @@ _STYLE_			equ	(W32LINK_SUBSYS  and PE_SUBSYS_WINDOWS_GUI) +\
 ;
 			endif
 ;
-_IMPORT_		textequ	<>
+_IMPORT_		TEXTEQU	<>
 ;
 			irp	sxx,<s00,s01,s02,s03,s04,s05,s06,s07,s08,s09,\
 				     s10,s11,s12,s13,s14,s15,s16,s17,s18,s19>
@@ -3985,7 +3985,7 @@ WHITENESS			equ	00FF0062h	;dest = white
 ;
 CallbackArguments_	equ	4+4+4+4		;size of argument stack
 ;
-hwnd			textequ	<[ebp+08]>	;window handle
+hwnd			TEXTEQU	<[ebp+08]>	;window handle
 hDlg			textequ	<[ebp+08]>	;dialog handle
 uMsg			textequ	<[ebp+12]>	;message id
 wParam 			textequ	<[ebp+16]>	;additional parameter

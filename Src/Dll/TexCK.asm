@@ -226,17 +226,17 @@ ARGBTo_YIQ422:
 ARGBTo_YIQNext:
         mov     ecx,eax
         shr     ecx,4h
-        movzx   edx,[esi].yRGB[ecx]
+        movzx   edx,(_ncctable PTR [esi]).yRGB[ecx]
         mov     ebp,eax
         shr     ebp,2h
         mov     ebx,edx
         and     ebp,3h        
         imul    ebp,3*2
-        add     bx,[esi].iRGB[ebp+0*2]
+        add     bx,(_ncctable PTR [esi]).iRGB[ebp+0*2]
         mov     ecx,eax
         and     ecx,3h
         imul    ecx,3*2h
-        add     bx,[esi].qRGB[ecx+0*2]
+        add     bx,(_ncctable PTR [esi]).qRGB[ecx+0*2]
         or      bh,bh
         je      _ARGBTOYIQ_ClampOk1
         jns     _ARGBTOYIQ_ClampUp1
@@ -247,8 +247,8 @@ _ARGBTOYIQ_ClampUp1:
 _ARGBTOYIQ_ClampOk1:
         shl     ebx,10h
         mov     bx,dx
-        add     bx,[esi].iRGB[ebp+1*2]
-        add     bx,[esi].qRGB[ecx+1*2]
+        add     bx,(_ncctable PTR [esi]).iRGB[ebp+1*2]
+        add     bx,(_ncctable PTR [esi]).qRGB[ecx+1*2]
         or      bh,bh
         je      _ARGBTOYIQ_ClampOk2
         jns     _ARGBTOYIQ_ClampUp2
@@ -258,8 +258,8 @@ _ARGBTOYIQ_ClampUp2:
         mov     bl,0FFh
 _ARGBTOYIQ_ClampOk2:
         mov     bh,bl
-        add     dx,[esi].iRGB[ebp+2*2]
-        add     dx,[esi].qRGB[ecx+2*2]
+        add     dx,(_ncctable PTR [esi]).iRGB[ebp+2*2]
+        add     dx,(_ncctable PTR [esi]).qRGB[ecx+2*2]
         or      dh,dh
         je      _ARGBTOYIQ_ClampOk3
         jns     _ARGBTOYIQ_ClampUp3
@@ -290,7 +290,10 @@ PUBLIC  _TexCreateAlphaMask@36
 PUBLIC  _TexCreateAlphaMask
 _TexCreateAlphaMask@36:
 _TexCreateAlphaMask:
-        push    esi edi ebx ebp
+        push    esi
+        push	edi
+        push	ebx
+        push	ebp
         mov     esi,[esp+4+4*4]             ;esi=src
         mov     edi,[esp+8+4*4]             ;edi=dst
         mov     ebx,[esp+12+4*4]
@@ -307,259 +310,279 @@ _TexCreateAlphaMask:
         mov     ecx,[ckalphacreate_src_table+4*eax]
         mov     eax,[esp+20+4*4]            ;cél bytepp (2 vagy 4)
 
-	jnz	ckGenMaskTexFrom16
-	mov	dh,dl
+		jnz	ckGenMaskTexFrom16
+		mov	dh,dl
+
 ckGenMaskTexFrom16:
-	push	dx
-	push	dx
-	push	dx
-	push	dx
-	movq	mm6,[esp]
-	
-	pushfd
-	shr	edx,10h
-	popfd
-	jnz	ckGenMaskTexFrom16_
-	mov	dh,dl
+		push	dx
+		push	dx
+		push	dx
+		push	dx
+		movq	mm6,[esp]
+		
+		pushfd
+		shr	edx,10h
+		popfd
+		jnz	ckGenMaskTexFrom16_
+		mov	dh,dl
 ckGenMaskTexFrom16_:
-	push	dx
-	push	dx
-	push	dx
-	push	dx
-	movq	mm5,[esp]
+		push	dx
+		push	dx
+		push	dx
+		push	dx
+		movq	mm5,[esp]
 
         shr     eax,1h
         dec     eax
 
-	jnz	ckGenMaskTexTo32
-	push	bp
-	push	bp
-	push	bp
-	push	bp
-	jmp	ckGenMaskTexAlphaMaskOK
+		jnz	ckGenMaskTexTo32
+		push	bp
+		push	bp
+		push	bp
+		push	bp
+		jmp	ckGenMaskTexAlphaMaskOK
 ckGenMaskTexTo32:
-	push	ebp
-	push	ebp
+		push	ebp
+		push	ebp
 ckGenMaskTexAlphaMaskOK:
-	movq	mm7,[esp]
-	add	esp,3*8
+		movq	mm7,[esp]
+		add	esp,3*8
 
-	mov	edx,y
-        call    [ecx+4*eax]
-	emms
+		mov	edx,y
+        call    DWORD PTR [ecx+4*eax]
+		emms
 
-	xchg	eax,esi
-        pop     ebp ebx edi esi
+		xchg	eax,esi
+        pop     ebp
+        pop		ebx
+        pop		edi
+        pop		esi
         ret     9*4
 
 ckAlphaCreate_8to16:
-	mov	ecx,x
-	lea	edi,[edi+2*ecx]
-	cmp	ecx,8h
-	jb	ckAlphaCreate_8to16_mini
-	shr	ecx,2h
+		mov		ecx,x
+		lea		edi,[edi+2*ecx]
+		cmp		ecx,8h
+		jb		ckAlphaCreate_8to16_mini
+		shr		ecx,2h
 ckAlphaCreate_8to16_nexty:
-	lea	esi,[esi+4*ecx]
-	push	ecx edi
-	neg	ecx
+		lea		esi,[esi+4*ecx]
+		push	ecx
+		push	edi
+		neg		ecx
 ckAlphaCreate_8to16_nextx:
-	movq	mm0,[esi+4*ecx]	;
-	pand	mm0,mm5		;
-	pcmpeqb	mm0,mm6		;
-	movq	mm3,mm0		;
-	punpcklbw mm0,mm0
-	pandn	mm0,mm7		;
-	punpckhbw mm3,mm3
-	movq	[edi+8*ecx],mm0	;
-	pandn	mm3,mm7
-	movq	[edi+8*ecx+8],mm3 ;
-	nop
-	add	ecx,2h		;
-	jnz	ckAlphaCreate_8to16_nextx
-	pop	edi ecx
+		movq	mm0,[esi+4*ecx]	;
+		pand	mm0,mm5		;
+		pcmpeqb	mm0,mm6		;
+		movq	mm3,mm0		;
+		punpcklbw mm0,mm0
+		pandn	mm0,mm7		;
+		punpckhbw mm3,mm3
+		movq	[edi+8*ecx],mm0	;
+		pandn	mm3,mm7
+		movq	[edi+8*ecx+8],mm3 ;
+		nop
+		add		ecx,2h		;
+		jnz		ckAlphaCreate_8to16_nextx
+		pop		edi
+		pop		ecx
         add     edi,ebx
-	dec	edx
-	jnz	ckAlphaCreate_8to16_nexty
-	ret
+		dec		edx
+		jnz		ckAlphaCreate_8to16_nexty
+		ret
 ckAlphaCreate_8to16_mini:
 ckAlphaCreate_8to16_mini_nexty:
-	add	esi,ecx
-	push	ecx edi
-	neg	ecx
+		add		esi,ecx
+		push	ecx
+		push	edi
+		neg		ecx
 ckAlphaCreate_8to16_mini_nextx:
-	mov	al,[esi+ecx]
-	movd	mm0,eax
-	pand	mm0,mm5
-	pcmpeqb mm0,mm6
-	punpcklbw mm0,mm0
-	pandn	mm0,mm7
-	movd	eax,mm0
-	mov	[edi+2*ecx],ax
-	inc	ecx
-	jnz	ckAlphaCreate_8to16_mini_nextx
-	pop	edi ecx
+		mov		al,[esi+ecx]
+		movd	mm0,eax
+		pand	mm0,mm5
+		pcmpeqb mm0,mm6
+		punpcklbw mm0,mm0
+		pandn	mm0,mm7
+		movd	eax,mm0
+		mov		[edi+2*ecx],ax
+		inc		ecx
+		jnz		ckAlphaCreate_8to16_mini_nextx
+		pop		edi
+		pop		ecx
         add     edi,ebx
-	dec	edx
-	jnz	ckAlphaCreate_8to16_mini_nexty
-	ret
+		dec		edx
+		jnz		ckAlphaCreate_8to16_mini_nexty
+		ret
 
 
 ckAlphaCreate_8to32:
-	mov	ecx,x
-	lea	edi,[edi+4*ecx]
-	cmp	ecx,8h
-	jb	ckAlphaCreate_8to32_mini
-	shr	ecx,1h
+		mov			ecx,x
+		lea			edi,[edi+4*ecx]
+		cmp			ecx,8h
+		jb			ckAlphaCreate_8to32_mini
+		shr			ecx,1h
 ckAlphaCreate_8to32_nexty:
-	lea	esi,[esi+2*ecx]
-	push	ecx edi
-	neg	ecx
+		lea			esi,[esi+2*ecx]
+		push		ecx
+		push		edi
+		neg			ecx
 ckAlphaCreate_8to32_nextx:
-	movq	mm0,[esi+2*ecx]	;
-	pand	mm0,mm5		;
-	pcmpeqb	mm0,mm6		;
-	movq	mm1,mm0		;
-	punpcklbw mm0,mm0
-	punpcklwd mm0,mm0	;
-	movq	mm2,mm1
-	pandn	mm0,mm7		;
-	punpcklbw mm1,mm1
-	movq	[edi+8*ecx],mm0 ;
-	punpckhwd mm1,mm1
-	movq	mm3,mm2		;
-	pandn	mm1,mm7
-	movq	[edi+8*ecx+8],mm1 ;
-	punpckhbw mm2,mm2
-	punpcklwd mm2,mm2	;
-	pandn	mm2,mm7		;
-	punpckhbw mm3,mm3
-	movq	[edi+8*ecx+16],mm2 ;
-	punpckhwd mm3,mm3
-	pandn	mm3,mm7		;
-	add	ecx,4h
-	movq	[edi+8*ecx+24-4*8],mm3 ;
-	jnz	ckAlphaCreate_8to32_nextx
-	pop	edi ecx
-        add     edi,ebx
-	dec	edx
-	jnz	ckAlphaCreate_8to32_nexty
-	ret
+		movq		mm0,[esi+2*ecx]	;
+		pand		mm0,mm5		;
+		pcmpeqb		mm0,mm6		;
+		movq		mm1,mm0		;
+		punpcklbw	mm0,mm0
+		punpcklwd	mm0,mm0	;
+		movq		mm2,mm1
+		pandn		mm0,mm7		;
+		punpcklbw	mm1,mm1
+		movq		[edi+8*ecx],mm0 ;
+		punpckhwd	mm1,mm1
+		movq		mm3,mm2		;
+		pandn		mm1,mm7
+		movq		[edi+8*ecx+8],mm1 ;
+		punpckhbw	mm2,mm2
+		punpcklwd	mm2,mm2	;
+		pandn		mm2,mm7		;
+		punpckhbw	mm3,mm3
+		movq		[edi+8*ecx+16],mm2 ;
+		punpckhwd	mm3,mm3
+		pandn		mm3,mm7		;
+		add			ecx,4h
+		movq		[edi+8*ecx+24-4*8],mm3 ;
+		jnz			ckAlphaCreate_8to32_nextx
+		pop			edi
+		pop			ecx
+        add			edi,ebx
+		dec			edx
+		jnz			ckAlphaCreate_8to32_nexty
+		ret
 ckAlphaCreate_8to32_mini:
 ckAlphaCreate_8to32_mini_nexty:
-	add	esi,ecx
-	push	ecx edi
-	neg	ecx
+		add			esi,ecx
+		push		ecx
+		push		edi
+		neg			ecx
 ckAlphaCreate_8to32_mini_nextx:
-	mov	al,[esi+ecx]
-	movd	mm0,eax
-	pand	mm0,mm5
-	pcmpeqb mm0,mm6
-	punpcklbw mm0,mm0
-	punpcklwd mm0,mm0
-	pandn	mm0,mm7
-	movd	eax,mm0
-	mov	[edi+4*ecx],eax
-	inc	ecx
-	jnz	ckAlphaCreate_8to32_mini_nextx
-	pop	edi ecx
-        add     edi,ebx
-	dec	edx
-	jnz	ckAlphaCreate_8to32_mini_nexty
-	ret
+		mov			al,[esi+ecx]
+		movd		mm0,eax
+		pand		mm0,mm5
+		pcmpeqb		mm0,mm6
+		punpcklbw	mm0,mm0
+		punpcklwd	mm0,mm0
+		pandn		mm0,mm7
+		movd		eax,mm0
+		mov			[edi+4*ecx],eax
+		inc			ecx
+		jnz			ckAlphaCreate_8to32_mini_nextx
+		pop			edi
+		pop			ecx
+		add			edi,ebx
+		dec			edx
+		jnz			ckAlphaCreate_8to32_mini_nexty
+		ret
 
 ckAlphaCreate_16to16:
- 	mov	ecx,x
-	lea	edi,[edi+2*ecx]
-	cmp	ecx,4h
-	jb	ckAlphaCreate_16to16_mini
-	shr	ecx,2h
+ 		mov			ecx,x
+		lea			edi,[edi+2*ecx]
+		cmp			ecx,4h
+		jb			ckAlphaCreate_16to16_mini
+		shr			ecx,2h
 ckAlphaCreate_16to16_nexty:
-	lea	esi,[esi+8*ecx]
-	push	ecx edi
-	neg	ecx
+		lea			esi,[esi+8*ecx]
+		push		ecx
+		push		edi
+		neg			ecx
 ckAlphaCreate_16to16_nextx:
-	movq	mm0,[esi+8*ecx]	;
-	pand	mm0,mm5		;
-	pcmpeqw	mm0,mm6		;
-	pandn	mm0,mm7		;
-	inc	ecx
-	movq	[edi+8*ecx-8],mm0 ;
-	jnz	ckAlphaCreate_16to16_nextx
-	pop	edi ecx
-        add     edi,ebx
-	dec	edx
-	jnz	ckAlphaCreate_16to16_nexty
-	ret
+		movq		mm0,[esi+8*ecx]	;
+		pand		mm0,mm5		;
+		pcmpeqw		mm0,mm6		;
+		pandn		mm0,mm7		;
+		inc			ecx
+		movq		[edi+8*ecx-8],mm0 ;
+		jnz			ckAlphaCreate_16to16_nextx
+		pop			edi
+		pop			ecx
+		add			edi,ebx
+		dec			edx
+		jnz			ckAlphaCreate_16to16_nexty
+		ret
 ckAlphaCreate_16to16_mini:
 ckAlphaCreate_16to16_mini_nexty:
-	lea	esi,[esi+2*ecx]
-	push	ecx edi
-	neg	ecx
+		lea			esi,[esi+2*ecx]
+		push		ecx
+		push		edi
+		neg			ecx
 ckAlphaCreate_16to16_mini_nextx:
-	mov	ax,[esi+2*ecx]
-	movd	mm0,eax
-	pand	mm0,mm5
-	pcmpeqw mm0,mm6
-	pandn	mm0,mm7
-	movd	eax,mm0
-	mov	[edi+2*ecx],ax
-	inc	ecx
-	jnz	ckAlphaCreate_16to16_mini_nextx
-	pop	edi ecx
-        add     edi,ebx
-	dec	edx
-	jnz	ckAlphaCreate_16to16_mini_nexty
-	ret
+		mov			ax,[esi+2*ecx]
+		movd		mm0,eax
+		pand		mm0,mm5
+		pcmpeqw		mm0,mm6
+		pandn		mm0,mm7
+		movd		eax,mm0
+		mov			[edi+2*ecx],ax
+		inc			ecx
+		jnz			ckAlphaCreate_16to16_mini_nextx
+		pop			edi
+		pop			ecx
+		add			edi,ebx
+		dec			edx
+		jnz			ckAlphaCreate_16to16_mini_nexty
+		ret
 	
 
 ckAlphaCreate_16to32:
- 	mov	ecx,x
-	lea	edi,[edi+4*ecx]
-	cmp	ecx,4h
-	jb	ckAlphaCreate_16to32_mini
-	shr	ecx,1h
+ 		mov			ecx,x
+		lea			edi,[edi+4*ecx]
+		cmp			ecx,4h
+		jb			ckAlphaCreate_16to32_mini
+		shr			ecx,1h
 ckAlphaCreate_16to32_nexty:
-	lea	esi,[esi+4*ecx]
-	push	ecx edi
-	neg	ecx
+		lea			esi,[esi+4*ecx]
+		push		ecx
+		push		edi
+		neg			ecx
 ckAlphaCreate_16to32_nextx:
-	movq	mm0,[esi+4*ecx]	;
-	pand	mm0,mm5		;
-	pcmpeqw	mm0,mm6		;
-	movq	mm1,mm0		;
-	punpcklwd mm0,mm0
-	pandn	mm0,mm7		;
-	punpckhwd mm1,mm1
-	movq	[edi+8*ecx],mm0	;
-	pandn	mm1,mm7
-	movq	[edi+8*ecx+8],mm1	;
-	add	ecx,2h
-	jnz	ckAlphaCreate_16to32_nextx
-	pop	edi ecx
-        add     edi,ebx
-	dec	edx
-	jnz	ckAlphaCreate_16to32_nexty
-	ret
+		movq		mm0,[esi+4*ecx]	;
+		pand		mm0,mm5		;
+		pcmpeqw		mm0,mm6		;
+		movq		mm1,mm0		;
+		punpcklwd	mm0,mm0
+		pandn		mm0,mm7		;
+		punpckhwd	mm1,mm1
+		movq		[edi+8*ecx],mm0	;
+		pandn		mm1,mm7
+		movq		[edi+8*ecx+8],mm1	;
+		add			ecx,2h
+		jnz			ckAlphaCreate_16to32_nextx
+		pop			edi
+		pop			ecx
+		add			edi,ebx
+		dec			edx
+		jnz			ckAlphaCreate_16to32_nexty
+		ret
 ckAlphaCreate_16to32_mini:
 ckAlphaCreate_16to32_mini_nexty:
-	lea	esi,[esi+2*ecx]
-	push	ecx edi
-	neg	ecx
+		lea			esi,[esi+2*ecx]
+		push		ecx
+		push		edi
+		neg			ecx
 ckAlphaCreate_16to32_mini_nextx:
-	mov	ax,[esi+2*ecx]
-	movd	mm0,eax
-	pand	mm0,mm5
-	pcmpeqw mm0,mm6
-	punpcklwd mm0,mm0
-	pandn	mm0,mm7
-	movd	[edi+4*ecx],mm0
-	inc	ecx
-	jnz	ckAlphaCreate_16to32_mini_nextx
-	pop	edi ecx
-        add     edi,ebx
-	dec	edx
-	jnz	ckAlphaCreate_16to32_mini_nexty
-	ret
+		mov			ax,[esi+2*ecx]
+		movd		mm0,eax
+		pand		mm0,mm5
+		pcmpeqw		mm0,mm6
+		punpcklwd	mm0,mm0
+		pandn		mm0,mm7
+		movd		DWORD PTR [edi+4*ecx],mm0
+		inc			ecx
+		jnz			ckAlphaCreate_16to32_mini_nextx
+		pop			edi
+		pop			ecx
+		add			edi,ebx
+		dec			edx
+		jnz			ckAlphaCreate_16to32_mini_nexty
+		ret
 
 ;-------------------------------------------------------------------------------
 ;...............................................................................

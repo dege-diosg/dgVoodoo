@@ -18,7 +18,6 @@
 /* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA   */
 /*--------------------------------------------------------------------------------- */
 
-
 /*------------------------------------------------------------------------------------------*/
 /* dgVoodoo: dgVoodooConfig.h																*/
 /*			 Konfigurációhoz szükséges definíciók											*/
@@ -30,6 +29,8 @@
 /*------------------------------------------------------------------------------------------*/
 /* Setup: azonosító a kiírt konfig-fájlokban (.cfg) */
 #define		CFGFILEID	"DGVOODOOCFG"
+
+#define	MAXLANGNUM	32
 
 /*------------------------------------------------------------------------------------------*/
 /*.................................. Definíciók a konfighoz ................................*/
@@ -100,11 +101,14 @@
 #define CFG_LFBNOMATCHINGFORMATS	0x1000				/* Az LFB-formátumok mindig különbözõnek tekintendõk - rejtett opció */
 #define CFG_ALWAYSINDEXEDPRIMS		0x2000
 #define CFG_HIDECONSOLE				0x4000				/* Konzol elrejtése (DOS) */
-#define CFG_LFBDISABLETEXTURING		0x8000
 #define CFG_CFORMATAFFECTLFB		0x10000
 #define CFG_DISABLEVESAFLATLFB		0x20000
 #define CFG_PRESERVEWINDOWSIZE		0x40000
 #define CFG_PRESERVEASPECTRATIO		0x80000
+#define CFG_MANAGEDTEXTURES			0x100000
+#define CFG_LFBDISABLETEXTURING		0x200000
+#define CFG_LFBFORCETEXTURING		0x400000
+#define CFG_SCALETEXMEM				0x800000
 
 /* A konfig flagekben levõ bitmezõk értékei */
 #define CFG_CKMAUTOMATIC			0x00
@@ -126,12 +130,43 @@
 #define SetWBuffMethodValue(flags, method)	flags = (flags & ~(CFG_WBUFFERMETHODISFORCED | CFG_WBUFFER)) | method
 
 
+#define CFG_LFBAUTOTEXTURING		0x00
+#define CFG_LFBDISABLEDTEXTURING	0x01
+#define CFG_LFBFORCEDTEXTURING		0x02
+
+#define GetLfbTexureTilingMethod(flags)				((flags >> 21) & 0x3)
+#define SetLfbTexureTilingMethod(flags, method)		flags = ((flags & ~(CFG_LFBDISABLETEXTURING | CFG_LFBFORCETEXTURING)) | (method << 21))
+
+/* DX9-specifikus flagek */
+#define	CFG_DX9LFBCOPYMODE			1
+#define	CFG_DX9FFSHADERS			2
+#define	CFG_DX9NOVERTICALRETRACE	4
+#define CFG_DX9GRAYSCALERENDERING	8
+#define CFG_HWPALETTEGEN			16
+
+/* Debug flagek */
+#define	DBG_FORCEFRONTBUFFER		1
+#define DBG_FLUSHONLYWHENNEEDED		2
+
+
 enum Languages	{
 
 	English				= 0,
 	Hungarian			= 1,
 	numberOfLanguages	= 2
 };
+
+
+enum RendererAPI {
+	DirectX7			=	0,
+	DirectX9			=	1,
+
+	NumOfRendererAPIs,
+	RANone				=	NumOfRendererAPIs
+};
+
+
+#define	TEXMEMSCALE_MAX			(4*1024*1024)
 
 /*------------------------------------------------------------------------------------------*/
 /*....................................... Struktúrák .......................................*/
@@ -153,7 +188,10 @@ typedef struct	{
 	unsigned short  dosTimerBoostPeriod;
 	unsigned char	AlphaCKRefValue;
 	unsigned char	language;
-	unsigned char	reserved[4];
+	unsigned char	rendererApi;
+	unsigned char	dx7ConfigBits;
+	unsigned char	dx9ConfigBits;
+	unsigned char	debugFlags;
 
 } dgVoodooConfig;
 

@@ -19,6 +19,7 @@
 ; Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ;-----------------------------------------------------------------------------
 
+
 ;-------------------------------------------------------------------
 ; MMConv:	MMConv16to32.ASM
 ;		16 bites formátumról 32 bitesre konvertáló rész
@@ -70,7 +71,7 @@ ENDM
 
 .code
 
-BeginOf16to32Convs	LABEL
+BeginOf16to32Convs	LABEL	NEAR
 
 ;-------------------------------------------------------------------
 ; Ált. 16->32 konverter
@@ -108,12 +109,15 @@ _16to32_:
 		shr		ecx,1h
 		lea		esi,[esi+4*ecx]
 		lea		edi,[edi+8*ecx]
-		push	esi edi
+		push	esi
+		push	edi
 		neg		ecx
 		or		_16to32ConvertWithAlpha,0h
 		jne		_g16to32_nexty_with_alpha
 _g16to32_nexty_without_alpha:
-		push	esi edi ecx
+		push	esi
+		push	edi
+		push	ecx
 _g16to32_nextx_without_alpha:
 		mov		eax,[esi+4*ecx] ;
 		movd	mm0,eax		;
@@ -155,22 +159,28 @@ _g16to32_blueshift2:
 		por		mm3,mm2		;
         movq    [edi+8*ecx-8],mm3 ;
         jnz     _g16to32_nextx_without_alpha
-		pop		ecx edi esi
+		pop		ecx
+		pop		edi
+		pop		esi
 		add		esi,srcpitch
 		add		edi,dstpitch
 		dec		edx
 		jnz		_g16to32_nexty_without_alpha
-		pop		edi esi ecx
+		pop		edi
+		pop		esi
+		pop		ecx
 		and		ecx,1h
 		ret
 
 _16to32mini_:
         mov     edx,y
-		push	esi edi
+		push	esi
+		push	edi
 		or		_16to32ConvertWithAlpha,0h
 		jne		_g16to32mini_nexty_with_alpha
 _g16to32mini_nexty_without_alpha:
-		push	esi edi
+		push	esi
+		push	edi
 		mov		ax,[esi] 	;
 		movd	mm0,eax		;
 		punpcklwd mm0,mm0  	;
@@ -207,14 +217,16 @@ _g16to32_blueshift2_mini:
 		pslld	mm2,0h		;
 		por		mm3,mm1
 		por		mm3,mm2		;
-        movd    [edi],mm3 	;
-		pop		edi esi
+        movd    DWORD PTR [edi],mm3 	;
+		pop		edi
+		pop		esi
 		add		esi,srcpitch
 		add		edi,dstpitch
 		dec		edx
 		jnz		_g16to32mini_nexty_without_alpha
 _g16to32miniexit:
-		pop		edi esi
+		pop		edi
+		pop		esi
 		dec		ecx
 		add		esi,2h
 		add		edi,4h
@@ -222,7 +234,9 @@ _g16to32miniexit:
 
 
 _g16to32_nexty_with_alpha:
-		push	esi edi ecx
+		push	esi
+		push	edi
+		push	ecx
 _g16to32_nextx_with_alpha:
 		mov		eax,[esi+4*ecx] ;
 		movd	mm0,eax		;
@@ -277,18 +291,23 @@ _g16to32_alphashift3_wa:
 		por		mm0,mm1		;
         movq	[edi+8*ecx-8],mm0 ;
         jnz     _g16to32_nextx_with_alpha
-		pop		ecx edi esi
+		pop		ecx
+		pop		edi
+		pop		esi
 		add		esi,srcpitch
 		add		edi,dstpitch
 		dec		edx
 		jnz		_g16to32_nexty_with_alpha
-		pop		edi esi ecx
+		pop		edi
+		pop		esi
+		pop		ecx
 		and		ecx,1h
 		ret
 
 
 _g16to32mini_nexty_with_alpha:
-		push	esi edi
+		push	esi
+		push	edi
 		mov		ax,[esi]  	;
 		movd	mm0,eax		;
 		punpcklwd mm0,mm0  	;
@@ -340,14 +359,15 @@ _g16to32_alphashift3_wa_mini:
 		pslld	mm1,0h		;		;alpha shr/shl
 		por		mm0,mm1		;
         movq    [edi],mm0 	;
-		pop		edi esi
+		pop		edi
+		pop		esi
 		add		esi,srcpitch
 		add		edi,dstpitch
 		dec		edx
 		jnz		_g16to32mini_nexty_with_alpha
 		jmp		_g16to32miniexit
 
-EndOf16to32Convs	LABEL
+EndOf16to32Convs	LABEL	NEAR
 
 ;-------------------------------------------------------------------
 ;Init kód a 16->32 konverterhez
@@ -363,43 +383,43 @@ _16to32InitConvCode:
 
 		mov		_16to32ConvertWithAlpha,0h
 		xor		eax,eax
-		mov		ecx,[edx].ABitCount		;dst alpha bitcount
-		mov		ebp,[ebx].ABitCount		;src alpha bitcount
+		mov		ecx,(_pixfmt PTR [edx]).ABitCount		;dst alpha bitcount
+		mov		ebp,(_pixfmt PTR [ebx]).ABitCount		;src alpha bitcount
 		jecxz	_16to32_noalpha
 		mov		eax,constalpha
-		mov		ecx,[edx].APos
+		mov		ecx,(_pixfmt PTR [edx]).APos
 		or		ebp,ebp
 		je		_16to32_alphaok
 		mov		_16to32ConvertWithAlpha,1h
 		mov		al,_masktable[ebp]
-		mov		ecx,[ebx].APos
+		mov		ecx,(_pixfmt PTR [ebx]).APos
 _16to32_alphaok:
 		shl	eax,cl
 _16to32_noalpha:
 		push	edx
 		mov		DWORD PTR _16to32ARGBEntry_AlphaMask[0],eax
 		mov		DWORD PTR _16to32ARGBEntry_AlphaMask[4],eax
-		mov		eax,[ebx].RBitCount
+		mov		eax,(_pixfmt PTR [ebx]).RBitCount
 		movzx	ebp,_masktable_magic[eax]
 		mov		al,_masktable[eax]
-		mov		ecx,[ebx].RPos
+		mov		ecx,(_pixfmt PTR [ebx]).RPos
 		shl		eax,cl
 		shl		ebp,cl
 		mov		DWORD PTR _16to32ARGBEntry_RedMask[0],eax
 		mov		DWORD PTR _16to32ARGBEntry_RedMask[4],eax
-		mov		eax,[ebx].GBitCount
+		mov		eax,(_pixfmt PTR [ebx]).GBitCount
 		movzx	edx,_masktable_magic[eax]
 		mov		al,_masktable[eax]
-		mov		ecx,[ebx].GPos
+		mov		ecx,(_pixfmt PTR [ebx]).GPos
 		shl		eax,cl
 		shl		edx,cl
 		or		ebp,edx
 		mov		DWORD PTR _16to32ARGBEntry_GreenMask[0],eax
 		mov		DWORD PTR _16to32ARGBEntry_GreenMask[4],eax
-		mov		eax,[ebx].BBitCount
+		mov		eax,(_pixfmt PTR [ebx]).BBitCount
 		movzx	edx,_masktable_magic[eax]
 		mov		al,_masktable[eax]
-		mov		ecx,[ebx].BPos
+		mov		ecx,(_pixfmt PTR [ebx]).BPos
 		shl		eax,cl
 		shl		edx,cl
 		or		edx,ebp
@@ -413,9 +433,9 @@ _16to32_noalpha:
 		mov		ebp,edx
 		pop		edx
 
-		GetShiftCode_16to32	[ebx].RPos, [ebx].RBitCount, [edx].RPos, [edx].RBitCount
-		GetShiftCode_16to32	[ebx].GPos, [ebx].GBitCount, [edx].GPos, [edx].GBitCount
-		GetShiftCode_16to32	[ebx].BPos, [ebx].BBitCount, [edx].BPos, [edx].BBitCount
+		GetShiftCode_16to32	(_pixfmt PTR [ebx]).RPos, (_pixfmt PTR [ebx]).RBitCount, (_pixfmt PTR [edx]).RPos, (_pixfmt PTR [edx]).RBitCount
+		GetShiftCode_16to32	(_pixfmt PTR [ebx]).GPos, (_pixfmt PTR [ebx]).GBitCount, (_pixfmt PTR [edx]).GPos, (_pixfmt PTR [edx]).GBitCount
+		GetShiftCode_16to32	(_pixfmt PTR [ebx]).BPos, (_pixfmt PTR [ebx]).BBitCount, (_pixfmt PTR [edx]).BPos, (_pixfmt PTR [edx]).BBitCount
 
 		or	_16to32ConvertWithAlpha,0h
 		jne	_16to32InitConverterWithAlpha
@@ -462,14 +482,15 @@ _16to32InitConverterWithAlpha:
 		push	edx
 		push	LARGE 32
 		pop		eax
-		mov		ecx,[ebx].ABitCount
+		mov		ecx,(_pixfmt PTR [ebx]).ABitCount
 		movzx	edx,_masktable_magic[ecx]
 		cmp		ecx,1h
 		je		_16to32InitConvWithAlphaMaxPos1
 		dec		eax
 _16to32InitConvWithAlphaMaxPos1:
-		push	eax ecx
-		mov		ecx,[ebx].APos
+		push	eax
+		push	ecx
+		mov		ecx,(_pixfmt PTR [ebx]).APos
 		shl		edx,cl
 		sub		eax,ecx
 		pop		ecx
@@ -491,8 +512,8 @@ _16to32InitConvWithAlphaMMXShiftCodeOk1:
         mov     DWORD PTR _g16to32_higherbitmask_wa_mini+1,edx
 		pop		ecx
 		pop		edx
-		mov		eax,[edx].APos
-		add		eax,[edx].ABitCount
+		mov		eax,(_pixfmt PTR [edx]).APos
+		add		eax,(_pixfmt PTR [edx]).ABitCount
 		cmp		cl,32
 		je		_16to32InitConvWithAlphaMaxPos2
 		sub		cl,7h
@@ -508,11 +529,11 @@ _16to32InitConvWithAlphaMMXShiftCodeOk2:
         and     WORD PTR _g16to32_alphashift2_wa_mini+2, NOT MMXCODESHIFTMASK
         or      WORD PTR _g16to32_alphashift2_wa_mini+2,ax
 
-		mov		eax,[edx].APos
-		add		eax,[edx].ABitCount
-		sub		eax,[ebx].ABitCount
-		sub		eax,[ebx].APos
-		sub		eax,[ebx].ABitCount
+		mov		eax,(_pixfmt PTR [edx]).APos
+		add		eax,(_pixfmt PTR [edx]).ABitCount
+		sub		eax,(_pixfmt PTR [ebx]).ABitCount
+		sub		eax,(_pixfmt PTR [ebx]).APos
+		sub		eax,(_pixfmt PTR [ebx]).ABitCount
 		or		ah,20h
 		jns		_16to32InitConvWithAlphaMMXShiftCodeOk3
 		neg		eax
@@ -562,17 +583,20 @@ _16to32InitConvWithAlphaMMXShiftCodeOk3:
 ;A 16->32 konverter írhatóvá tétele
 
 _16to32_doinit:
-        push    ecx edx
+        push    ecx
+        push	edx
         push    eax
 
         push    esp
         push    LARGE PAGE_EXECUTE_READWRITE
-        push    LARGE EndOf16to32Convs - BeginOf16to32Convs
+        push    LARGE (EndOf16to32Convs - BeginOf16to32Convs)
         push    OFFSET BeginOf16to32Convs
         W32     VirtualProtect,4
         mov     _16to32Init,0FFh
 
-        pop     eax edx ecx
+        pop     eax
+        pop		edx
+        pop		ecx
         ret
 	
 

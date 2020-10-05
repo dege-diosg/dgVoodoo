@@ -1,0 +1,537 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Neutral (Default) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NEUD)
+#ifdef _WIN32
+LANGUAGE LANG_NEUTRAL, SUBLANG_DEFAULT
+#pragma code_page(1250)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// 100
+//
+
+IDR_FORMATSTRENG        100                     "FormatStrEng.txt"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_DIALOGABOUT DIALOGEX 0, 0, 186, 82
+STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION
+CAPTION "About dgVoodoo"
+FONT 8, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "OK",ID_OK,68,55,50,14
+    LTEXT           "dgVoodoo Glide Wrapper by Dege,  2006",IDC_STATIC,28,19,136,15
+    CTEXT           "Version 1.50 Beta3",IDC_STATIC,45,38,95,13
+    GROUPBOX        "",IDC_STATIC,6,4,174,73
+END
+
+IDD_DIALOGVESA DIALOGEX 0, 0, 250, 202
+STYLE DS_SETFONT | WS_CHILD
+FONT 8, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    CONTROL         "Use built-in VESA support",IDC_VESAENABLE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,6,97,10
+    CONTROL         "Slider2",IDC_SLIDER2,"msctls_trackbar32",TBS_AUTOTICKS | WS_TABSTOP,9,28,84,12
+    LTEXT           "45 Hz",IDC_45HZ,7,42,20,8
+    LTEXT           "70 Hz",IDC_70HZ,82,42,22,9
+    COMBOBOX        IDC_COMBOVIDMEMSIZE,154,36,86,49,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    GROUPBOX        "Miscellaneous",IDC_GBVESAMISC,1,58,246,35
+    LTEXT           "Size",IDC_VESALABEL2,136,38,15,9
+    LTEXT           "60 Hz",IDC_SLIDERSTATIC2,94,28,20,8
+    CONTROL         "Mode 0x13 support",IDC_SUPPORTMODE13H,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,68,77,10
+    GROUPBOX        "Refresh frequency",IDC_GBVESAREFFREQ,1,20,118,35
+    GROUPBOX        "Emulated video memory",IDC_GBVESAVIDMEM,124,20,123,35
+    CONTROL         "Disable Flat/Linear Frame Buffer modes (Win9x/Me)",IDC_DISABLEFLATLFB,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,79,179,10
+END
+
+IDD_DIALOGTOP DIALOGEX 0, 0, 264, 72
+STYLE DS_SETFONT | DS_CONTROL | WS_CHILD
+FONT 8, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    LTEXT           "Settings are valid for instance of dgVoodoo:",IDC_STATIC,7,28,140,9
+    PUSHBUTTON      "Sys Dir",IDC_SYSDIR,197,37,29,14
+    PUSHBUTTON      "./",IDC_ACTDIR,182,37,14,14
+    CTEXT           "",IDC_ERROR,7,52,249,8
+    CONTROL         "Windows",IDC_PWINDOWS,"Button",BS_AUTORADIOBUTTON,15,9,45,10
+    CONTROL         "DOS",IDC_PDOS,"Button",BS_AUTORADIOBUTTON,89,9,27,10
+    GROUPBOX        "Platform",IDC_STATIC,7,0,123,25
+    LTEXT           "Current mode",IDC_DESKTOPTEXT,9,62,244,8
+    GROUPBOX        "Language",IDC_STATIC,133,0,120,25
+    COMBOBOX        IDC_INSTANCELIST,7,38,173,56,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "Search",IDC_SEARCH,227,37,29,14
+    COMBOBOX        IDC_CBLANGUAGE,137,9,109,56,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+END
+
+IDD_DIALOGGLIDE DIALOGEX 0, 0, 250, 202
+STYLE DS_SETFONT | WS_CHILD
+FONT 8, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    GROUPBOX        "D3D textures bit depth",IDC_DXBITDEPTH,1,2,91,34
+    GROUPBOX        "Refresh rate",IDC_REFRATE,95,2,152,34
+    RADIOBUTTON     "16 bit",IDC_TEX16,5,12,31,11
+    RADIOBUTTON     "32 bit",IDC_TEX32,5,23,33,10
+    RADIOBUTTON     "Optimal",IDC_TEXOPT,42,13,39,10
+    GROUPBOX        "Miscellanneous",IDC_GLIDEMISC,1,156,246,43
+    CONTROL         "Fix TR1's shadow-problem",IDC_TOMBRAIDER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,117,165,99,10
+    CONTROL         "Force triple buffering",IDC_TRIPLEBUFFER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,165,80,10
+    CONTROL         "Always wait for at least one vertical sync",IDC_VSYNC,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,99,23,143,10
+    CONTROL         "Enable Glide-gammaramp",IDC_GAMMARAMP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,117,175,96,11
+    CHECKBOX        "Use hardware vertex buffers",IDC_HWVBUFFER,7,175,104,11
+    GROUPBOX        "Gamma correction",IDC_GAMMACORRECTION,1,121,190,34
+    CONTROL         "Slider1",IDC_SLIDER1,"msctls_trackbar32",TBS_AUTOTICKS | WS_TABSTOP,4,130,164,11
+    LTEXT           "100 %",IDC_SLIDERSTATIC,169,129,20,9
+    LTEXT           "0%",IDC_STATPERC1,5,142,13,8
+    LTEXT           "400%",IDC_STATPERC3,154,142,18,8
+    LTEXT           "200%",IDC_STATPERC2,78,142,18,8
+    GROUPBOX        "Colorkeying method",IDC_COLORKEYSTATIC,1,96,89,25
+    GROUPBOX        "Monitor freq",IDC_REFRATESTATIC,193,121,54,34
+    COMBOBOX        IDC_REFRESHRATEVALUE,195,133,50,65,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    GROUPBOX        "Texturing options",IDC_DEPTHBUFF2,1,36,89,59
+    CHECKBOX        "Disable mipmapping",IDC_MIPMAPPINGDISABLE,5,47,79,9
+    CHECKBOX        "Force bilinear filtering",IDC_BILINEARFILTERING,5,75,84,10
+    GROUPBOX        "Texture mem size",IDC_TEXMEM,93,96,65,25
+    COMBOBOX        IDC_COMBOTEXMEMSIZE,97,106,58,66,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_COMBORESOLUTION,165,106,79,71,CBS_DROPDOWNLIST | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
+    GROUPBOX        "Resolution",IDC_STATIC,161,96,86,25
+    GROUPBOX        "LFB access",IDC_LFBACC,93,36,154,59
+    CONTROL         "Use hardware cache buffers when poss.",IDC_HWBUFFCACHING,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,98,58,145,9
+    CONTROL         "Disable texture tiles",IDC_LFBTEXTURETILES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,98,76,95,9
+    CONTROL         "Use fastwrite for unmatching formats",IDC_FASTWRITE,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,98,67,130,9
+    CONTROL         "Monitor freq is the closest supported freq",IDC_CLOSESTFREQ,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,99,12,140,9
+    COMBOBOX        IDC_COMBOLFBACCESS,98,45,139,66,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "Closer to a real hardware",IDC_REALHW,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,98,85,95,10
+    CHECKBOX        "Force trilinear mipmapping",IDC_TRILINEARMIPMAPS,5,56,84,9
+    CHECKBOX        "Autogenerate mipmaps",IDC_AUTOGENMIPMAPS,5,65,84,9
+    COMBOBOX        IDC_COMBOCOLORKEY,5,106,82,66,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "Force W-buffering",IDC_FORCEWBUFFERING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,117,186,73,10
+    CHECKBOX        "Timer boosting",IDC_TIMERLOOP,7,186,63,10
+    CHECKBOX        "Texmem scaled to 4MB",IDC_TEXMEMSCALE,5,84,84,10
+END
+
+IDD_DIALOGBOTTOM DIALOGEX 0, 0, 264, 13
+STYLE DS_SETFONT | DS_CONTROL | WS_CHILD
+FONT 8, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    PUSHBUTTON      "OK",IDC_OKBUTTON,22,0,46,13
+    PUSHBUTTON      "Cancel",IDC_CANCELBUTTON,108,0,46,13
+    PUSHBUTTON      "About",IDC_ABOUTBUTTON,190,0,46,13
+END
+
+IDD_CMDLINEHELP DIALOG  0, 0, 436, 222
+STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Command Line Help"
+CLASS "DGCLASS"
+FONT 8, "MS Sans Serif"
+BEGIN
+    PUSHBUTTON      "OK",IDC_HELPOKBUTTON,192,205,50,14
+    EDITTEXT        IDC_HELPEDIT,9,9,418,191,ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_READONLY | WS_VSCROLL
+END
+
+IDD_DIALOGRENDERER DIALOGEX 0, 0, 250, 202
+STYLE DS_SETFONT | DS_CONTROL | WS_CHILD
+FONT 8, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    GROUPBOX        "DirectX 9",IDC_STATIC,2,4,246,91
+    GROUPBOX        "DirectX 7",IDC_STATIC,2,99,246,38
+    CTEXT           "No specific settings",IDC_STATIC,48,113,149,8
+    CHECKBOX        "Force swap chain copy (accessible front buffer)",IDC_DX9FORCELFCOPY,8,18,165,10
+    CHECKBOX        "No vertical sync at bufferswap",IDC_DX9NORETRACE,8,33,111,10
+    CHECKBOX        "Force fixed function shaders",IDC_DX9FORCEFFSHADERS,8,49,105,10
+    CHECKBOX        "Enable hw accelerated regenerating of paletted textures, if available",IDC_DX9_HWPALETTEGEN,8,64,229,10
+    CHECKBOX        "Try Black&&White rendering",IDC_DX9GRAYSCALERENDERING,8,78,100,10
+END
+
+IDD_DIALOGGLOBAL DIALOGEX 0, 0, 250, 202
+STYLE DS_SETFONT | DS_CONTROL | WS_CHILD
+FONT 8, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    GROUPBOX        "Screen bit depth (full screen only)",IDC_SBDBOX,118,55,129,39
+    GROUPBOX        "Screen mode",IDC_SCRMODE,1,55,114,39
+    RADIOBUTTON     "16 bit",IDC_16BIT,125,68,79,8
+    RADIOBUTTON     "32 bit",IDC_32BIT,125,79,79,8
+    RADIOBUTTON     "Full screen",IDC_FULLSCR,7,68,50,8
+    RADIOBUTTON     "Windowed mode",IDC_WINDOWED,7,78,70,10
+    GROUPBOX        "Miscellaneous",IDC_MISC,1,151,246,46,NOT WS_VISIBLE
+    CONTROL         "Hide console",IDC_HIDECONSOLE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,162,53,9
+    CONTROL         "Set mouse focus to application",IDC_SETMOUSEFOCUS,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,162,109,10
+    GROUPBOX        "Screen shots",IDC_STATIC,1,94,246,32
+    CHECKBOX        "Enable screen shots",IDC_SCAPTUREON,8,108,80,10
+    RADIOBUTTON     "Saving to file",IDC_SAVETOFILE,125,102,57,10
+    RADIOBUTTON     "Saving to the clipboard",IDC_SAVETOCLIPBOARD,125,115,89,10
+    GROUPBOX        "Display device",IDC_DISPDEV,1,27,114,27
+    COMBOBOX        IDC_CBDISPDEVS,6,36,107,58,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    GROUPBOX        "Display driver",IDC_DISPDRIVER,118,27,129,27
+    COMBOBOX        IDC_CBDISPDRIVERS,122,36,121,58,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "Active in background",IDC_ACTIVEBACKG,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,138,83,10
+    CONTROL         "Enable Ctrl-Alt",IDC_CTRLALT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,173,60,10
+    GROUPBOX        "Windows XP / Vista / 7 options for DOS",IDC_WINXPDOS,1,127,246,24
+    CONTROL         "Working in VDD mode",IDC_VDDMODE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,138,87,10
+    CONTROL         "Always preserve window size",IDC_PRESERVEWINDOWSIZE,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,173,107,10
+    CONTROL         "Preserve aspect ratio",IDC_PRESERVEASPECTRATIO,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,184,83,10
+    COMBOBOX        IDC_RENDERER,6,9,107,58,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    GROUPBOX        "Renderer API",IDC_RAPIBOX,2,0,245,27
+    LTEXT           "Renderer API is not available!!",IDC_RENDERERAPISTATUS,123,11,117,10
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_DIALOGABOUT, DIALOG
+    BEGIN
+        LEFTMARGIN, 6
+        RIGHTMARGIN, 180
+        TOPMARGIN, 4
+        BOTTOMMARGIN, 77
+    END
+
+    IDD_DIALOGVESA, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 243
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 195
+    END
+
+    IDD_DIALOGTOP, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 256
+        BOTTOMMARGIN, 70
+    END
+
+    IDD_DIALOGGLIDE, DIALOG
+    BEGIN
+        LEFTMARGIN, 5
+        RIGHTMARGIN, 247
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 201
+    END
+
+    IDD_DIALOGBOTTOM, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 257
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 6
+    END
+
+    IDD_CMDLINEHELP, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 429
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 215
+    END
+
+    IDD_DIALOGRENDERER, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 243
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 195
+    END
+
+    IDD_DIALOGGLOBAL, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 243
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 195
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_FLOATINGMENU MENU 
+BEGIN
+    POPUP ""
+    BEGIN
+        MENUITEM "Save configuration into file", IDM_SAVECONFIG
+        MENUITEM "Load configuration file",     IDM_LOADCONFIG
+        MENUITEM SEPARATOR
+        MENUITEM "Export settings to text file", IDM_EXPORTSETTINGS
+        MENUITEM SEPARATOR
+        MENUITEM "XP-style setup",              IDM_XPSTYLE
+    END
+END
+
+#endif    // Neutral (Default) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// Hungarian resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_HUN)
+#ifdef _WIN32
+LANGUAGE LANG_HUNGARIAN, SUBLANG_DEFAULT
+#pragma code_page(1250)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDC_TEX32               "Allows only 32 bit Direct3D textures to use. Not recommended,\r\nuseful onlyfor disabling true paletted textures on GeForces\r\nup to FX series if the videodriver has problems with them, or\r\nsimply for testing purposes."
+    IDC_16BIT               "16 bit color depth, has meaning only with full screen rendering.\r\nIn windowed mode color depth comes from the desktop."
+    IDC_32BIT               "32 bit color depth, has meaning only with full screen rendering.\r\nIn windowed mode color depth comes from the desktop."
+    IDC_FULLSCR             "Full screen rendering"
+    IDC_WINDOWED            "Windowed rendering"
+    IDC_COMBOTEXMEMSIZE     "Texture memory size. The bigger the better, however keep in mind that old\r\nVoodoo card had texture memory of size of 2,4 or 8MB, they might not ready\r\nfor extra large sizes offered by setup like 64MB. For example, Red Baron 3D\r\nsuffers from texture corruption above 4MB.\r\n\r\nIf perfect texture memory emulation is enabled (this is controlled by a hidden\r\noption),a mirror of 3Dfx texture memory is used too, otherwise only the internal\r\ntexture cache. And, of course, real size of video memory should fit in with this\r\nvalue."
+END
+
+STRINGTABLE 
+BEGIN
+    IDC_COMBOLFBACCESS      "2D visual elements like pitcocks, counters, etc. are typically\r\ndrawn by direct LFB access in many applications. This can be\r\nvery slow, especially if the application reads back from video\r\nmemory. If that is the case, and you can live without these\r\n2D elements, you can enable/disable direct LFB reading and\r\nwriting, independently on each other.\r\n\r\nThis is most useful in Screamer 2 (and Rally), this program\r\nreads back some pixels from the video memory for uncleared\r\nreasons but it slows down the wrapper. Disabling reading\r\nsolves this problem without degrading visual quality."
+    IDC_SEARCH              "You can add dgVoodoo wrapper dll instances\r\ninto the list manually from a custom place"
+    IDC_ACTDIR              "Searches for dgVoodoo wrapper dll instances\r\nin the current folder and puts them into the\r\nlist if any found"
+    IDC_WINDIR              "Searches for dgVoodoo wrapper dll instances\r\nin the \\Windows folder and puts them into the\r\nlist if any found"
+    IDC_PWINDOWS            "Switches to editing config for Windows applications"
+    IDC_PDOS                "Switches to editing config for DOS programs"
+    IDC_SLIDER1             "Gamma correction from 0% - 400%, works with windowed rendering too."
+END
+
+STRINGTABLE 
+BEGIN
+    IDC_TEXOPT              "Allows using texture formats selected optimally.\r\nColor quality never gets worse than original, and\r\ntrue 8 bit paletted textures are used if they are\r\navailable."
+END
+
+STRINGTABLE 
+BEGIN
+    IDC_VESAENABLE          "Enables VGA/VESA emulation for dgVesa (under Windows 9x dgVesa is not needed in all cases).\r\nYou should always use this under Windows Vista, it is your only chance since Vista's new WDDM\r\ndisplay driver model does not support any emulation/full screen functionality."
+    IDC_SLIDER2             "Refresh frequency for VGA/VESA emulation. The higher, the more CPU time used by the wrapper,\r\nthe slower the DOS program itself. Standard VESA mostly used 60Hz as refresh frequency cannot\r\nbe controlled by application.\r\n\r\nThe wrapper always uses the best matching supported refresh frequency in full screen mode,\r\nsimilarly to Glide behavior."
+    IDC_HIDECONSOLE         "Hides the standard text console window while a\r\nwrapper window (Glide or VGA/VESA) is being\r\nused as application output."
+END
+
+STRINGTABLE 
+BEGIN
+    IDC_SETMOUSEFOCUS       "If enabled, hides the Windows mouse cursor\r\nand redirects mouse input into the DOS program\r\nwhen it is in the foreground."
+    IDC_SUPPORTMODE13H      "Supporting standard 320x200x256 color VGA mode"
+    IDC_DISABLEFLATLFB      "Disabling linear frame buffer (LFB), in this case only the old banked mode is usable.\r\nThis option has no use under Windows XP/Vista/7 as only the banked mode is available there."
+END
+
+STRINGTABLE 
+BEGIN
+    IDC_COMBORESOLUTION     "Arbitrary resolution supported by the video card can be forced. However,\r\nuse it only if a given application does not support the resolution you want\r\nto use. If it does, control it from the application.\r\n\r\nRemember, nonstandard resolution requires more resources and work from\r\nthe wrapper, especially with direct LFB access.\r\n\r\nFor the first time, try a given application with the original resolution."
+    IDC_TEX16               "Allows only 16 bit Direct3D textures to be used. Could be useful if your\r\ncard is low on videomemory (improbable with modern cards), or you are\r\ngoing to run an application with heavily altered paletted textures without\r\nhardware accelerated texture regeneration."
+    IDC_CHECK1              "Triple buffering can be forced over double buffering. Triple buffering may improve\r\nrendering speed since one more buffer is available while waiting for presenting\r\nthe next frame. Triple buffering however can slightly delay responsivity, or, can\r\ncause other artifacts if the application utilizes double buffering specially."
+END
+
+STRINGTABLE 
+BEGIN
+    IDC_SAVETOFILE          "Saves screenshots as .BMP files as \\Temp\\(exefilename)(ordinal).BMP\r\non the current drive. Under DOS C:\\Temp\\dgVoodoo(ordinal).BMP is used\r\nif the name of the program is inaccessible."
+    IDC_MIPMAPPINGDISABLE   "Disables texture mipmapping"
+    IDC_SAVETOCLIPBOARD     "Saves screenshots to the clipboard as a regular BMP bitmap."
+    IDC_LANGENGLISH         "Sets the language layout of the wrapper and setup to English"
+    IDC_LANGHUNGARIAN       "Sets the language layout of the wrapper and setup to Hungarian"
+    IDC_TOMBRAIDER          "Fixes a bug in Tomb Raider 1 which causes dark background of texts\r\nand Lara's shadow not to show up by default.\r\n\r\nThis is a DOS-only option, specially for TR1, but probably won't mess\r\nup other programs."
+    IDC_CBDISPDEVS          "You can select which monitor to use in a multimonitor\r\nsystem. dgVoodoo does not support multimon-display,\r\neven in windowed mode, so place your window entirely\r\nto the monitor selected here."
+    IDC_CBDISPDRIVERS       "Rendering device to use. Only hardware (HAL) devices are recommended.\r\nAutomatic selection chooses the first HAL device from the list."
+    IDC_HWBUFFCACHING       "Ancient option kept public from legacy dgVoodoo versions.\r\nControls the type of certain internal cache buffer.\r\nKeep this option enabled."
+    IDC_REALHW              "Forces Voodoo1 properties for the LFB. So that, pointers to\r\nparticular LFB buffers never changes, pitch is always 2048\r\nbytes, and so on. This option is automatically enabled in the\r\nGlide 2.11 driver, the point is, use it in Glide 2.43 for\r\napplications programmed in a way with earlier version Glide\r\nin mind... like Extreme Assault demo.\r\n\r\nBut as always this requires more resources so do not use it\r\nif not necessary."
+END
+
+STRINGTABLE 
+BEGIN
+    IDC_ACTIVEBACKG         "If enabled, DOS program continues execution even\r\nwhen it loses focus and gets into background."
+    IDC_VDDMODE             "Toggles between VDD/noVDD mode. In VDD mode wrapper dll\r\nis automatically attached to DOS as a Glide driver.\r\nOtherwise you must start dgVoodoo.exe to enable the DOS\r\nGlide driver to communicate with it in a client-server-like manner."
+    IDC_FASTWRITE           "Ancient option kept public from legacy dgVoodoo versions.\r\nControls whether all pixels are read back first and written again,\r\nor just modified pixels are written, when an application writes\r\ndirectly the LFB. Since the second method is definitively the\r\nbetter, keep this option enabled."
+    IDC_CTRLALT             "Suspends mouse input redirecting\r\nwhen Ctrl-Alt key combo is pressed,\r\nand Windows mouse pointer reappears.\r\nUseful in windowed mode to move or\r\nresize the wrapper window."
+    IDC_PRESERVEWINDOWSIZE  "Won't change the size of the wrapper window\r\nwhen display mode or resolution changes if it\r\nis already resized manually to a custom size\r\nfrom the default size."
+    IDC_PRESERVEASPECTRATIO "Always keeps the aspect ratio of the wrapper window\r\nwhile it is being resized."
+    IDC_VSYNC               "Forces the wrapper to wait for at least one vertical retracing\r\neven if the application wants immediate switch between frames.\r\nMaybe useful for applications that are fast enough on modern\r\nrigs, to avoid tearing."
+    IDC_GAMMARAMP           "Enables application controlled gamma-ramp via Glide. Do not confuse it with\r\ngamma correction. Default ramp can be too dark, if this option is disabled,\r\nthe wrapper always uses the default ramp set by DirectX."
+    IDC_FORCEWBUFFERING     "Forces the wrapper to use W-buffering. It is important to note that if the\r\nvideo card does not support W-buffering, this forcing worths nothing.\r\n\r\nBy default the wrapper asks the video driver if it support W-buffering or not.\r\nThis option is for cases when the driver lies and says it does not support it,\r\nwhile it does. In practice, W-buffering is supported only by ancient ATI cards\r\n(max 8xxx series) and nVidia cards up to FX series."
+    IDC_HWVBUFFER           "Enables hardware vertex (and index) buffers. This means that\r\nthe wrapper puts geometry data directly into videomemory,\r\nimproving rendering speed. However it is only recommended\r\nwith the DirectX9 renderer."
+END
+
+STRINGTABLE 
+BEGIN
+    IDC_BILINEARFILTERING   "Forces bilinear texture filtering"
+    IDC_TIMERLOOP           "If enabled, boosts up the DOS timer to compensate lost CPU time due to 3D rendering.\r\nThis time is very minimal in this version of dgVoodoo because communication between\r\nDOS and Windows has been improved for a long while."
+    IDC_AUTOGENMIPMAPS      "Forces the wrapper to generate all texture levels and use\r\nmipmapping if an application uses one level textures."
+    IDC_TEXMEMSCALE         "Scales the texture memory to 4MB. Computed texture\r\nsizes are scaled in order to map real texture memory\r\nsize to 4MB. This option is for Red Baron 3D only to\r\nallow it to hold as many textures in videomemory as it\r\ncan and avoid texture corruption above 4MB.\r\n\r\nDo not use it with any other application!"
+    IDC_REFRESHRATEVALUE    "Forced refresh frequency if automatic frequency selection is disabled.\r\nIt makes sense only with full screen rendering."
+    IDC_CLOSESTFREQ         "Always chooses the refresh frequency to be the best matching\r\none to the frequency that application requires. Otherwise it uses\r\nthe frequency given in the 'Monitor frequency' section. It makes\r\nsense only with full screen rendering."
+    IDC_TRILINEARMIPMAPS    "Forcing trilinear interpolation between texture\r\nlevels. Not available on Voodoo hardware but\r\nlooks better than that."
+    IDC_COMBOCOLORKEY       "Colorkeying method, basically 2 different methods are available:\r\n- Alpha based: auxiliary mask textures are used to mask out colorkey-pixels\r\n  in textures\r\n- Native: uses native capability of the renderer device without aux textures\r\n  Native for TNTs: it is a special option for good old Riva TNT cards\r\n\r\nAutomatic dinamically chooses between these methods according to the\r\nrendering API and other circumstances"
+    IDC_LFBTEXTURETILES     "The wrapper can realize direct LFB-writing in two ways:\r\n- via the old 2D hardware\r\n- via the 3D hardware with texture tiles\r\nIf texture tiling does not work very well in certain cases\r\n(e.g. slow, etc.), force it back to 2D by this option."
+END
+
+STRINGTABLE 
+BEGIN
+    IDC_DX9FORCELFCOPY      "Makes the front buffer accessible at the cost of\r\nslightly lower performance and more memory\r\nresources."
+    IDC_DX9FORCEFFSHADERS   "Using fixed funtion pixel shaders. It is only for testing purposes,\r\ndo not use it. If your cards is too old to use v1.4 pixel shaders,\r\nyou'd better use the DirectX7 renderer instead."
+    IDC_DX9GRAYSCALERENDERING "Renders everything in grayscale."
+    IDC_DX9NORETRACE        "Forces the wrapper to not wait for verical retrace when swaps frames.\r\nDirectX9 renderer cannot control this behavior per frameswap. Either\r\nwaits for one vertical retracing or does not wait at all. This option\r\noverrides the one on 'Glide' tab."
+    IDC_DX9_HWPALETTEGEN    "Hardware accelerated regeneration of paletted textures.\r\nIt speeds up changing of palettes of textures, but eats\r\nup more videomemory, only as much as minimally needed.\r\nUse it for games using palette animation like Red Baron 3D,\r\nBlood."
+    IDC_SYSDIR              "Searches for dgVoodoo wrapper dll instances in\r\nthe \\Window\\System32 folder and puts them\r\ninto the list if any found"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_ENABLELFBACCESS     "Enable LFB access"
+    IDS_LFBDISABLEREAD      "Disable LFB access for read"
+    IDS_DISABLELFBWRITE     "Disable LFB access for write"
+    IDS_DISABLELFBACCESS    "Disable LFB access"
+    IDS_CKAUTOMATIC         "Automatic"
+    IDS_CKALPHABASED        "Alpha based"
+    IDS_CKNATIVE            "Native"
+    IDS_NATIVEFORTNT        "Native for TNTs"
+    IDS_REFRESHDEFAULT      "Default"
+    IDS_RESDEFAULT          "Set by the application"
+    IDS_DDRIVERDEFAULT      "Automatically selected"
+    IDS_DDEVICEUNKNOWN      "Inaccessible - Renderer API is not available"
+    IDS_NOWRAPPERINSTANCE   "[none]"
+    IDS_DESKTOPVIDEOMODE    "Desktop video mode is %dx%d %dbit, %dHz"
+    IDS_DESKTOPVIDEOMODEUNKNOWN 
+                            "Desktop video mode is not available via current api."
+    IDS_INCOMPATIBELWRAPPERFILE 
+                            "Error: This setup application is not compatible with dgVoodoo versions other than %s!"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_INVALIDWRAPPERFILE  "Error: Cannot read config or this file is not a dgVoodoo-file!"
+    IDS_NOWRAPPERFILEFOUND  "No dgVoodoo Glide wrapper file was found!"
+    IDS_CLASSICTABPANESTR1  "Global"
+    IDS_CLASSICTABPANESTR2  "Glide"
+    IDS_CLASSICTABPANESTR3  "VESA"
+    IDS_CANNOTEXPORTCONFIG  "Cannot write out textfile"
+    IDS_ERROR               "Error"
+    IDS_CANNOTSAVECONFIG    "Cannot save configuration"
+    IDS_SEARCHINGINSTANCE   "Searching an instance of dgVoodoo"
+    IDS_NAMEOFTEXTFILE      "Name of text file"
+    IDS_NAMEOFCONFIGFILE    "Name of config file"
+    IDS_CANNOTLOADCONFIG    "Cannot load configuration"
+    IDS_INVALIDCONFIGFILE   "This is not a valid dgVoodoo-config file!!"
+    IDS_ERRORDURINGCONFIGREAD "Error during reading configuration"
+    IDS_INVALIDWRAPPERFILE2 "This file is not a dgVoodoo Glide Wrapper!"
+    IDS_ERRORDURINGSAVE     "Error during saving options"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_CANNOTWRITECONFIG   "Cannot write setup options! Check if server is running or DLL is in usage!"
+    IDS_ALLFILES            "All files"
+    IDS_DLLFILES            "Dynamic Link Libraries"
+    IDS_CONFIGFILES         "Configuration files"
+    IDS_CEINVALIDCFGERROR   "Configuration is invalid."
+    IDS_CEDOS               "Dos"
+    IDS_CEWINDOWS           "Windows"
+    IDS_CEENABLED           "Enabled"
+    IDS_CEDISABLED          "Disabled"
+    IDS_CEFULLSCR           "Full screen"
+    IDS_CEWINDOWED          "Windowed"
+    IDS_CE16BIT             "16 Bit"
+    IDS_CE32BIT             "32 Bit"
+    IDS_CEOPTIMAL           "Optimal"
+    IDS_CEDETBYDESKTOP      "Determined by the video mode of desktop"
+    IDS_CESHOTTOCLIPBOARD   "Saving to clipboard"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_CESHOTTOFILE        "Saving to file"
+    IDS_CEWBUFFDRAWINGTEST  "Detected by drawing test"
+    IDS_CEWBUFFRELYONDRIVER "Relies on driver flags"
+    IDS_CEWBUFFFORCEEMULATED "Force emulated W-buffering"
+    IDS_CEWBUFFFORCEW       "Force true W-buffering"
+    IDS_CLASSICTABPANESTR4  "Renderer specific"
+    IDS_INCOMPATIBLEEXTVERSION 
+                            "Incompatible configuration version in external file, doesn't match setup version!"
+    IDS_LFBTEXAUTOMATIC     "Automatic"
+    IDS_LFBTEXDISABLED      "Disabled"
+    IDS_LFBTEXFORCED        "Forced"
+    IDS_RENDERERAPINOTAVAILABLE "Renderer API is not available!!"
+    IDS_CLASSICVIEWMENUSTR1 "Show renderer specific settings"
+    IDS_TEXTFILESFILTER     "Text files (*.txt)"
+    IDS_CONFIGFILESFILTER   "Configuration files (*.cfg)"
+    IDS_ALLFILESFILTER      "All files (*.*)"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_LANGNAME            "English"
+END
+
+#endif    // Hungarian resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

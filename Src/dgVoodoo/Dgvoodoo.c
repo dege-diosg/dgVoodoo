@@ -24,7 +24,7 @@
 
 LRESULT CALLBACK dlgWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-WNDCLASS dlgClass = {0, dlgWindowProc,0,DLGWINDOWEXTRA,0,NULL,NULL,COLOR_WINDOW,NULL,"DGCLASS"};//DGVOODOODLGCLASS"};
+WNDCLASS dlgClass = {0, dlgWindowProc, 0, DLGWINDOWEXTRA, 0, NULL, NULL, COLOR_WINDOW, NULL, "DGCLASS"};//DGVOODOODLGCLASS"};
 
 
 LRESULT CALLBACK dlgWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)	{
@@ -72,7 +72,7 @@ int CALLBACK dgVoodooDialogProc( HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM 
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR cmdLine, int nCmdShow)	{
 HINSTANCE		hDllInstance211, hDllInstance243, hDllInstance;
-FARPROC			entrypoint;
+FARPROC			entryPoint;
 OSVERSIONINFO	versioninfo;
 int				error;
 char			fn[256];
@@ -131,23 +131,27 @@ char			fn[256];
 	error = 0;
 	versioninfo.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
 	GetVersionEx(&versioninfo);
-	if (versioninfo.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) entrypoint = GetProcAddress(hDllInstance,"_Dos9xEntryPoint@0");
-	if (versioninfo.dwPlatformId == VER_PLATFORM_WIN32_NT) entrypoint = GetProcAddress(hDllInstance,"_DosNTEntryPoint@0");
-	if (versioninfo.dwPlatformId == VER_PLATFORM_WIN32s)	{
-		
+	if (versioninfo.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) {
+		entryPoint = GetProcAddress(hDllInstance, "_Dos9xEntryPoint@0");
+	} else if (versioninfo.dwPlatformId == VER_PLATFORM_WIN32_NT) {
+		entryPoint = GetProcAddress(hDllInstance, "_DosNTEntryPoint@0");
+	} else if (versioninfo.dwPlatformId == VER_PLATFORM_WIN32s)	{
+
 		MessageBox(NULL,"dgVoodoo is not supported under Win32s! You need Win95 or greater!",
 						"Fatal error",MB_OK | MB_ICONSTOP);
 		error = 1;
 	}
 
-	if (entrypoint == NULL)	{
+	if (entryPoint == NULL)	{
 		
 		MessageBox(NULL,"Cannot find entrypoint in GLIDE2X.DLL! This is not the dgVoodoo wrapper file!",
 					"Error during loading wrapper file",MB_OK | MB_ICONSTOP);
 		error = 1;
 	}
 
-	if (!error) (*entrypoint)();
+	if (!error) {
+		(*entryPoint)();
+	}
 
 
 	FreeLibrary(hDllInstance);

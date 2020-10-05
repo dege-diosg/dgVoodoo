@@ -23,7 +23,7 @@
 ;			 Assembly include, az aktuális verzióval kapcsolatos definíciók
 ;--------------------------------------------------------------------------
 
-DGVOODOOVERSION			EQU		140h
-DGVOODOOVERSION_STR		EQU		"1.40"
+DGVOODOOVERSION			EQU		150h
+DGVOODOOVERSION_STR		EQU		"1.50"
 
 ;#define	PRODUCTNAME			"dgVoodoo "DGVOODOOVERSION_STR

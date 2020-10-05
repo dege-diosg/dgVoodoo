@@ -718,6 +718,16 @@ PEXECBUFF;
 }
 
 
+void EXPORT grAlphaControlsITRGBLighting( FxBool enable ) {
+PEXECBUFF;
+
+        GetExecBuffPointer(2);
+		execbuff[0] = GRALPHACONTROLSITRGBLIGHTING;
+		execbuff[1] = (unsigned long) enable;
+		ca->ExeCodeIndex += 2;
+}
+
+
 void EXPORT grConstantColorValue( GrColor_t color ) {
 PEXECBUFF;
 

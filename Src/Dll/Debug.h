@@ -27,11 +27,16 @@
 #ifndef		DEBUG_H
 #define		DEBUG_H
 
+#define		_CRT_SECURE_NO_DEPRECATE
+
 /* Ezzel engedélyezhetjük, hogy bizonyos hibák naplózásra kerüljenek, beleértve az esetleges */
 /* kivételeket is. */
-#define DEBUG
+//#define DEBUG
 
 #ifdef	DEBUG
+
+#include	<windows.h>
+#include	"excpt.h"
 
 /*------------------------------------------------------------------------------------------*/
 /*........................... Definíciók debug-támogatás esetén ............................*/
@@ -41,11 +46,20 @@
 
 #define MAX_THREADNUM							12
 #define MAX_DEBUGNESTLEVEL						64
-#define MAX_LISTELEMENTS						10
 
 #define DEBUG_THREAD_REGISTER(id)				id = debug_thread_register();
-#define DEBUG_BEGIN(inFunction, threadid, num)	handle_history_strings(get_funcdataptr(inFunction, num), threadid); __try { __try {
-#define DEBUG_END(inFunction, threadid, num)	} __finally { handle_history_strings_out(get_funcdataptr(inFunction, num), threadid); } } __except(_exception(_exception_info(),get_funcdataptr(inFunction,num),threadid),0)	{ }
+#define DEBUG_THREAD_UNREGISTER(id)				debug_thread_unregister(id);
+#define DEBUG_BEGINSCOPE(scopeName, threadId)	debug_begincritsection (); \
+												__asm { call  $+9 }; \
+												__asm { _emit 0x0 }; \
+												__asm { _emit 0x0 }; \
+												__asm { _emit 0x0 }; \
+												__asm { _emit 0x0 }; \
+												__asm { pop lastLocation };	 \
+												debug_beginscope(lastLocation, scopeName, threadId); \
+												debug_endcritsection (); \
+												 __try { __try {
+#define DEBUG_ENDSCOPE(threadId)				} __finally { debug_endscope(threadId); } } __except(_exception(GetExceptionInformation(),threadId),0)	{ }
 #define DEBUG_PERF_MEASURE_BEGIN(counter)		debug_perf_measure_begin(counter);
 #define DEBUG_PERF_MEASURE_END(counter)			debug_perf_measure_end(counter);
 #define	DEBUG_GET_PERF_QUOTIENT(counter1, counter2) debug_get_perf_quotient(counter1, counter2);
@@ -55,12 +69,15 @@
 #define DEBUG_SETLANGUAGE(language)				debug_set_language(language);
 #define DEBUG_SETMODULEINSTANCE(hInstance)		debug_set_module_instance(hInstance);
 
+#define DEBUG_ENABLEPROFILING					enabe_profiling (1);
+#define DEBUG_DISABLEPROFILING					enabe_profiling (0);
+
 
 /*------------------------------------------------------------------------------------------*/
 /*....................................... Struktúrák .......................................*/
 
 
-typedef	struct	{
+typedef	struct  {
 	char			*functionName;
 	unsigned int	functionTime[2];
 } FunctionData;
@@ -74,24 +91,38 @@ typedef struct	{
 /*------------------------------------------------------------------------------------------*/
 /*....................................... Függvények .......................................*/
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 void __cdecl	DEBUGLOG(int lang, char *message, ... );
 void __cdecl	DEBUGCHECK(int lang, int exp, char *message, ...);
 int				debug_thread_register();
+void			debug_thread_unregister(int threadId);
 FunctionData*	get_funcdataptr(char *str, int num);
-float			getdiv64(int *int64);
+float			getdiv64(unsigned int *int64);
 float			debug_get_perf_quotient(__int64 counter1, __int64 counter2);
 void			debug_global_time_begin();
 void			debug_global_time_end();
-void			_exception(EXCEPTION_POINTERS *excp, FunctionData *functionData, int threadid);
+void			_exception(EXCEPTION_POINTERS *excp, int threadid);
+void			debug_beginscope(void* location, char* scopeName, int threadId);
+void			debug_endscope(int threadId);
+void			debug_begincritsection ();
+void			debug_endcritsection ();
 void			handle_history_strings(FunctionData *functionData, int threadID);
-void			handle_history_strings_out(FunctionData *functionData, int threadID);
+void			handle_history_strings_out(int threadID);
 void			debug_perf_measure_begin(__int64 *counter);
 void			debug_perf_measure_end(__int64 *counter);
 void			debug_log_maxtimes();
 void			debug_set_language(int language);
 void			debug_set_module_instance(HINSTANCE hInstance);
+void			enabe_profiling (int enable);
 
+#ifdef __cplusplus
+}
+#endif
+
+extern			void*			lastLocation;
 
 #else
 
@@ -101,8 +132,9 @@ void			debug_set_module_instance(HINSTANCE hInstance);
 
 
 #define DEBUG_THREAD_REGISTER(id)
-#define DEBUG_BEGIN(functionData, threadid, num)
-#define DEBUG_END(functionData, threadid, num)
+#define DEBUG_THREAD_UNREGISTER(id)
+#define DEBUG_BEGINSCOPE(functionData, threadid)
+#define DEBUG_ENDSCOPE(threadid)
 #define DEBUG_PERF_MEASURE_BEGIN(counter)
 #define DEBUG_PERF_MEASURE_END(counter)
 #define	DEBUG_GET_PERF_QUOTIENT(counter1, counter2)
@@ -111,8 +143,12 @@ void			debug_set_module_instance(HINSTANCE hInstance);
 #define DEBUG_LOGMAXTIMES
 #define DEBUG_SETLANGUAGE(language)
 #define DEBUG_SETMODULEINSTANCE(hInstance)
-#define DEBUGLOG
-#define DEBUGCHECK
+#define DEBUGLOG									;##/##/
+#define DEBUGCHECK									;##/##/
+
+#define DEBUG_ENABLEPROFILING
+#define DEBUG_DISABLEPROFILING
+
 
 
 #endif

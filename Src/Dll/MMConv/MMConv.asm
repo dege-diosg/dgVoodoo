@@ -1,24 +1,3 @@
-;-----------------------------------------------------------------------------
-; MMCONV.ASM - Main file of MultiMedia Converter lib
-;              Used for converting between bitmap formats
-;
-; Copyright (C) 2004 Dege
-;
-; This library is free software; you can redistribute it and/or
-; modify it under the terms of the GNU Lesser General Public
-; License as published by the Free Software Foundation; either
-; version 2.1 of the License, or (at your option) any later version.
-;
-; This library is distributed in the hope that it will be useful,
-; but WITHOUT ANY WARRANTY; without even the implied warranty of
-; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-; Lesser General Public License for more details.
-;
-; You should have received a copy of the GNU Lesser General Public
-; License along with this library; if not, write to the Free Software
-; Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
-;-----------------------------------------------------------------------------
-
 ;----------------------------------------------------------------------------
 ;dgVoodoo:  MultiMedia Converter
 ;
@@ -44,11 +23,31 @@
 
 .model flat
 UNICODE EQU 0
-INCLUDE w32main.inc
+;INCLUDE w32main.inc
 INCLUDE macros.inc
 
 INCLUDE mmconv.inc
 .mmx
+
+;-------------------------------------------------------------------------------
+;...............................................................................
+
+
+PAGE_NOACCESS							EQU		01h
+PAGE_READONLY							EQU		02h
+PAGE_READWRITE							EQU		04h
+PAGE_WRITECOPY							EQU		08h
+PAGE_EXECUTE							EQU		10h
+PAGE_EXECUTE_READ						EQU		20h
+PAGE_EXECUTE_READWRITE					EQU		40h
+PAGE_EXECUTE_WRITECOPY					EQU		80h
+PAGE_GUARD								EQU		100h
+PAGE_NOCACHE							EQU		200h
+PAGE_WRITECOMBINE						EQU		400h
+
+;-------------------------------------------------------------------------------
+;...............................................................................
+
 
 INCLUDE MMConv8toXX.asm
 INCLUDE MMConv16to16.asm
@@ -66,14 +65,18 @@ INCLUDE MMConvCopy.asm
 .code
 
 CopyPixFmt:
-		push	esi edi ecx
+		push	esi
+		push	edi
+		push	ecx
 		mov		esi,[esp + 1*4 + 3*4]
 		mov		edi,[esp + 2*4 + 3*4]
 		push	LARGE SIZE _pixfmt / 4
 		pop		ecx
 		cld
 		rep		movsd
-		pop		ecx edi esi
+		pop		ecx
+		pop		edi
+		pop		esi
 		ret		2*4
 
 ;---------------------------------------------------------------------------
@@ -95,17 +98,26 @@ GITS_pitchnotnegative:
         shl     eax,10h
         pop     ax
 GITS_ckOk:
+		movd	mm0,eax
+		punpckldq mm0,mm0
         cld
 		imul	ecx,[esp+16 +1*4]
-		shr		ecx,5h
+		shr		ecx,6h
         mov     edx,[esp+20 +1*4]
+		lea		edi,[edi+8*ecx]
+		neg		ecx
+		mov		eax,ecx
 WriteNextInitScanLine:
-        push    ecx edi
-        rep     stosd
-        pop     edi ecx
-        add     edi,[esp+24 +1*4]
-        dec     edx
+writeNextPixel:
+		movq	[edi+8*ecx],mm0
+		nop
+		inc		ecx
+		jnz		writeNextPixel
+		add     edi,[esp+24 +1*4]
+		mov		ecx,eax
+		dec     edx
         jne     WriteNextInitScanLine
+		emms
         pop     edi
         ret     24
 
@@ -115,40 +127,42 @@ PUBLIC _MMCGetPixelValueFromARGB
 _MMCGetPixelValueFromARGB@8:
 _MMCGetPixelValueFromARGB:
         mov     eax,[esp+1*4 + 0]
-        push    ebx esi
+        push    ebx
+        push	esi
 		rol		eax,8h
         mov     esi,[esp+2*4 + 2*4]
         mov     edx,eax
         mov     ecx,24+8h
-        sub     ecx,[esi].RBitCount
+        sub     ecx,(_pixfmt PTR [esi]).RBitCount
         shr     edx,cl
-        mov     ecx,[esi].RPos
+        mov     ecx,(_pixfmt PTR [esi]).RPos
         shl     edx,cl
         mov     ebx,eax
         and     ebx,0FF0000h
         mov     ecx,16+8h
-        sub     ecx,[esi].GBitCount
+        sub     ecx,(_pixfmt PTR [esi]).GBitCount
         shr     ebx,cl
-        mov     ecx,[esi].GPos
+        mov     ecx,(_pixfmt PTR [esi]).GPos
         shl     ebx,cl
         or      edx,ebx
         mov     ebx,eax
         and     ebx,0FF00h
         mov     ecx,8+8h
-        sub     ecx,[esi].BBitCount
+        sub     ecx,(_pixfmt PTR [esi]).BBitCount
         shr     ebx,cl
-        mov     ecx,[esi].BPos
+        mov     ecx,(_pixfmt PTR [esi]).BPos
         shl     ebx,cl
         or      edx,ebx
 		movzx	eax,al
         mov     ecx,0+8h
-        sub     ecx,[esi].ABitCount
+        sub     ecx,(_pixfmt PTR [esi]).ABitCount
         shr     eax,cl
-        mov     ecx,[esi].APos
+        mov     ecx,(_pixfmt PTR [esi]).APos
         shl     eax,cl
         or      edx,eax
         xchg    eax,edx
-        pop     esi ebx
+        pop     esi
+        pop		ebx
         ret     8
 
 ;---------------------------------------------------------------------------
@@ -158,13 +172,14 @@ PUBLIC _MMCGetARGBFromPixelValue
 _MMCGetARGBFromPixelValue@12:
 _MMCGetARGBFromPixelValue:
         mov     edx,[esp+1*4 + 0]
-        push    ebx esi
+        push    ebx
+        push	esi
         mov     esi,[esp+2*4 + 2*4]
 		mov		eax,[esp+3*4 + 2*4]
-		mov		ecx,[esi].APos
+		mov		ecx,(_pixfmt PTR [esi]).APos
 		mov		ebx,edx
 		shr		ebx,cl
-		mov		ecx,[esi].ABitCount
+		mov		ecx,(_pixfmt PTR [esi]).ABitCount
 		jecxz	_MMCGAFPV_noAlpha
 		ror		ebx,cl
 		cmp		cl,1h
@@ -177,34 +192,35 @@ _MMCGAFPV_notOneBit:
 		neg		cl
 		shld	eax,ebx,cl
 _MMCGAFPV_noAlpha:
-		mov		ecx,[esi].RPos
+		mov		ecx,(_pixfmt PTR [esi]).RPos
 		mov		ebx,edx
 		shr		ebx,cl
-		mov		ecx,[esi].RBitCount
+		mov		ecx,(_pixfmt PTR [esi]).RBitCount
 		ror		ebx,cl
 		shld	eax,ebx,cl
 		sub		cl,8h
 		neg		cl
 		shld	eax,ebx,cl
-		mov		ecx,[esi].GPos
+		mov		ecx,(_pixfmt PTR [esi]).GPos
 		mov		ebx,edx
 		shr		ebx,cl
-		mov		ecx,[esi].GBitCount
+		mov		ecx,(_pixfmt PTR [esi]).GBitCount
 		ror		ebx,cl
 		shld	eax,ebx,cl
 		sub		cl,8h
 		neg		cl
 		shld	eax,ebx,cl
-		mov		ecx,[esi].BPos
+		mov		ecx,(_pixfmt PTR [esi]).BPos
 		mov		ebx,edx
 		shr		ebx,cl
-		mov		ecx,[esi].BBitCount
+		mov		ecx,(_pixfmt PTR [esi]).BBitCount
 		ror		ebx,cl
 		shld	eax,ebx,cl
 		sub		cl,8h
 		neg		cl
 		shld	eax,ebx,cl
-		pop		esi ebx
+		pop		esi
+		pop		ebx
 		ret		12
 
 ;---------------------------------------------------------------------------
@@ -228,42 +244,45 @@ PUBLIC  _MMCConvertToPixFmt@12
 PUBLIC  _MMCConvertToPixFmt
 _MMCConvertToPixFmt@12:
 _MMCConvertToPixFmt:
-        push    edi esi
+        push    edi
+        push	esi
         mov     edi,[esp+2*4 +2*4]
         mov     edx,[esp+1*4 +2*4]
         push    ebx
-        mov     eax,[edx].dwRGBBitCount
-        mov     [edi].BitPerPixel,eax
-        mov     ecx,[edx].dwRBitMask
+        mov     eax,(DDPIXELFORMAT PTR [edx]).dwRGBBitCount
+        mov     (_pixfmt PTR [edi]).BitPerPixel,eax
+        mov     ecx,(DDPIXELFORMAT PTR [edx]).dwRBitMask
         mov     esi,ecx
         call    _GCTPFMT_getposandcount
-        mov     [edi].RPos,eax
-        mov     [edi].RBitCount,ebx
-        mov     ecx,[edx].dwGBitMask
+        mov     (_pixfmt PTR [edi]).RPos,eax
+        mov     (_pixfmt PTR [edi]).RBitCount,ebx
+        mov     ecx,(DDPIXELFORMAT PTR [edx]).dwGBitMask
         or      esi,ecx
         call    _GCTPFMT_getposandcount
-        mov     [edi].GPos,eax
-        mov     [edi].GBitCount,ebx
-        mov     ecx,[edx].dwBBitMask
+        mov     (_pixfmt PTR [edi]).GPos,eax
+        mov     (_pixfmt PTR [edi]).GBitCount,ebx
+        mov     ecx,(DDPIXELFORMAT PTR [edx]).dwBBitMask
         or      esi,ecx
         call    _GCTPFMT_getposandcount
-        mov     [edi].BPos,eax
-        mov     [edi].BBitCount,ebx
-        mov     ecx,[edx].dwRGBAlphaBitMask
+        mov     (_pixfmt PTR [edi]).BPos,eax
+        mov     (_pixfmt PTR [edi]).BBitCount,ebx
+        mov     ecx,(DDPIXELFORMAT PTR [edx]).dwRGBAlphaBitMask
         or      ecx,ecx
         jne     _GCTPFMT_NoMissingAlpha
         or      DWORD PTR [esp+3*4 +3*4],0h
         je      _GCTPFMT_NoMissingAlpha
         mov     ecx,esi
         not     ecx
-        cmp     [edx].dwRGBBitCount,32
+        cmp     (DDPIXELFORMAT PTR [edx]).dwRGBBitCount,32
         je      _GCTPFMT_NoMissingAlpha
         movzx   ecx,cx
 _GCTPFMT_NoMissingAlpha:
         call    _GCTPFMT_getposandcount
-        mov     [edi].APos,eax
-        mov     [edi].ABitCount,ebx
-        pop     ebx esi edi
+        mov     (_pixfmt PTR [edi]).APos,eax
+        mov     (_pixfmt PTR [edi]).ABitCount,ebx
+        pop     ebx
+        pop		esi
+        pop		edi
         ret     12
 
 _GCTPFMT_getposandcount:
@@ -288,7 +307,10 @@ PUBLIC  _MMCConvertAndTransferData@60
 PUBLIC  _MMCConvertAndTransferData
 _MMCConvertAndTransferData@60:
 _MMCConvertAndTransferData:
-        push    esi edi ebx ebp
+        push    esi
+        push	edi
+        push	ebx
+        push	ebp
         mov     esi,[esp+6*4 + 4*4]     ;src ptr
         mov     edi,[esp+7*4 + 4*4]     ;dst ptr
         mov     eax,[esp+12*4 + 4*4]    ;palette
@@ -319,7 +341,7 @@ _pos_dstpitch:
         mov     ebx,[esp+1*4 + 4*4]     ;src format
         mov     eax,[esp+3*4 + 4*4]     ;colorkey
 		mov     edx,[esp+4*4 + 4*4]     ;colorkey mask
-		cmp		[ebx].BitPerPixel,32
+		cmp		(_pixfmt PTR [ebx]).BitPerPixel,32
 		je		_GCATD_dontDuplicate
 		push	dx
 		shl		edx,10h
@@ -343,12 +365,12 @@ _GCATD_dontDuplicate:
 _GCATD_notcopying:
 
         mov     ecx,[_convertertables+4*eax]
-        mov     eax,[ebx].BitPerPixel
+        mov     eax,(_pixfmt PTR [ebx]).BitPerPixel
         shr     eax,3h
         mov     al,_callcode_src[eax-1]
         shl     eax,1h
         push    edx
-        mov     edx,[edx].BitPerPixel
+        mov     edx,(_pixfmt PTR [edx]).BitPerPixel
         shr     edx,3h
         or      al,_callcode_dst[edx-1]
         pop     edx
@@ -358,7 +380,10 @@ _GCATD_notcopying:
         call    ecx
         emms
 _GCATD_unsupported:
-        pop     ebp ebx edi esi
+        pop     ebp
+        pop		ebx
+        pop		edi
+        pop		esi
         ret     15*4
 
 ;---------------------------------------------------------------------------
@@ -366,7 +391,8 @@ PUBLIC  _MMCIsPixfmtTheSame@8
 PUBLIC  _MMCIsPixfmtTheSame
 _MMCIsPixfmtTheSame@8:
 _MMCIsPixfmtTheSame:
-		push    esi edi
+		push    esi
+		push	edi
         mov     esi,[esp+1*4 +2*4]
         mov     edi,[esp+2*4 +2*4]
         mov     ecx,(SIZE _pixfmt / 4)
@@ -374,7 +400,8 @@ _MMCIsPixfmtTheSame:
         xor     eax,eax
         repz    cmpsd
 		sete	al
-        pop     edi esi
+        pop     edi
+        pop		esi
         ret     8
 
 ;---------------------------------------------------------------------------
@@ -410,7 +437,7 @@ paletteMap      	DD      ?
 ;-  8 to 32
 
 ;general conversion routines
-_convertfunctions       LABEL
+_convertfunctions       LABEL	DWORD
                 DD      _general16to16converter
                 DD      _general16to32converter
                 DD      _general32to16converter
@@ -419,7 +446,7 @@ _convertfunctions       LABEL
 				DD		_general8to32converter
 
 ;general conversion routines with colorkeying
-_ckconvertfunctions     LABEL
+_ckconvertfunctions     LABEL	DWORD
                 DD      _ckgeneral16to16converter
                 DD      _ckgeneral16to32converter
                 DD      _ckgeneral32to16converter
@@ -428,7 +455,7 @@ _ckconvertfunctions     LABEL
 				DD		0h
 
 ;copy routines
-_copyfunctions          LABEL
+_copyfunctions          LABEL	DWORD
                 DD      _general16to16copy
                 DD      0h
                 DD      0h
@@ -436,13 +463,13 @@ _copyfunctions          LABEL
                 DD      _general8to8copy
 
 ;copy routines with colorkeying
-_ckcopyfunctions        LABEL
+_ckcopyfunctions        LABEL	DWORD
                 DD      _ckgeneral16to16copy
                 DD      0h
                 DD      0h
                 DD      _ckgeneral32to32copy
 
-_convertertables        LABEL
+_convertertables        LABEL	DWORD
                 DD      _convertfunctions
                 DD      _ckconvertfunctions
                 DD      _copyfunctions

@@ -56,18 +56,18 @@ enum DepthValueMappingType {
 
 /*------------------------------------------------------------------------------------------*/
 /*.................................. Globális változók .....................................*/
-extern	const float		_Q;
-extern	const float		_QZn;
 
 /*------------------------------------------------------------------------------------------*/
 /*............................. Belsõ függvények predeklarációja ...........................*/
 
-void		DrawFlushPrimitives(int toomanyvertex);
+void		DrawFlushPrimitives();
 void		DrawComputeScaleCoEffs(GrOriginLocation_t origin);
 float		DrawGetFloatFromDepthValue (FxU16 depth, enum DepthValueMappingType mappingType);
 void		DrawTile(float left, float top, float right, float bottom, 
 					 float tuLeft, float tvTop, float tuRight, float tvBottom,
-					 float oow, float ooz);
+					 float oow, float ooz, unsigned int constColor);
+void		DrawBeforeSwap ();
+void		DrawAfterSwap ();
 int			DrawInit();
 void		DrawCleanUp();
 

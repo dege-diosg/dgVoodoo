@@ -41,9 +41,6 @@
 #ifndef	MMCONVERTER_H
 #define MMCONVERTER_H
 
-#include	"DDraw.h"
-#include	"D3d.h"
-
 /*------------------------------------------------------------------------------------------*/
 /*.................................... Definíciók ..........................................*/
 
@@ -87,8 +84,7 @@ void _stdcall MMCConvertAndTransferData(_pixfmt *srcFormat, _pixfmt *dstFormat,
 
 /* Adott puffert colorkey színnel tölt fel */
 void _stdcall MMCFillBuffer(void *dst, unsigned int bitsPerPixel, unsigned int colorKey,
-						    unsigned int x, unsigned int y,
-							int dstPitch);
+						    unsigned int x, unsigned int y, int dstPitch);
 
 /* Egy ARGB-ben megadott színt átkonvertál a megadott formátumra */
 unsigned int _stdcall MMCGetPixelValueFromARGB (unsigned int color, _pixfmt *byFmt);
@@ -99,9 +95,6 @@ unsigned int _stdcall MMCGetARGBFromPixelValue (unsigned int color, _pixfmt *byF
 /* Az srcFmt formátumú színt dstFmt formátumúra konvertálja */
 /* Ez a következõvel ekvivalens: MMCGetPixelValueFromARGB (MMCGetARGBFromPixelValue (srcColor, srcFmt, unsigned int constAlpha), dstFmt) */
 unsigned int _stdcall MMCConvertPixel (unsigned int srcColor, _pixfmt *srcFmt, _pixfmt *dstFmt, unsigned int constAlpha);
-
-/* Egy DDPIXELFORMAT színformátum-leírót konvertál _pixfmt -re */
-void _stdcall MMCConvertToPixFmt(LPDDPIXELFORMAT ddpf, _pixfmt *pf, int createMissingAlpha);
 
 /* Két formátumot hasonlít össze */
 int _stdcall MMCIsPixfmtTheSame(_pixfmt *format1, _pixfmt *format2);

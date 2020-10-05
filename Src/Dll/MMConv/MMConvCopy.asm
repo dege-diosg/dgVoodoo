@@ -39,10 +39,14 @@ ENDM
 ;---------------------------------------------------------------------------
 .code
 
-BeginOfCopyConvs	LABEL
+BeginOfCopyConvs	LABEL	NEAR
 
 _general8to8copy:
 		mov     ecx,x
+		cmp		DWORD PTR (_pixfmt PTR [edx]).ABitCount,8h
+		jne		_gen8copy_notspecap88
+		lea		ecx,[ecx+ecx]
+_gen8copy_notspecap88:
 		test	esi,11b
 		je		_gen8copy_alignok
 		mov		eax,esi
@@ -55,27 +59,34 @@ _general8to8copy:
 		lea		ebx,[edi+eax]
 		push	ebx
 		call	_gen8copy_mini
-		pop		edi esi
+		pop		edi
+		pop		esi
 _gen8copy_alignok:
 		mov		eax,ecx
 		shr     ecx,2h
 		and		eax,11b
 		je		_dogeneralcopy
-		push	esi edi
+		push	esi
+		push	edi
 		call	_dogeneralcopy
-		pop		edi esi
+		pop		edi
+		pop		esi
 		lea     esi,[esi+4*ecx]
 		lea     edi,[edi+4*ecx]
 _gen8copy_mini:
 		mov		edx,y
 _gen8copy_mini_nexty:
-		push	eax esi edi
+		push	eax
+		push	esi
+		push	edi
 _gen8copy_mini_nextx:
 		mov		bl,[esi+eax-1]
 		dec		eax
 		mov		[edi+eax],bl
 		jne		_gen8copy_mini_nextx
-		pop		edi esi eax
+		pop		edi
+		pop		esi
+		pop		eax
 		add     esi,srcpitch
 		add     edi,dstpitch
 		dec		edx
@@ -87,9 +98,13 @@ _dogeneralcopy:
 		mov     edx,y
 		cld
 _RC_next:
-		push    esi edi ecx
+		push    esi
+		push	edi
+		push	ecx
 		rep     movsd
-		pop     ecx edi esi
+		pop     ecx
+		pop		edi
+		pop		esi
 		add     esi,srcpitch
 		add     edi,dstpitch
 		dec     edx
@@ -129,7 +144,9 @@ _ckgeneral16to16copy:
 		call	_ckgeneralinit
 		push	edx
 _CKRC_next_y:
-		push    esi edi ecx
+		push    esi
+		push	edi
+		push	ecx
 _CKRC_next_x:
 		mov     eax,[esi+4*ecx]		;
 		mov     ebp,eax				;
@@ -151,7 +168,9 @@ _CKRC_nocopy:
 		inc		ecx
 		jnz     _CKRC_next_x
 _CKRC_exit:
-		pop     ecx edi esi
+		pop     ecx
+		pop		edi
+		pop		esi
 		add     esi,srcpitch
 		add     edi,dstpitch
 		dec		DWORD PTR [esp]
@@ -174,7 +193,10 @@ _CKRC_lowck:
 _ckgeneral32to32copy:
 		call	_ckgeneralinit
 _CKRC32to32_next_y:
-		push    esi edi ecx edx
+		push    esi
+		push	edi
+		push	ecx
+		push	edx
 _CKRC32to32_next_x:
 		mov     ebp,[esi+4*ecx]		;
 		mov		edx,ebp				;
@@ -185,7 +207,10 @@ _CKRC32to32_next_x:
 _CKRC32to32_nocopy:
 		inc		ecx
 		jnz     _CKRC32to32_next_x
-		pop     edx ecx edi esi
+		pop     edx
+		pop		ecx
+		pop		edi
+		pop		esi
 		add     esi,srcpitch
 		add     edi,dstpitch
 		dec		edx
@@ -193,21 +218,24 @@ _CKRC32to32_nocopy:
 		ret
 	
 
-EndOfCopyConvs	LABEL
+EndOfCopyConvs	LABEL	NEAR
 ;---------------------------------------------------------------------------
 
 _copy_doinit:
-		push    ecx edx
+		push    ecx
+		push	edx
 		push    eax
 
 		push    esp
 		push    LARGE PAGE_EXECUTE_READWRITE
-		push    LARGE EndOfCopyConvs - BeginOfCopyConvs
+		push    LARGE (EndOfCopyConvs - BeginOfCopyConvs)
 		push    OFFSET BeginOfCopyConvs
 		W32     VirtualProtect,4
 		mov     _copyInitOk,0FFh
 
-		pop     eax edx ecx
+		pop     eax
+		pop		edx
+		pop		ecx
 		ret
 
 .data

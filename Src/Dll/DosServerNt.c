@@ -19,7 +19,6 @@
 /*--------------------------------------------------------------------------------- */
 
 
-
 /*------------------------------------------------------------------------------------------*/
 /* dgVoodoo: DosServerNt.c																	*/
 /*			 NT alatti implementáció DOS szerveroldali része								*/
@@ -38,12 +37,10 @@
 #include	<winuser.h>
 
 #include	"Main.h"
-#include	"DDraw.h"
-#include	"D3d.h"
-#include	"movie.h"
 #include	"Dos.h"
 #include	"DosMouseNt.h"
 #include	"Vesa.h"
+#include	"dgVoodooGlide.h"
 
 #include	"debug.h"
 #include	"Log.h"
@@ -78,7 +75,7 @@ void SetRegInfoAreaNT(ServerRegInfo *regInfo)
 
 
 int EXPORT DosNTEntryPoint()	{
-DDSURFACEDESC2	temp;
+int				currDispModeBitDepth;
 DWORD			locktime, flashcount;
 MSG				msg;
 unsigned int	lfbSize;
@@ -86,9 +83,9 @@ unsigned char	errorTitle[MAXSTRINGLENGTH];
 unsigned char	errorMsg[MAXSTRINGLENGTH];
 
 	
-	DEBUG_THREAD_REGISTER(DebugRenderThreadId);
+	DEBUG_BEGINSCOPE("DosNTEntryPoint_NTRemoteRenderingThread", DebugRenderThreadId);
 
-	DEBUG_BEGIN("DosNTEntryPoint_NTRemoteRenderingThread", DebugRenderThreadId, 23);
+	DEBUG_THREAD_REGISTER(DebugRenderThreadId);
 	
 	DEBUGLOG(0,"\nDosNTEntryPoint: Entering in server");
 	DEBUGLOG(1,"\nDosNTEntryPoint: Kezdés a szerveren");
@@ -98,9 +95,11 @@ unsigned char	errorMsg[MAXSTRINGLENGTH];
 
 	CopyMemory(&config, &pConfigsInHeader[1], sizeof(dgVoodooConfig));
 
+	ReCreateRenderer ();
+
 	GetString (errorTitle, IDS_INITERRORTITLE);
 
-	if (!GetActDispMode(NULL, &temp))	{
+	if (!IsRendererApiAvailable ()) {
 		GetString (errorMsg, IDS_NODIRECTXINSTALLED);
 		MessageBox(NULL, errorMsg, errorTitle, MB_OK | MB_ICONSTOP);
 		return(0);
@@ -143,7 +142,9 @@ unsigned char	errorMsg[MAXSTRINGLENGTH];
 	CreateWarningBox();	
 
 	if (config.Flags & CFG_WINDOWED) {
-		if ( (temp.ddpfPixelFormat.dwRGBBitCount != 16) && (temp.ddpfPixelFormat.dwRGBBitCount != 32) )	{
+		currDispModeBitDepth = GetCurrentDisplayModeBitDepth (config.dispdev, config.dispdriver);
+
+		if ( (currDispModeBitDepth != 16) && (currDispModeBitDepth != 32) )	{
 			GetString (errorMsg, IDS_INCOMPATIBLEDESKTOPMODE);
 			MessageBox(NULL, errorMsg, errorTitle, MB_OK | MB_ICONSTOP);
 			CleanUp ();
@@ -151,7 +152,6 @@ unsigned char	errorMsg[MAXSTRINGLENGTH];
 		}
 	}
 
-	ZeroMemory(&movie, sizeof(MOVIEDATA));
 	RegisterMainClass();
 	
 	CreateServerCommandWindow ();
@@ -198,9 +198,12 @@ unsigned char	errorMsg[MAXSTRINGLENGTH];
 
 	DEBUGLOG(0,"\nDosNTEntryPoint: Leaving successfully in server");
 	DEBUGLOG(1,"\nDosNTEntryPoint: Vége a szerveren");
+
+	DEBUG_THREAD_UNREGISTER(DebugRenderThreadId);
+
+	DEBUG_ENDSCOPE(DebugRenderThreadId);
+
 	return(1);
-	
-	DEBUG_END("DosNTEntryPoint_NTRemoteRenderingThread", DebugRenderThreadId, 23);
 }
 
 #endif	/* DOS_SUPPORT */

@@ -18,7 +18,6 @@
 /* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA   */
 /*--------------------------------------------------------------------------------- */
 
-
 #include "dgVoodooBase.h"
 #include <windows.h>
 #include <glide.h>
@@ -79,7 +78,7 @@ void DisplayUnimplemented(char *s)	{
 //void EXPORT grDrawPolygon( int nVerts, int ilist[], const GrVertex vlist[] ) {E("grDrawPolygon") }
 //void EXPORT grDrawPolygonVertexList( int nVerts, const GrVertex vlist[] ) { E("grDrawPolygonVertexList")}
 //void EXPORT grDrawTriangle( const GrVertex *a, const GrVertex *b, const GrVertex *c ) { E("grDrawTriangle")}
-void EXPORT grErrorSetCallback( void (*function)(const char *string, FxBool fatal) ) {E("grErrorSetCallback") }
+void EXPORT grErrorSetCallback( void (*function)(const char* /*string*/, FxBool /*fatal*/) ) {E("grErrorSetCallback") }
 /*void EXPORT grFogColorValue( GrColor_t value ) { E("grFogColorValue")}
 void EXPORT grFogMode( GrFogMode_t mode ) { E("grFogMode")}
 void EXPORT grFogTable( const GrFog_t table[GR_FOG_TABLE_SIZE] ) {E("grFogTable") }*/
@@ -228,7 +227,7 @@ float EXPORT guFogTableIndexToW( int i ) { E("guFogTableIndexToW")}*/
 //FxU32 EXPORT guTexMemQueryAvail( GrChipID_t tmu ) { E("guTexMemQueryAvail")}
 //void EXPORT guTexMemReset( void ) {E("guTexMemReset") }
 //void EXPORT guTexSource( GrMipMapId_t mmid ) { E("guTexSource")}
-int EXPORT guEncodeRLE16(void *dst, void *src, FxU32 width, FxU32 height) {
+int EXPORT guEncodeRLE16(void* dst, void* src, FxU32 width, FxU32 height) {
 	E("guEncodeRLE16")
 	return(0);
 }
@@ -237,7 +236,8 @@ void EXPORT ConvertAndDownloadRle(GrChipID_t tmu, FxU32 startAddress,
 									GrTextureFormat_t format, FxU32 evenOdd,
 									FxU8 *bm_data, long bm_h,
 									FxU32 u0, FxU32 v0,
-									FxU32 width, FxU32 height, FxU32 dest_width, FxU32 dest_height, FxU16 *tlut)	{
+									FxU32 width, FxU32 height, FxU32 dest_width, FxU32 dest_height,
+									FxU16 *tlut)	{
 	E("ConvertAndDownloadRle");
 }
 void EXPORT grCheckForRoom(FxI32 n)	{ E("grCheckForRoom") }
@@ -250,7 +250,7 @@ unsigned int EXPORT guTexCreateColorMipMap( void ) {
 
 #ifndef GLIDE1
 
-void EXPORT grSplash(float x,float y,float w,float h,FxU32 _frame) { E("grSplash") }
+void EXPORT grSplash(float x, float y, float w, float h, FxU32 _frame) { E("grSplash") }
 
 #else
 
@@ -260,11 +260,9 @@ void EXPORT grSplash() { E("grSplash") }
 
 /* Amely függvényeket semmiképp sem lehet implementálni DirectX 7.0-ban: */
 
-void EXPORT grAlphaControlsITRGBLighting( FxBool enable ) { E("grAlphaControlsITRGBLighting")}
-
-void EXPORT grSstPerfStats( GrSstPerfStats_t *pStats ) {E("grSstPerfStats") }
+void EXPORT grSstPerfStats( GrSstPerfStats_t *pStats) {E("grSstPerfStats") }
 void EXPORT grSstResetPerfStats( void ) { E("grSstResetPerfStats")}
 void EXPORT grSstIdle( void ) {E("grSstIdle") }
 
 void EXPORT grTexDetailControl( GrChipID_t tmu, int lodBias,
-						 FxU8 detailScale, float detailMax ) { E("grTexDetailControl")}
+								FxU8 detailScale, float detailMax) { E("grTexDetailControl")}

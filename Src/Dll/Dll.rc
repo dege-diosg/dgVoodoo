@@ -55,7 +55,7 @@ END
 IDD_DIALOGENG DIALOG DISCARDABLE  0, 0, 225, 38
 STYLE DS_MODALFRAME | DS_CENTER | WS_MINIMIZEBOX | WS_POPUP | WS_VISIBLE | 
     WS_CAPTION | WS_SYSMENU
-CAPTION "dgVoodoo v1.40 Server for DOS"
+CAPTION "dgVoodoo v1.50 Beta3 Server for DOS"
 CLASS "DGVOODOODLGCLASS"
 FONT 8, "MS Sans Serif"
 BEGIN
@@ -67,7 +67,7 @@ END
 IDD_DIALOGHUN DIALOG DISCARDABLE  0, 0, 225, 38
 STYLE DS_MODALFRAME | DS_CENTER | WS_MINIMIZEBOX | WS_POPUP | WS_VISIBLE | 
     WS_CAPTION | WS_SYSMENU
-CAPTION "dgVoodoo v1.40 Szerver DOS-hoz"
+CAPTION "dgVoodoo v1.50 Beta3 Szerver DOS-hoz"
 CLASS "DGVOODOODLGCLASS"
 FONT 8, "MS Sans Serif"
 BEGIN
@@ -111,8 +111,12 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
+#ifdef	GLIDE2
+ FILEVERSION 2,43,0,0
+#else
  FILEVERSION 2,11,0,0
- PRODUCTVERSION 1,40,1,0
+#endif
+ PRODUCTVERSION 1,50,3,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -127,17 +131,24 @@ BEGIN
     BEGIN
         BLOCK "040e04b0"
         BEGIN
-            VALUE "Comments", "Justice for Hungary!\0"
-            VALUE "CompanyName", "SuckSoftware\0"
-            VALUE "FileDescription", "dgVoodoo Glide wrapper (for Glide v2.11)\0"
-            VALUE "FileVersion", "2, 11, 0, 0\0"
+            VALUE "Comments", ""
+            VALUE "CompanyName", "I dunno... Just Dege's software\0"
+#ifdef	GLIDE2
+			VALUE "FileDescription", "dgVoodoo Glide wrapper (for Glide v2.43)\0"
+			VALUE "FileVersion", "2, 43, 0, 0\0"
+            VALUE "InternalName", "Glide2x\0"
+			VALUE "OriginalFilename", "Glide2x.dll\0"
+#else
+			VALUE "FileDescription", "dgVoodoo Glide wrapper (for Glide v2.11)\0"
+			VALUE "FileVersion", "2, 11, 0, 0\0"
             VALUE "InternalName", "Glide\0"
-            VALUE "LegalCopyright", "by Dégé, Copyright ©2005\0"
+			VALUE "OriginalFilename", "Glide.dll\0"
+#endif
+            VALUE "LegalCopyright", "by Dégé, Copyright ©2007\0"
             VALUE "LegalTrademarks", "Tököm kivan már az egésszel!\0"
-            VALUE "OriginalFilename", "Glide.dll\0"
             VALUE "PrivateBuild", "\0"
-            VALUE "ProductName", "dgVoodoo v1.40\0"
-            VALUE "ProductVersion", "1, 40, 1, 0\0"
+            VALUE "ProductName", "dgVoodoo v1.50 Beta3\0"
+            VALUE "ProductVersion", "1, 50, 3, 0\0"
             VALUE "SpecialBuild", "\0"
         END
     END
@@ -215,11 +226,13 @@ BEGIN
     IDS_OPENSERVERTITLE_HUN "dgVoodoo: Csatlakozás a szerverhez"
     IDS_OPENSERVERFAILED_HUN 
                             "A csatlakozás a szerverhez nem sikerült.\nLehetséges okok: a szerver nem fut, vagy már egy másik klienst szolgál ki."
+    IDS_LFBSAVINGCANNOTGETDATA_HUN "A front buffer tartalma nem elérhetõ."
 END
 
 STRINGTABLE DISCARDABLE 
 BEGIN
     IDS_OPENSERVERFAILED    "Connecting to server has failed.\nPossible reasons: server is not running or it is already connected to another client."
+    IDS_LFBSAVINGCANNOTGETDATA "Cannot get front buffer data."
 END
 
 #endif    // Hungarian resources

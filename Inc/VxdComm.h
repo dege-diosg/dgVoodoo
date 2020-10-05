@@ -19,6 +19,7 @@
 /* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA   */
 /*--------------------------------------------------------------------------------- */
 
+
 /*------------------------------------------------------------------------------------------*/
 /* dgVoodoo: VxdComm.h																		*/
 /*			 Include for communication between Server and VxD component						*/

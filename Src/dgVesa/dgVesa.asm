@@ -181,11 +181,19 @@ vDrvUninstallMouse:
 
 vDrvToOriginalHandler:
 		pop		ebp
+		
+		or		cs:vista,0h
+		je		vDrvOriginalHandler
+		cmp		ax,12h
+		ja		vDrvOriginalHandler
+		iret
+
 vDrvOriginalHandler:
 		DB		0EAh
 		DD		0h
 
 w98				DB	?
+vista			DB	0h
 vesaService		DW	?
 
 rcode	ends
@@ -232,6 +240,19 @@ vDrvHelpFound:
 		add		si,2h
 		jmp		vDrvCheckNextOption
 vDrvHelpNotFound:
+		cmp		ax,'V/'
+		je		vDrvVistaFound
+		cmp		ax,'v/'
+		je		vDrvVistaFound
+		cmp		ax,'V-'
+		je		vDrvVistaFound
+		cmp		ax,'v-'
+		jne		vDrvVistaNotFound
+vDrvVistaFound:
+		mov		vista,1h
+		add		si,2h
+		jmp		vDrvCheckNextOption
+vDrvVistaNotFound:
 		inc		si
 		jmp		vDrvCheckNextOption
 
@@ -404,6 +425,13 @@ vDrvInitVesaSucceeded:
 		lea		ax,vDrvVideoHandler
 		mov		es:[10h*4],eax
 
+		or		vista,0h
+		je		vDrv_NoVista
+		lea		dx,drvVistaDriver
+		mov		ah,9h
+		int		21h
+vDrv_NoVista:
+
 		lea		dx,drvSuccessfulInit
 		mov		ah,9h
 		int		21h
@@ -419,7 +447,7 @@ vDrv_NormalExit:
 		mov		ax,4c00h
 		int		21h
 
-drvTitleText			DB	0Dh,0Ah,'DOS VESA 2.0 driver of dgVoodoo 1.40, by Dege, 2005'
+drvTitleText			DB	0Dh,0Ah,'DOS VESA 2.0 driver of dgVoodoo 1.50 Beta2, by Dege, 2007'
 						DB	0Dh,0Ah,'Copyright and so on blabla...',0Dh,0Ah,'$'
 drvUsageText			DB  0Dh,0Ah,'Options:',0Dh,0Ah,'	/u   Uninstall dgVesa driver',0Dh,0Ah,'$'
 drvInitErrorMsg			DB	0Dh,0Ah,'Init has failed: $'
@@ -431,8 +459,9 @@ drvInitErrorMsg5		DB	'InitVESA has failed in glide2x.dll$'
 drvInitErrorMsg6		DB	'VESA is disabled, use dgVoodooSetup to enable it!$'
 drvInitErrorMsg7		DB	'InitVESA has failed, it seems server is not started!$'
 drvInitErrorMsg8		DB	'InitVESA has failed, it seems server is being attached to another DOS Box!$'
-drvInitErrorMsg9		DB	'Fatal error: glide2x.dll is not versioned as ', '1.40', '!$'
+drvInitErrorMsg9		DB	'Fatal error: glide2x.dll is not versioned as ', '1.50', '!$'
 drvInitErrorMsg10		DB	'Fatal: unknown error, what the fuck is it?$'
+drvVistaDriver			DB	0Dh,0Ah,'Catching all full screen graphic mode settings - needed only on Windows Vista!$'
 drvSuccessfulInit		DB	0Dh,0Ah,'Driver is successfully installed.$'
 drvAlreadyLoadedMsg		DB	0Dh,0Ah,'Driver is already loaded, dgVoodoo VESA support is available.$'
 drvNoInstalledDriver	DB	0Dh,0Ah,'Cannot uninstall, no driver installed.$'

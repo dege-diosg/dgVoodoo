@@ -19,7 +19,6 @@
 ; Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ;-----------------------------------------------------------------------------
 
-
 ;-------------------------------------------------------------------
 ; MMConv:	MMConv32to32.ASM
 ;		32 bites formátumról 32 bitesre konvertáló rész
@@ -59,7 +58,7 @@ ENDM
 
 .code
 
-BeginOf32to32ckConvs	LABEL
+BeginOf32to32ckConvs	LABEL	NEAR
 
 ;-------------------------------------------------------------------
 ; Általános 32->32 konverter colorkey-jel
@@ -103,7 +102,8 @@ _32to32ck_:
 		shr		ecx,1h
 		lea		esi,[esi+8*ecx]
 		lea		edi,[edi+8*ecx]
-		push	esi edi
+		push	esi
+		push	edi
 		neg		ecx
 		push	ebp
 		push	ebp
@@ -112,7 +112,9 @@ _32to32ck_:
 		or		_32to32ckConvertWithAlpha,0h
 		jne	_g32to32ck_nexty_with_alpha
 _g32to32ck_nexty_without_alpha:
-		push	esi edi ecx
+		push	esi
+		push	edi
+		push	ecx
 _g32to32ck_nextx_without_alpha:
  		movq    mm0,[esi+8*ecx] ;
         movq    mm1,mm0 	;
@@ -144,13 +146,19 @@ _g32to32ck_no_conv_without_alpha:
 		inc		ecx
         jnz     _g32to32ck_nextx_without_alpha
 _g32to32ck_endofrow:
-		pop		ecx edi esi
+		pop		ecx
+		pop		edi
+		pop		esi
         add     esi,srcpitch
         add     edi,dstpitch
         dec     edx
         jne     _g32to32ck_nexty_without_alpha
 _g32to32ckexit:
-		pop		edi esi ecx eax eax
+		pop		edi
+		pop		esi
+		pop		ecx
+		pop		eax
+		pop		eax
 		and		ecx,1h
 		ret
 
@@ -172,11 +180,12 @@ _g32to32ck_higherpixel:
 
 _32to32ckmini_:
         mov     edx,y
-		push	esi edi
+		push	esi
+		push	edi
         or      _32to32ckConvertWithAlpha,0h
         jne     _g32to32ck_nexty_with_alpha
 _g32to32ckmini_nexty_without_alpha:
-		movd    mm0,[esi]	;
+		movd    mm0,DWORD PTR [esi]	;
         movq    mm1,mm0 	;
 		movd	eax,mm0
 		and		eax,ebp
@@ -195,7 +204,7 @@ _g32to32ck_blueshift_mini:
         por     mm0,mm1
         por     mm0,mm2 	;
         por     mm0,mm4 	;
-        movd    [edi],mm0 	;
+        movd    DWORD PTR [edi],mm0 	;
 _g32to32ckmini_no_conv_without_alpha:
 		add		esi,srcpitch
 		add		edi,dstpitch
@@ -203,14 +212,17 @@ _g32to32ckmini_no_conv_without_alpha:
         jnz     _g32to32ckmini_nexty_without_alpha
 _g32to32ckminiexit:
 		dec		ecx
-		pop		edi esi
+		pop		edi
+		pop		esi
 		add		esi,4h
 		add		edi,4h
 		ret
 
 
 _g32to32ck_nexty_with_alpha:
-		push	esi edi ecx
+		push	esi
+		push	edi
+		push	ecx
 _g32to32ck_nextx_with_alpha:
 		movq    mm0,[esi+8*ecx] ;
         movq    mm1,mm0 	;
@@ -245,7 +257,9 @@ _g32to32ck_alphashift_wa:
         movq    [edi+8*ecx],mm0 ;
         inc	ecx
         jnz     _g32to32ck_nextx_with_alpha
-		pop		ecx edi esi
+		pop		ecx
+		pop		edi
+		pop		esi
 		add		esi,srcpitch
 		add		edi,dstpitch
 		dec		edx
@@ -269,7 +283,7 @@ _g32to32ck_higherpixel_with_alpha:
 
 
 _g32to32ckmini_nexty_with_alpha:
-		movd    mm0,[esi]
+		movd    mm0,DWORD PTR [esi]
         movq    mm1,mm0 ;
 		movd	eax,mm0
         movq    mm2,mm0
@@ -292,7 +306,7 @@ _g32to32ck_alphashift_wa_mini:
         pslld   mm3,0h
         por     mm0,mm2 ;
         por     mm0,mm3 ;
-        movd    [edi],mm0 ;
+        movd    DWORD PTR [edi],mm0 ;
 _g32to32ckmini_no_conv_with_alpha:
 		add		esi,srcpitch
 		add		edi,dstpitch
@@ -300,7 +314,7 @@ _g32to32ckmini_no_conv_with_alpha:
         jnz     _g32to32ckmini_nexty_with_alpha
 		jmp		_g32to32ckminiexit
 
-EndOf32to32ckConvs	LABEL
+EndOf32to32ckConvs	LABEL	NEAR
 
 ;-------------------------------------------------------------------
 ;Init kód a 32->32 ck konverterhez
@@ -316,40 +330,40 @@ _32to32ckInitConvCode:
 
 		mov		_32to32ckConvertWithAlpha,0h
 		xor		eax,eax
-		mov		ecx,[edx].ABitCount		;dst alpha bitcount
-		mov		ebp,[ebx].ABitCount		;src alpha bitcount
+		mov		ecx,(_pixfmt PTR [edx]).ABitCount		;dst alpha bitcount
+		mov		ebp,(_pixfmt PTR [ebx]).ABitCount		;src alpha bitcount
 		jecxz	_32to32ck_noalpha
-		mov		ecx,[edx].APos
+		mov		ecx,(_pixfmt PTR [edx]).APos
 		mov		eax,constalpha
 		or		ebp,ebp
         je      _32to32ck_alphaok
         mov     _32to32ckConvertWithAlpha,1h
 		mov		al,0FFh
-		mov		ecx,[ebx].APos
+		mov		ecx,(_pixfmt PTR [ebx]).APos
 _32to32ck_alphaok:
 		shl		eax,cl
 _32to32ck_noalpha:
 		mov		DWORD PTR _32to32ckARGBEntry_AlphaMask[0],eax
 		mov		DWORD PTR _32to32ckARGBEntry_AlphaMask[4],eax
 		mov		eax,0FFh
-		mov		ecx,[ebx].RPos
+		mov		ecx,(_pixfmt PTR [ebx]).RPos
 		shl		eax,cl
         mov     DWORD PTR _32to32ckARGBEntry_RedMask[0],eax
         mov     DWORD PTR _32to32ckARGBEntry_RedMask[4],eax
 		mov		eax,0FFh
-		mov		ecx,[ebx].GPos
+		mov		ecx,(_pixfmt PTR [ebx]).GPos
 		shl		eax,cl
         mov     DWORD PTR _32to32ckARGBEntry_GreenMask[0],eax
         mov     DWORD PTR _32to32ckARGBEntry_GreenMask[4],eax
 		mov		eax,0FFh
-		mov		ecx,[ebx].BPos
+		mov		ecx,(_pixfmt PTR [ebx]).BPos
 		shl		eax,cl
         mov     DWORD PTR _32to32ckARGBEntry_BlueMask[0],eax
         mov     DWORD PTR _32to32ckARGBEntry_BlueMask[4],eax
 
-		GetShiftCode_32to32CK	[ebx].RPos, [edx].RPos
-		GetShiftCode_32to32CK	[ebx].GPos, [edx].GPos
-		GetShiftCode_32to32CK	[ebx].BPos, [edx].BPos
+		GetShiftCode_32to32CK	(_pixfmt PTR [ebx]).RPos, (_pixfmt PTR [edx]).RPos
+		GetShiftCode_32to32CK	(_pixfmt PTR [ebx]).GPos, (_pixfmt PTR [edx]).GPos
+		GetShiftCode_32to32CK	(_pixfmt PTR [ebx]).BPos, (_pixfmt PTR [edx]).BPos
 
 		or		_32to32ckConvertWithAlpha,0h
 		jne		_32to32ckInitConverterWithAlpha
@@ -393,7 +407,7 @@ _32to32ckInitConverterWithAlpha:
         and     WORD PTR _g32to32ck_redshift_wa_mini+2, NOT MMXCODESHIFTMASK
         or      WORD PTR _g32to32ck_redshift_wa_mini+2,ax
 
-		GetShiftCode_32to32CK	[ebx].APos, [edx].APos
+		GetShiftCode_32to32CK	(_pixfmt PTR [ebx]).APos, (_pixfmt PTR [edx]).APos
 		pop		eax
         and     WORD PTR _g32to32ck_alphashift_wa+2, NOT MMXCODESHIFTMASK
         or      WORD PTR _g32to32ck_alphashift_wa+2,ax
@@ -406,17 +420,20 @@ _32to32ckInitConverterWithAlpha:
 ;A 32->32 konverter írhatóvá tétele
 
 _32to32ck_doinit:
-        push    ecx edx
+        push    ecx
+        push	edx
         push    eax
 
         push    esp
         push    LARGE PAGE_EXECUTE_READWRITE
-        push    LARGE EndOf32to32ckConvs - BeginOf32to32ckConvs
+        push    LARGE (EndOf32to32ckConvs - BeginOf32to32ckConvs)
         push    OFFSET BeginOf32to32ckConvs
         W32     VirtualProtect,4
         mov     _32to32ckInit,0FFh
 
-        pop     eax edx ecx
+        pop     eax
+        pop		edx
+        pop		ecx
         ret
 	
 

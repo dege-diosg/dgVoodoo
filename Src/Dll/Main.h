@@ -27,7 +27,6 @@
 #ifndef		MAIN_H
 #define		MAIN_H
 
-
 #include <windows.h>
 #include "dgVoodooConfig.h"
 
@@ -61,21 +60,40 @@
 
 #define	MAXSTRINGLENGTH		1024
 
+
+/*------------------------------------------------------------------------------------------*/
+/*..................................... Struktúrák ...... ..................................*/
+
+
+typedef struct  {
+
+unsigned long   cmiXres;
+unsigned long   cmiYres;
+unsigned long   cmiByPP;
+unsigned long   cmiBitPP;
+unsigned long   cmiBuffNum;
+HWND            cmiWinHandle;
+
+} MovieData;
+
 /*------------------------------------------------------------------------------------------*/
 /*................................. Exportált függvények ...... ............................*/
 
+void	ReCreateRenderer ();
 void	GetString (LPSTR lpBuffer, UINT uID);
+void	CrashCallback ();
 
 /*------------------------------------------------------------------------------------------*/
 /*................................. Exportált globálisok ...... ............................*/
 
 extern HINSTANCE		hInstance;
-extern unsigned char	moduleName[256];
+extern /*unsigned*/ char	moduleName[256];
 extern int				platform;
 extern unsigned int		instructionSet;
 extern dgVoodooConfig	config;
 extern dgVoodooConfig	*pConfigsInHeader;
 extern char				productName[];
+extern MovieData		movie;
 extern int				DebugRenderThreadId;
 
 

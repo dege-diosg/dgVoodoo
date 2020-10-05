@@ -19,6 +19,7 @@
 /* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA   */
 /*--------------------------------------------------------------------------------- */
 
+
 /*------------------------------------------------------------------------------------------*/
 /* dgVoodoo: Dos.h																			*/
 /*			 DOS-kommunikáció																*/
@@ -27,6 +28,7 @@
 #ifndef	DOS_H
 #define DOS_H
 
+//#include "dgVoodooBase.h"
 #include "dgVoodooConfig.h"
 
 #ifdef __MSC__
@@ -59,6 +61,8 @@
 #define	DGSM_SETCLIENTHWND		(WM_USER+4)
 #define	DGSM_GETVESAMODEFORMAT	(WM_USER+5)
 #define DGSM_CLOSEBINDING		(WM_USER+6)
+#define DGSM_RESETDEVICE		(WM_USER+7)
+#define DGSM_GETDEVICESTATUS	(WM_USER+8)
 
 /* A kliensnek küldött üzenetek */
 #define	DGCM_VESAGRABACTBANK	(WM_USER+64)
@@ -76,6 +80,7 @@
 /* Az aktuális videómód és annak pixelformátuma (VESA-hoz) */
 typedef struct	{
 
+	int				modeIndex;
 	unsigned short	ModeNumber;
 	unsigned short	XRes;
 	unsigned short	YRes;
@@ -207,7 +212,7 @@ typedef struct	{
 	unsigned int	kernelflag;				/* különbözõ flagek a DOS-os és Windowsos rész közti kommunikációhoz */
 	unsigned int	ExeCodeIndex;			/* Eltárolt függvénykódok indexe */
 	unsigned char	*FDPtr;					/* Mutató az átadandó adatokhoz (a FuncData mezõn belül): szabad terület */
-	unsigned char	progname[128];			/* Dos-os program neve */
+	/*unsigned*/ char	progname[128];			/* Dos-os program neve */
 	union {
 		unsigned int	WinOldApHWND;			/* A Dos-os prg konzolablakának HWND-je (csak Win9x/Me) */
 		HWND			consoleHwnd;	
@@ -222,6 +227,7 @@ typedef struct	{
 	unsigned int	BytesPerScanLine;		/* VESA: bytes per scan line */
 	unsigned int	DisplayOffset;			/* VESA: display offset */
 	dgVoodooModeInfo actmodeinfo;			/* Az aktuális VESA mód infója */
+	dgVoodooModeInfo vesaModeinfo;
 	
     unsigned long	ExeCodes[EXEBUFFSIZE];	/* Függvénykódoknak fenntartott hely */
 	unsigned char	FuncData[FUNCDATASIZE];	/* Átadandó adatoknak fenntartott hely */
@@ -323,92 +329,93 @@ typedef struct	{
 
 #define GRALPHABLENDFUNCTION			53
 #define GRALPHACOMBINE					54
-#define GUALPHASOURCE					55
-#define GRALPHATESTFUNCTION				56
-#define GRALPHATESTREFERENCEVALUE		57
+#define	GRALPHACONTROLSITRGBLIGHTING	55
+#define GUALPHASOURCE					56
+#define GRALPHATESTFUNCTION				57
+#define GRALPHATESTREFERENCEVALUE		58
 
-#define GRFOGCOLORVALUE					58
-#define GRFOGMODE						59
-#define GRFOGTABLE						60
-#define GLIDEGETINDTOWTABLE				61
-#define GUFOGTABLEINDEXTOW				62
-#define GUFOGGENERATEEXP				63
-#define GUFOGGENERATEEXP2				64
-#define GUFOGGENERATELINEAR				65
+#define GRFOGCOLORVALUE					59
+#define GRFOGMODE						60
+#define GRFOGTABLE						61
+#define GLIDEGETINDTOWTABLE				62
+#define GUFOGTABLEINDEXTOW				63
+#define GUFOGGENERATEEXP				64
+#define GUFOGGENERATEEXP2				65
+#define GUFOGGENERATELINEAR				66
 
-#define GRRENDERBUFFER					66
-#define GRSSTORIGIN						67
-#define GRCLIPWINDOW					68
-#define GRCULLMODE						69
-#define GRDISABLEALLEFFECTS				70
-#define GRDITHERMODE					71
-#define GRGAMMACORRECTIONVALUE			72
-#define GRGLIDEGETSTATE					73
-#define GRGLIDESETSTATE					74
-#define GRHINTS							75
+#define GRRENDERBUFFER					67
+#define GRSSTORIGIN						68
+#define GRCLIPWINDOW					69
+#define GRCULLMODE						70
+#define GRDISABLEALLEFFECTS				71
+#define GRDITHERMODE					72
+#define GRGAMMACORRECTIONVALUE			73
+#define GRGLIDEGETSTATE					74
+#define GRGLIDESETSTATE					75
+#define GRHINTS							76
 
-#define GRSSTSCREENWIDTH				76
-#define GRSSTSCREENHEIGHT				77
-#define GRSSTSTATUS						78
-#define GRSSTVIDEOLINE					79
-#define GRSSTVRETRACEON					80
-#define GRSSTCONTROLMODE				81
-#define GRBUFFERNUMPENDING				82
-#define GRRESETTRISTATS					83
-#define GRTRISTATS						84
+#define GRSSTSCREENWIDTH				77
+#define GRSSTSCREENHEIGHT				78
+#define GRSSTSTATUS						79
+#define GRSSTVIDEOLINE					80
+#define GRSSTVRETRACEON					81
+#define GRSSTCONTROLMODE				82
+#define GRBUFFERNUMPENDING				83
+#define GRRESETTRISTATS					84
+#define GRTRISTATS						85
 
-#define GRDEPTHBUFFERMODE				85
-#define GRDEPTHBUFFERFUNCTION			86
-#define GRDEPTHMASK						87
-#define GRLFBCONSTANTALPHA				88
-#define GRLFBREADREGION					89
-#define GRLFBWRITEREGION				90
-#define GRDEPTHBIASLEVEL				91
-#define GLIDEGETCONVBUFFXRES			92
+#define GRDEPTHBUFFERMODE				86
+#define GRDEPTHBUFFERFUNCTION			87
+#define GRDEPTHMASK						88
+#define GRLFBCONSTANTALPHA				89
+#define GRLFBREADREGION					90
+#define GRLFBWRITEREGION				91
+#define GRDEPTHBIASLEVEL				92
+#define GLIDEGETCONVBUFFXRES			93
 
-#define GRCHROMAKEYMODE					93
-#define GRCHROMAKEYVALUE				94
+#define GRCHROMAKEYMODE					94
+#define GRCHROMAKEYVALUE				95
 
-#define GRLFBLOCK						95
-#define GRLFBUNLOCK						96
-#define GRLFBWRITECOLORFORMAT			97
-#define GRLFBWRITECOLORSWIZZLE			98
-#define GLIDESETUPLFBDOSBUFFERS			99
+#define GRLFBLOCK						96
+#define GRLFBUNLOCK						97
+#define GRLFBWRITECOLORFORMAT			98
+#define GRLFBWRITECOLORSWIZZLE			99
+#define GLIDESETUPLFBDOSBUFFERS			100
 
 /* Glide1-függvények */
-#define GRSSTOPEN						100
-#define GRLFBBYPASSMODE					101
-#define GRLFBORIGIN						102
-#define GRLFBWRITEMODE					103
-#define GRLFBBEGIN						104
-#define GRLFBEND						105
-#define GRLFBGETREADPTR					106
-#define GRLFBGETWRITEPTR				107
-#define GUFBREADREGION					108
-#define GUFBWRITEREGION					109
+#define GRSSTOPEN						101
+#define GRLFBBYPASSMODE					102
+#define GRLFBORIGIN						103
+#define GRLFBWRITEMODE					104
+#define GRLFBBEGIN						105
+#define GRLFBEND						106
+#define GRLFBGETREADPTR					107
+#define GRLFBGETWRITEPTR				108
+#define GUFBREADREGION					109
+#define GUFBWRITEREGION					110
 
 /* VESA-függvények */
-#define VESASETVBEMODE					110
-#define VESAUNSETVBEMODE				111
-#define VESAFRESH						112
+#define VESASETVBEMODE					111
+#define VESAUNSETVBEMODE				112
+#define VESAFRESH						113
 
-/* Ezeket a fûggvényeket a kernelmodul hivja */
-#define DGVOODOOCLIENTCRASHED			113
-#define DGVOODOONEWCLIENTREGISTERING	114
+/* Ezeket a függvényeket a kernelmodul hivja */
+#define DGVOODOOCLIENTCRASHED			114
+#define DGVOODOONEWCLIENTREGISTERING	115
 
 /* Egyéb függvények */
-#define DGVOODOOGETCONFIG				115
-#define DGVOODOORELEASEFOCUS			116
+#define DGVOODOOGETCONFIG				116
+#define DGVOODOORELEASEFOCUS			117
 
-#define GLIDEINSTALLMOUSE				117
-#define GLIDEUNINSTALLMOUSE				118
-#define GLIDEISMOUSEINSTALLED			119
+#define GLIDEINSTALLMOUSE				118
+#define GLIDEUNINSTALLMOUSE				119
+#define GLIDEISMOUSEINSTALLED			120
 
-#define VESAGETXRES						120
-#define VESAGETYRES						121
+#define VESAGETXRES						121
+#define VESAGETYRES						122
 
-#define PORTLOG_IN						122
-#define PORTLOG_OUT						123
+#define PORTLOG_IN						123
+#define PORTLOG_OUT						124
 
 
 /* Ez a kód zárja le a kódszekvenciát */
@@ -420,7 +427,7 @@ typedef struct	{
 
 void					HideMouseCursor(int);
 void					RestoreMouseCursor(int);
-void					CreateRenderingWindow();
+HWND					CreateRenderingWindow();
 void					DestroyRenderingWindow();
 void					CreateServerCommandWindow();
 void					DestroyServerCommandWindow();
@@ -441,6 +448,7 @@ void					ShutDownVDDRendering ();
 int						OpenServerCommunicationArea (ServerRegInfo *regInfo);
 void					CloseServerCommunicationArea ();
 void*					DosMapFlat (unsigned short selector, unsigned int offset);
+void					DosRendererStatus (int status);
 
 /*------------------------------------------------------------------------------------------*/
 /*.................................. Globális változók .....................................*/

@@ -37,26 +37,37 @@
 /*------------------------------------------------------------------------------------------*/
 /*.................................. Globális változók .....................................*/
 
-extern	DDSURFACEDESC2	lfb;
+//extern	DDSURFACEDESC2	lfb;
 extern	_pixfmt			backBufferFormat;
 extern	unsigned int	depthbuffering;
+
+enum DepthBufferingMode {
+	
+		ZBuffering						=	0,
+		WBufferingEmu					=	1,
+		WBuffering						=	2,
+		None							=	3//,
+		//Unknown							=	4
+	};
 
 
 /*------------------------------------------------------------------------------------------*/
 /*............................. Belsõ függvények predeklarációja ...........................*/
 
-int						LfbInit();
-void					LfbCleanUp();
-void					LfbSetBuffDirty(GrBuffer_t buffer);
-void					GlideLFBBeforeSwap();
-void					GlideLFBAfterSwap();
-void					GlideLFBCheckLock(int buffer);
-int						LfbGetConvBuffXRes();
-void					GlideFlushBufferWrites(int buffer);
-int						LfbSetUpLFBDOSBuffers(unsigned char *buff0, unsigned char *buff1, unsigned char *buff2, int onlyclient);
-int						LfbDepthBufferingInit();
-void					LfbDepthBufferingCleanUp();
-void					LfbGetBackBufferFormat();
+int						LfbInit ();
+void					LfbCleanUp ();
+void					LfbSetBuffDirty (GrBuffer_t buffer);
+void					LfbInvalidateCachedContent ();
+void					LfbBeforeSwap ();
+void					LfbAfterSwap ();
+void					LfbCheckLock (int buffer);
+int						LfbGetConvBuffXRes ();
+int						LfbSetUpLFBDOSBuffers (unsigned char *buff0, unsigned char *buff1, unsigned char *buff2, int onlyclient);
+int						LfbCreateTileTextures ();
+void					LfbDestroyTileTextures ();
+
+int						LfbDepthBufferingInit ();
+void					LfbDepthBufferingCleanUp ();
 
 
 /*------------------------------------------------------------------------------------------*/

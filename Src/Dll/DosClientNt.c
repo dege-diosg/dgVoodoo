@@ -90,7 +90,7 @@ static	void			(_stdcall *_setEDI)(unsigned int);
 static	void			(_stdcall *_setEBP)(unsigned int);
 static	void			(_stdcall *_setES)(unsigned int);
 static	void			(_stdcall *_setCF) (unsigned int);
-/*static*/	void			(_stdcall *_call_ica_hw_interrupt)(int ms, int line, int count);
+/*static*/	void		(_stdcall *_call_ica_hw_interrupt)(int ms, int line, int count);
 static	void*			(_stdcall *_vdmMapFlat)(unsigned short selector, unsigned long offset, VDM_MODE mode);
 static	BOOL			(_stdcall *_VDDInstallIOHook)(HANDLE hVDD, WORD cPortRange, PVDD_IO_PORTRANGE pPortRange, PVDD_IO_HANDLERS ioHandler);
 static	void			(_stdcall *_VDDDeInstallIOHook)(HANDLE hVDD, WORD cPortRange, PVDD_IO_PORTRANGE pPortRange);
@@ -258,7 +258,7 @@ WNDCLASS	localCmdWinClass = {0, NULL, 0, 0, 0, NULL, NULL, NULL, NULL, "DGVOODOO
 
 	DEBUG_THREAD_REGISTER(DebugDosThreadId);
 
-	DEBUG_BEGIN("dos_thread->InitDosNT (client)", DebugDosThreadId, 24);
+	DEBUG_BEGINSCOPE("dos_thread->InitDosNT (client)", DebugDosThreadId);
 
 	DEBUGLOG(0, "\nInitDosNT: Entering");
 	DEBUGLOG(1, "\nInitDosNT: Kezdés");
@@ -311,7 +311,7 @@ WNDCLASS	localCmdWinClass = {0, NULL, 0, 0, 0, NULL, NULL, NULL, NULL, "DGVOODOO
 	
 	_call_ica_hw_interrupt = (void (_stdcall *)(int,int,int)) GetProcAddress(hInst, "call_ica_hw_interrupt");
 	_vdmMapFlat = (void* (_stdcall *)(unsigned short, unsigned long, VDM_MODE)) GetProcAddress(hInst, "VdmMapFlat");
-	_VDDInstallIOHook =		(BOOL (_stdcall *)(HANDLE, WORD, PVDD_IO_PORTRANGE, PVDD_IO_HANDLERS)) GetProcAddress(hInst, "VDDInstallIOHook");
+	_VDDInstallIOHook =	(BOOL (_stdcall *)(HANDLE, WORD, PVDD_IO_PORTRANGE, PVDD_IO_HANDLERS)) GetProcAddress(hInst, "VDDInstallIOHook");
 	_VDDDeInstallIOHook = (void (_stdcall *)(HANDLE, WORD, PVDD_IO_PORTRANGE)) GetProcAddress(hInst, "VDDDeInstallIOHook");
 	_VDDInstallUserHook = (int (_stdcall *)(HANDLE, PFNVDD_UCREATE, PFNVDD_UTERMINATE, PFNVDD_UBLOCK, PFNVDD_URESUME)) GetProcAddress(hInst, "VDDInstallUserHook");
 	_VDDDeInstallUserHook = (int (_stdcall *)(HANDLE)) GetProcAddress(hInst, "VDDDeInstallUserHook");
@@ -360,10 +360,12 @@ WNDCLASS	localCmdWinClass = {0, NULL, 0, 0, 0, NULL, NULL, NULL, NULL, "DGVOODOO
 	(*_setCF)(0);
 	ntVdmInitOk = 1;
 
+	ReCreateRenderer ();
+
 	DEBUGLOG(0, "\nInitDosNT: Leaving successfully");
 	DEBUGLOG(1, "\nInitDosNT: Sikeres befejezés");
 	
-	DEBUG_END("dos_thread->InitDosNT (client)", DebugDosThreadId, 24);
+	DEBUG_ENDSCOPE(DebugDosThreadId);
 }
 
 
@@ -381,10 +383,10 @@ void	ExitDosNt ()
 			serverOpeningRefCount = 1;
 			CloseServerCommunicationArea ();
 		}
-	}
 
-	DEBUGLOG(0, "\nExitDosNT: Successful\n");
-	DEBUGLOG(1, "\nExitDosNT: Sikeres\n");
+		DEBUGLOG(0, "\nExitDosNT: Successful\n");
+		DEBUGLOG(1, "\nExitDosNT: Sikeres\n");
+	}
 
 }
 
@@ -394,14 +396,14 @@ void __declspec(dllexport) __cdecl DispatchDosNT()	{
 VESARegisters	vesaRegisters;
 int				errorCode;
 unsigned long	params[16];
-unsigned char	errorTitle[MAXSTRINGLENGTH];
-unsigned char	errorMsg[MAXSTRINGLENGTH];
+//unsigned char	errorTitle[MAXSTRINGLENGTH];
+//unsigned char	errorMsg[MAXSTRINGLENGTH];
 			
 	switch( ((*_getECX)() >> 8) & 0xFF )	{
 
 		/* Glide init, bejelentkezés (szerver lefoglalása) */
 		case DGCLIENT_BEGINGLIDE:
-			DEBUG_BEGIN("dos_thread->DispatchDosNT(BG)", DebugDosThreadId, 25);
+			DEBUG_BEGINSCOPE("dos_thread->DispatchDosNT(BG)", DebugDosThreadId);
 			
 			(*_setCF)(1);
 			(*_setEAX)(0);		// Shared memory pool kezdõcíme
@@ -419,7 +421,7 @@ unsigned char	errorMsg[MAXSTRINGLENGTH];
 					if ( (drawMutex = OpenMutex(SYNCHRONIZE, FALSE, MutexEventName)) == NULL) 
 						drawMutex = CreateMutex(NULL, FALSE, MutexEventName);
 					(*_setECX)((unsigned int) c);
-					(*_setCF)(0);
+					//(*_setCF)(0);
 				}
 			} else {
 				if ((errorCode = OpenServerCommunicationArea (&regInfo)) == 0) {
@@ -430,10 +432,12 @@ unsigned char	errorMsg[MAXSTRINGLENGTH];
 					DEBUGLOG(0,"\n   Error: DGCLIENT_BEGINGLIDE has failed: opening connection to server has failed");
 					DEBUGLOG(1,"\n   Hiba: DGCLIENT_BEGINGLIDE nem sikerült: a kapcsolatfelvétel a szerverrel nem sikerült");
 					
-					GetString (errorTitle, IDS_OPENSERVERTITLE);
-					GetString (errorMsg, IDS_OPENSERVERFAILED);
-					
-					MessageBox(NULL, errorMsg, errorTitle, MB_OK | MB_ICONSTOP | MB_APPLMODAL);
+					/*if (config.Flags & CFG_WINDOWED)	{
+						GetString (errorTitle, IDS_OPENSERVERTITLE);
+						GetString (errorMsg, IDS_OPENSERVERFAILED);
+						
+						MessageBox(NULL, errorMsg, errorTitle, MB_OK | MB_ICONSTOP | MB_APPLMODAL);
+					}*/
 					return;
 				}
 			}
@@ -443,11 +447,11 @@ unsigned char	errorMsg[MAXSTRINGLENGTH];
 			(*_setCF)(0);
 			return;
 			
-			DEBUG_END("dos_thread->DispatchDosNT(BG)", DebugDosThreadId, 25);
+			DEBUG_ENDSCOPE(DebugDosThreadId);
 
 		/* Glide vége, kijelentkezés (szerver elengedése) */
 		case DGCLIENT_ENDGLIDE:
-			DEBUG_BEGIN("dos_thread->DispatchDosNT(EG)", DebugDosThreadId, 26);
+			DEBUG_BEGINSCOPE("dos_thread->DispatchDosNT(EG)", DebugDosThreadId);
 
 			if (config.Flags & CFG_NTVDDMODE)	{
 				ShutDownVDDRendering ();
@@ -464,11 +468,11 @@ unsigned char	errorMsg[MAXSTRINGLENGTH];
 			(*_setEAX)(0);
 			return;
 
-			DEBUG_END("dos_thread->DispatchDosNT(EG)", DebugDosThreadId, 26);
+			DEBUG_ENDSCOPE(DebugDosThreadId);
 
 		/* Szerver meghívása */
 		case DGCLIENT_CALLSERVER:
-			DEBUG_BEGIN("dos_thread->DispatchDosNT(CS)", DebugDosThreadId, 27);
+			DEBUG_BEGINSCOPE("dos_thread->DispatchDosNT(CS)", DebugDosThreadId);
 			
 			c->kernelflag |= KFLAG_INKERNEL | KFLAG_DRAWMUTEXUSED;
 
@@ -482,7 +486,7 @@ unsigned char	errorMsg[MAXSTRINGLENGTH];
 			(*_setEAX)(0);
 			return;
 			
-			DEBUG_END("dos_thread->DispatchDosNT(CS)", DebugDosThreadId, 27);
+			DEBUG_ENDSCOPE(DebugDosThreadId);
 		
 		/* Platform lekérdezése */
 		case DGCLIENT_GETPLATFORMTYPE:
@@ -495,7 +499,7 @@ unsigned char	errorMsg[MAXSTRINGLENGTH];
 			return;
 
 		case DGCLIENT_RELEASE_MUTEX:
-			DEBUG_BEGIN("dos_thread->DispatchDosNT(RM)", DebugDosThreadId, 28);
+			DEBUG_BEGINSCOPE("dos_thread->DispatchDosNT(RM)", DebugDosThreadId);
 			
 			ReleaseMutex(drawMutex);
 			c->kernelflag &= ~KFLAG_DRAWMUTEXUSED;
@@ -507,11 +511,11 @@ unsigned char	errorMsg[MAXSTRINGLENGTH];
 				SuspendThread (ntDosThreadHandle);
 			}
 			
-			DEBUG_END("dos_thread->DispatchDosNT(RM)", DebugDosThreadId, 28);
+			DEBUG_ENDSCOPE(DebugDosThreadId);
 			return;
 
 		case DGCLIENT_VESA:
-			DEBUG_BEGIN("dos_thread->DispatchDosNT(VESA)", DebugDosThreadId, 155);
+			DEBUG_BEGINSCOPE("dos_thread->DispatchDosNT(VESA)", DebugDosThreadId);
 
 			vesaRegisters.eax = (*_getEAX) () >> 16;
 			vesaRegisters.ebx = (*_getEBX) ();
@@ -532,7 +536,7 @@ unsigned char	errorMsg[MAXSTRINGLENGTH];
 			(*_setES) (vesaRegisters.es);
 			return;
 
-			DEBUG_END("dos_thread->DispatchDosNT(VESA)", DebugDosThreadId, 155);
+			DEBUG_ENDSCOPE(DebugDosThreadId);
 
 		case DGCLIENT_BEGINVESA:
 			if (config.Flags & CFG_NTVDDMODE)	{
@@ -590,9 +594,9 @@ unsigned char	errorMsg[MAXSTRINGLENGTH];
 DWORD WINAPI VDDRenderingThread(LPVOID lpParameter)	{
 MSG msg;
 	
-	DEBUG_THREAD_REGISTER(DebugRenderThreadId);
+	DEBUG_BEGINSCOPE("VDDRenderingThread", DebugRenderThreadId);
 
-	DEBUG_BEGIN("VDDRenderingThread", DebugRenderThreadId, 22);
+	DEBUG_THREAD_REGISTER(DebugRenderThreadId);
 	
 	DEBUGLOG(0,"\nVDDRenderingThread: Entering thread");
 	DEBUGLOG(1,"\nVDDRenderingThread: Szál elindítása");
@@ -621,10 +625,12 @@ MSG msg;
 
 	DEBUGLOG(0,"\nVDDRenderingThread: Exiting thread successfully");
 	DEBUGLOG(1,"\nVDDRenderingThread: Szál sikeres befejezése");
-	ExitThread(0);
-	return(0);
+
+	DEBUG_THREAD_UNREGISTER(DebugRenderThreadId);
 	
-	DEBUG_END("VDDRenderingThread", DebugRenderThreadId, 22);
+	DEBUG_ENDSCOPE(DebugRenderThreadId);
+
+	return(0);
 }
 
 
@@ -694,9 +700,9 @@ void ShutDownVDDRendering ()
 DWORD WINAPI LocalClientThread(LPVOID lpParameter)	{
 MSG msg;
 
-	DEBUG_THREAD_REGISTER(debugLocalClientThreadId);
+	DEBUG_BEGINSCOPE("LocalClientThread", debugLocalClientThreadId);
 
-	DEBUG_BEGIN("LocalClientThread", debugLocalClientThreadId, 154);
+	DEBUG_THREAD_REGISTER(debugLocalClientThreadId);
 
 	CreateClientCommandWindow ();
 		
@@ -713,9 +719,12 @@ MSG msg;
 		DispatchMessage(&msg);
 	}
 	DestroyClientCommandWindow ();
-	return(0);
+
+	DEBUG_THREAD_UNREGISTER(debugLocalClientThreadId);
 	
-	DEBUG_END("LocalClientThread", debugLocalClientThreadId, 154);
+	DEBUG_ENDSCOPE(debugLocalClientThreadId);
+
+	return(0);
 }
 
 
@@ -834,6 +843,7 @@ DWORD		NTCallFunctionOnServer (unsigned long funcCode, unsigned int pNum, unsign
 {
 	unsigned long	*execBuff = c->ExeCodes + c->ExeCodeIndex;
 	execBuff[0] = funcCode;
+	LOG (1, "\n------ index: %d, excbuff-1: %p, %p, %p, %p", c->ExeCodeIndex, execBuff[-1], execBuff[0], execBuff[1], execBuff[2]);
 	CopyMemory(execBuff + 1, params, pNum * sizeof(unsigned long));
 	execBuff[pNum + 1] = 0xFFFFFFFF;
 	c->ExeCodeIndex = 0;

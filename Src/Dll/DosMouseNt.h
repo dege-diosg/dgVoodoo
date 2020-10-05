@@ -1,5 +1,5 @@
 /*--------------------------------------------------------------------------------- */
-/* DosMouseNt.c - Glide virtual mouse emulated by DirectInput7 for WinNT            */
+/* DosMouseNt.h - Glide virtual mouse emulated by DirectInput7 for WinNT            */
 /*                                                                                  */
 /* Copyright (C) 2004 Dege                                                          */
 /*                                                                                  */

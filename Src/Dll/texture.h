@@ -18,15 +18,19 @@
 /* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA   */
 /*--------------------------------------------------------------------------------- */
 
+
 /*------------------------------------------------------------------------------------------*/
 /* dgVoodoo: Texture.h																		*/
 /*			 Függvények a textúrázáshoz														*/
 /*------------------------------------------------------------------------------------------*/
 
+#ifndef		TEXTURE_H
+#define		TEXTURE_H
+
 #include	<glide.h>
-#include	"DDraw.h"
-#include	"D3d.h"
 #include	"MMConv.h"
+
+#include	"RendererTypes.hpp"
 
 /* Definíciók, hogy az egyes texture combining függvények mit implementálnak */
 #define TCF_ZERO				0			/* nulla */
@@ -44,14 +48,30 @@ enum DXTextureFormats {
 	Pf16_RGB565			= 4,
 	Pf32_ARGB8888		= 5,
 	Pf32_RGB888			= 6,
+
+	Pf8_AuxP8			= 7,		//8 bit paletteconverter aux texture
+	Pf16_AuxP8A8		= 8,		//16 bit paletteconverter aux texture
 	NumberOfDXTexFormats,
 	Pf_Invalid
 
 };
 
+
+/* Struktúra, amely egy adott típusú (nevû) pixelformátumot tárol */
+typedef struct _NamedFormat {
+
+	int						isValid;					/* formátum támogatott? */
+	unsigned char			*missing;					/* pointer más formátumtípusokra, ha ez nem támogatott */
+	_pixfmt					pixelFormat;				/* Pixelformátum leírása */
+	unsigned int			*constPalettes;
+	unsigned int			colorKeyInTexFmt;			/* Az aktuális colorkey textúraformátumban */
+	enum DXTextureFormats	dxTexFormatIndex;			/* A formátum indexe */
+
+} NamedFormat;
+
 struct	TexCacheEntry;
 
-extern			char	texCombineFuncImp[];
+extern	char			texCombineFuncImp[];
 
 /*------------------------------------------------------------------------------------------*/
 /*............................. Belsõ függvények predeklarációja ...........................*/
@@ -60,11 +80,15 @@ int						TexInitAtGlideInit();
 void					TexCleanUpAtShutDown();
 int						TexInit();
 void					TexCleanUp();
-char					TexGetMatchingDXFormat (GrTextureFormat_t glideTexFormat);
+void					TexReleaseAllCachedTextures ();
+void					TexCreateSpecialTextures ();
+enum DXTextureFormats	TexGetMatchingDXFormat (GrTextureFormat_t glideTexFormat);
 unsigned int			TexGetFormatConstPaletteIndex (GrTextureFormat_t glideTexFormat);
 _pixfmt*				TexGetFormatPixFmt (GrTextureFormat_t glideTexFormat);
 _pixfmt*				TexGetDXFormatPixelFormat (enum DXTextureFormats format);
 unsigned int*			TexGetDXFormatConstPalette (enum DXTextureFormats format, unsigned int paletteIndex);
+int						TexIsDXFormatSupported (enum DXTextureFormats format);
+void					TexGetDXTexPixFmt (enum DXTextureFormats format, _pixfmt *pixFormat);
 
 void					GlideTexSource();
 void					TexUpdateNativeColorKeyState();
@@ -73,22 +97,10 @@ void					TexUpdateMultitexturingState(struct TexCacheEntry *tinfo);
 void					TexSetCurrentTexture(struct TexCacheEntry *tinfo);
 void					TexUpdateTexturePalette();
 void					TexUpdateTextureNccTable();
+void					TexUpdateColorKeyState ();
 void					TexUpdateAlphaBasedColorKeyState();
 int						GlideCopyMipMapInfo(GrMipMapInfo *dst, GrMipMapId_t mmid);
 unsigned int			GlideGetUTextureSize(GrMipMapId_t mmid, GrLOD_t lod, int lodvalid);
-
-
-int						TexIsDXFormatSupported (enum DXTextureFormats format);
-void					TexGetDXTexPixFmt (enum DXTextureFormats format, _pixfmt *pixFormat);
-int						TexCreateDXTexture (enum DXTextureFormats format, unsigned int x, unsigned int y, int mipMapNum, LPDIRECTDRAWSURFACE7* mipMaps);
-void					TexDestroyDXTexture (LPDIRECTDRAWSURFACE7 texture);
-void*					TexGetPtrToTexture (LPDIRECTDRAWSURFACE7 texture, unsigned int *pitch);
-void					TexReleasePtrToTexture (LPDIRECTDRAWSURFACE7 texture);
-void					TexSetSrcColorKeyForTexture (LPDIRECTDRAWSURFACE7 texture, unsigned int colorKey);
-LPDIRECTDRAWPALETTE		TexCreatePalette (PALETTEENTRY*	initialPalEntries);
-void					TexDestroyPalette (LPDIRECTDRAWPALETTE palette);
-int						TexAssignPaletteToTexture (LPDIRECTDRAWSURFACE7 texture, LPDIRECTDRAWPALETTE newPalette);
-void					TexSetPaletteEntries (LPDIRECTDRAWPALETTE palette, PALETTEENTRY* entries);
 
 /*------------------------------------------------------------------------------------------*/
 /*............................. Glide-függvények predeklarációja ...........................*/
@@ -205,3 +217,6 @@ void			EXPORT	guTexSource(GrMipMapId_t mmid);
 void			EXPORT	guTexCombineFunction(GrChipID_t tmu, GrTextureCombineFnc_t func);
 
 void			EXPORT	grTexCombineFunction(GrChipID_t tmu, GrTextureCombineFnc_t func);
+
+
+#endif

@@ -59,7 +59,7 @@ ENDM
 
 .code
 
-BeginOf32to32Convs	LABEL
+BeginOf32to32Convs	LABEL	NEAR
 
 ;-------------------------------------------------------------------
 ; Általános 32->32 konverter
@@ -100,12 +100,15 @@ _32to32_:
 		shr		ecx,1h
 		lea		esi,[esi+8*ecx]
 		lea		edi,[edi+8*ecx]
-		push	esi edi
+		push	esi
+		push	edi
 		neg		ecx
 		or		_32to32ConvertWithAlpha,0h
 		jne		_g32to32_nexty_with_alpha
 _g32to32_nexty_without_alpha:
-		push	esi edi ecx
+		push	esi
+		push	edi
+		push	ecx
 _g32to32_nextx_without_alpha:
  		movq    mm0,[esi+8*ecx] ;
         movq    mm1,mm0 ;
@@ -125,23 +128,28 @@ _g32to32_blueshift:
         por     mm0,mm4 ;
         movq    [edi+8*ecx-8],mm0 ;
         jnz     _g32to32_nextx_without_alpha
-		pop		ecx edi esi
+		pop		ecx
+		pop		edi
+		pop		esi
         add     esi,srcpitch
         add     edi,dstpitch
         dec     edx
         jne     _g32to32_nexty_without_alpha
 _g32to32exit:
-		pop		edi esi ecx
+		pop		edi
+		pop		esi
+		pop		ecx
 		and		ecx,1h
 		ret
 
 _32to32mini_:
         mov     edx,y
-		push	esi edi
+		push	esi
+		push	edi
         or      _32to32ConvertWithAlpha,0h
         jne     _g32to32_nexty_with_alpha
 _g32to32mini_nexty_without_alpha:
-		movd    mm0,[esi]
+		movd    mm0,DWORD PTR [esi]
         movq    mm1,mm0 	;
         movq    mm2,mm0
         pand    mm0,mm5 	;
@@ -156,21 +164,24 @@ _g32to32_blueshift_mini:
         por     mm0,mm1
         por     mm0,mm2 	;
         por     mm0,mm4 	;
-        movd    [edi],mm0 	;
+        movd    DWORD PTR [edi],mm0 	;
 		add		esi,srcpitch
 		add		edi,dstpitch
 		dec		edx
         jnz     _g32to32mini_nexty_without_alpha
 _g32to32miniexit:
 		dec		ecx
-		pop		edi esi
+		pop		edi
+		pop		esi
 		add		esi,4h
 		add		edi,4h
 		ret
 
 
 _g32to32_nexty_with_alpha:
-		push	esi edi ecx
+		push	esi
+		push	edi
+		push	ecx
 _g32to32_nextx_with_alpha:
 		movq    mm0,[esi+8*ecx]
         movq    mm1,mm0 ;
@@ -194,7 +205,9 @@ _g32to32_alphashift_wa:
         por     mm0,mm3 ;
         movq    [edi+8*ecx-8],mm0 ;
         jnz     _g32to32_nextx_with_alpha
-		pop		ecx edi esi
+		pop		ecx
+		pop		edi
+		pop		esi
 		add		esi,srcpitch
 		add		edi,dstpitch
 		dec		edx
@@ -203,7 +216,7 @@ _g32to32_alphashift_wa:
 
 
 _g32to32mini_nexty_with_alpha:
-		movd    mm0,[esi]
+		movd    mm0,DWORD PTR [esi]
         movq    mm1,mm0 ;
         movq    mm2,mm0
         pand    mm0,mm5 ;
@@ -222,14 +235,14 @@ _g32to32_alphashift_wa_mini:
         pslld   mm3,0h
         por     mm0,mm2 ;
         por     mm0,mm3 ;
-        movd    [edi],mm0 ;
+        movd    DWORD PTR [edi],mm0 ;
 		add		esi,srcpitch
 		add		edi,dstpitch
 		dec		edx
         jnz     _g32to32mini_nexty_with_alpha
 		jmp		_g32to32miniexit
 
-EndOf32to32Convs	LABEL
+EndOf32to32Convs	LABEL	NEAR
 
 ;-------------------------------------------------------------------
 ;Init kód a 32->32 konverterhez
@@ -245,40 +258,40 @@ _32to32InitConvCode:
 
 		mov		_32to32ConvertWithAlpha,0h
 		xor		eax,eax
-		mov		ecx,[edx].ABitCount		;dst alpha bitcount
-		mov		ebp,[ebx].ABitCount		;src alpha bitcount
+		mov		ecx,(_pixfmt PTR [edx]).ABitCount		;dst alpha bitcount
+		mov		ebp,(_pixfmt PTR [ebx]).ABitCount		;src alpha bitcount
 		jecxz	_32to32_noalpha
-		mov		ecx,[edx].APos
+		mov		ecx,(_pixfmt PTR [edx]).APos
 		mov		eax,constalpha
 		or		ebp,ebp
         je      _32to32_alphaok
         mov     _32to32ConvertWithAlpha,1h
 		mov		al,0FFh
-		mov		ecx,[ebx].APos
+		mov		ecx,(_pixfmt PTR [ebx]).APos
 _32to32_alphaok:
 		shl		eax,cl
 _32to32_noalpha:
 		mov		DWORD PTR _32to32ARGBEntry_AlphaMask[0],eax
 		mov		DWORD PTR _32to32ARGBEntry_AlphaMask[4],eax
 		mov		eax,0FFh
-		mov		ecx,[ebx].RPos
+		mov		ecx,(_pixfmt PTR [ebx]).RPos
 		shl		eax,cl
         mov     DWORD PTR _32to32ARGBEntry_RedMask[0],eax
         mov     DWORD PTR _32to32ARGBEntry_RedMask[4],eax
 		mov		eax,0FFh
-		mov		ecx,[ebx].GPos
+		mov		ecx,(_pixfmt PTR [ebx]).GPos
 		shl		eax,cl
         mov     DWORD PTR _32to32ARGBEntry_GreenMask[0],eax
         mov     DWORD PTR _32to32ARGBEntry_GreenMask[4],eax
 		mov		eax,0FFh
-		mov		ecx,[ebx].BPos
+		mov		ecx,(_pixfmt PTR [ebx]).BPos
 		shl		eax,cl
         mov     DWORD PTR _32to32ARGBEntry_BlueMask[0],eax
         mov     DWORD PTR _32to32ARGBEntry_BlueMask[4],eax
 
-		GetShiftCode_32to32	[ebx].RPos, [edx].RPos
-		GetShiftCode_32to32	[ebx].GPos, [edx].GPos
-		GetShiftCode_32to32	[ebx].BPos, [edx].BPos
+		GetShiftCode_32to32	(_pixfmt PTR [ebx]).RPos, (_pixfmt PTR [edx]).RPos
+		GetShiftCode_32to32	(_pixfmt PTR [ebx]).GPos, (_pixfmt PTR [edx]).GPos
+		GetShiftCode_32to32	(_pixfmt PTR [ebx]).BPos, (_pixfmt PTR [edx]).BPos
 
 		or		_32to32ConvertWithAlpha,0h
 		jne		_32to32InitConverterWithAlpha
@@ -322,7 +335,7 @@ _32to32InitConverterWithAlpha:
         and     WORD PTR _g32to32_redshift_wa_mini+2, NOT MMXCODESHIFTMASK
         or      WORD PTR _g32to32_redshift_wa_mini+2,ax
 
-		GetShiftCode_32to32	[ebx].APos, [edx].APos
+		GetShiftCode_32to32	(_pixfmt PTR [ebx]).APos, (_pixfmt PTR [edx]).APos
 		pop		eax
         and     WORD PTR _g32to32_alphashift_wa+2, NOT MMXCODESHIFTMASK
         or      WORD PTR _g32to32_alphashift_wa+2,ax
@@ -335,17 +348,20 @@ _32to32InitConverterWithAlpha:
 ;A 32->32 konverter írhatóvá tétele
 
 _32to32_doinit:
-        push    ecx edx
+        push    ecx
+        push	edx
         push    eax
 
         push    esp
         push    LARGE PAGE_EXECUTE_READWRITE
-        push    LARGE EndOf32to32Convs - BeginOf32to32Convs
+        push    LARGE (EndOf32to32Convs - BeginOf32to32Convs)
         push    OFFSET BeginOf32to32Convs
         W32     VirtualProtect,4
         mov     _32to32Init,0FFh
 
-        pop     eax edx ecx
+        pop     eax
+        pop		edx
+        pop		ecx
         ret
 	
 
