@@ -96,14 +96,14 @@ need that, all other is done in C++.)
 
 ## 3. How to compile
 
-dgVesa:                Can only be compiled with TASM with the included batch file, manually.
-                       (Since real mode DOS version of TASM is required here, you must use 32 bit Windows or DosBox!)
-dgVoodoo.vxd           Can only be compiled with old version MASM (one from VS6 or VS2003) with the included batch file, manually.
-dgVoodoo.ovl           Can only be compiled with Watcom C++ compiler, with the included batch files, manually.
-dgVoodoo.exe           Use the attached MSVC solution and compile it with configurations 'Debug' or 'Release'.
-dgVoodooSetup.exe      Use the attached MSVC solution and compile it with configurations 'Debug' or 'Release'.
-Glide.dll              Use the attached MSVC solution and compile it with configurations 'Glide 211 Debug' or 'Glide 211 Release'.
-Glide2x.dll            Use the attached MSVC solution and compile it with configurations 'Glide 243 Debug' or 'Glide 243 Release'.
+<br>dgVesa</br>:                Can only be compiled with TASM with the included batch file, manually.<br>
+                       (Since real mode DOS version of TASM is required here, you must use 32 bit Windows or DosBox!)<br>
+<br>dgVoodoo.vxd</br>           Can only be compiled with old version MASM (one from VS6 or VS2003) with the included batch file, manually.<br>
+<br>dgVoodoo.ovl</br>           Can only be compiled with Watcom C++ compiler, with the included batch files, manually.<br>
+<br>dgVoodoo.exe</br>           Use the attached MSVC solution and compile it with configurations 'Debug' or 'Release'.<br>
+<br>dgVoodooSetup.exe</br>      Use the attached MSVC solution and compile it with configurations 'Debug' or 'Release'.<br>
+<br>Glide.dll</br>              Use the attached MSVC solution and compile it with configurations 'Glide 211 Debug' or 'Glide 211 Release'.<br>
+<br>Glide2x.dll</br>            Use the attached MSVC solution and compile it with configurations 'Glide 243 Debug' or 'Glide 243 Release'.<br>
 
 
 Dege
