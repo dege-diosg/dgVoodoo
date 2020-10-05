@@ -1,0 +1,1 @@
+@tasm32 movie.asm, Obj\Movie.obj /m/ml

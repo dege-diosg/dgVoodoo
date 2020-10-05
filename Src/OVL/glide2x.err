@@ -1,0 +1,3 @@
+..\..\inc\Dos.h(143): Warning! W129: #endif matches #if in different source file '..\..\inc\dgVoodooConfig.h'
+glide2x.c(1465): Warning! E1178: Type qualifier mismatch
+glide2x.c(1468): Warning! W120: lvalue cast is not standard C

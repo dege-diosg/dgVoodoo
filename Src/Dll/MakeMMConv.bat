@@ -1,0 +1,1 @@
+@tasm32 mmconv.asm, Obj\Mmconv.obj /m/ml

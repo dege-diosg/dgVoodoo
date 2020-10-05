@@ -1,0 +1,239 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Hungarian resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_HUN)
+#ifdef _WIN32
+LANGUAGE LANG_HUNGARIAN, SUBLANG_DEFAULT
+#pragma code_page(1250)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_DIALOGENG DIALOG DISCARDABLE  0, 0, 225, 38
+STYLE DS_MODALFRAME | DS_CENTER | WS_MINIMIZEBOX | WS_POPUP | WS_VISIBLE | 
+    WS_CAPTION | WS_SYSMENU
+CAPTION "dgVoodoo v1.40 Server for DOS"
+CLASS "DGVOODOODLGCLASS"
+FONT 8, "MS Sans Serif"
+BEGIN
+    CTEXT           "Now you can run DOS-based Glide-applications!",
+                    IDC_STATIC,10,10,205,9
+    CTEXT           "(Glide 2.xx)",IDC_GLIDEINFO,10,25,200,10
+END
+
+IDD_DIALOGHUN DIALOG DISCARDABLE  0, 0, 225, 38
+STYLE DS_MODALFRAME | DS_CENTER | WS_MINIMIZEBOX | WS_POPUP | WS_VISIBLE | 
+    WS_CAPTION | WS_SYSMENU
+CAPTION "dgVoodoo v1.40 Szerver DOS-hoz"
+CLASS "DGVOODOODLGCLASS"
+FONT 8, "MS Sans Serif"
+BEGIN
+    CTEXT           "Most már futtathatod a DOS-os Glide-alkalmazásokat!",
+                    IDC_STATIC,5,10,210,9
+    CTEXT           "(Glide 2.xx)",IDC_GLIDEINFO,10,25,205,10
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_DIALOGENG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 218
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 31
+    END
+
+    IDD_DIALOGHUN, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 218
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 31
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 2,11,0,0
+ PRODUCTVERSION 1,40,1,0
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x2L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040e04b0"
+        BEGIN
+            VALUE "Comments", "Justice for Hungary!\0"
+            VALUE "CompanyName", "SuckSoftware\0"
+            VALUE "FileDescription", "dgVoodoo Glide wrapper (for Glide v2.11)\0"
+            VALUE "FileVersion", "2, 11, 0, 0\0"
+            VALUE "InternalName", "Glide\0"
+            VALUE "LegalCopyright", "by Dégé, Copyright ©2005\0"
+            VALUE "LegalTrademarks", "Tököm kivan már az egésszel!\0"
+            VALUE "OriginalFilename", "Glide.dll\0"
+            VALUE "PrivateBuild", "\0"
+            VALUE "ProductName", "dgVoodoo v1.40\0"
+            VALUE "ProductVersion", "1, 40, 1, 0\0"
+            VALUE "SpecialBuild", "\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x40e, 1200
+    END
+END
+
+#endif    // !_MAC
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_ICON1               ICON    DISCARDABLE     "..\\Bitmaps\\Icon.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_INITERRORTITLE      "Error during initialization"
+    IDS_NODIRECTXINSTALLED  "You need DirectX 7.0 or greater installed to use dgVoodoo!"
+    IDS_CANNOTRUNASSERVER   "dgVoodoo is set to work as a VDD. You cannot run serverprocess!"
+    IDS_SERVERISALREADYRUNNING 
+                            "dgVoodoo ServerProc initialization error!\nServer is already running!"
+    IDS_CANNOTCREATEMEMORYMAPPING 
+                            "Cannot create memory mapping for communication!"
+    IDS_INCOMPATIBLEDESKTOPMODE 
+                            "Desktop video mode is not compatible with dgVoodoo (must be 16 or 32 bit)!"
+    IDS_CANNOTLOADVXD       "Unable to load DGVOODOO.VXD!"
+    IDS_VESAINITFAILED      "Initialization of VESA emulation has failed!"
+    IDS_SERVERKILLERRORTITLE "Closing the server"
+    IDS_SURETOKILLSERVER    "The server is attached to a Dos box that it is serving right now.\nAre you sure you want to close it?"
+    IDS_LFBSAVEDTOCLIPBOARD "LFB has been saved to the clipboard."
+    IDS_LFBSAVEDTOFILEPREFIX "LFB has been saved as "
+    IDS_LFBSAVEDTOFILESUFFIX " "
+    IDS_LFBSAVINGTOFILEFAILED "Saving LFB to file has failed."
+    IDS_OPENSERVERTITLE     "dgVoodoo: Connecting to server"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_INITERRORTITLE_HUN  "Hiba az init közben"
+    IDS_NODIRECTXINSTALLED_HUN 
+                            "A dgVoodoo futtatásához telepítened kell a DirectX 7.0-át vagy újabbat!"
+    IDS_CANNOTRUNASSERVER_HUN 
+                            "A dgVoodoo VDD-ként való mûködésre van beállítva. A szerverprocesszt nem lehet futtatni!"
+    IDS_SERVERISALREADYRUNNING_HUN 
+                            "dgVoodoo SzerverProc init-hiba!\nA szerver már fut!"
+    IDS_CANNOTCREATEMEMORYMAPPING_HUN 
+                            "Nem tudom létrehozni a memórialeképezést a kommunikációhoz!"
+    IDS_INCOMPATIBLEDESKTOPMODE_HUN 
+                            "Az asztal videómódja nem kompatibilis a dgVoodoo-val (16 vagy 32 bitesnek kell lennie)!"
+    IDS_CANNOTLOADVXD_HUN   "Nem tudom betölteni a DGVOODOO.VXD-t!"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_VESAINITFAILED_HUN  "A VESA-init nem sikerült!"
+    IDS_SERVERKILLERRORTITLE_HUN "Szerver lelövése"
+    IDS_SURETOKILLSERVER_HUN 
+                            "A szerver egy Dos-ablakhoz van csatolva, és épp kiszolgálja azt.\nBiztosan be akarod zárni?"
+    IDS_LFBSAVEDTOCLIPBOARD_HUN "Az LFB-t elmentettem a vágólapra."
+    IDS_LFBSAVEDTOFILEPREFIX_HUN "Az LFB-t elmentettem a(z) "
+    IDS_LFBSAVEDTOFILESUFFIX_HUN " fájlba."
+    IDS_LFBSAVINGTOFILEFAILED_HUN "Az LFB elmentése fájlba nem sikerült."
+    IDS_OPENSERVERTITLE_HUN "dgVoodoo: Csatlakozás a szerverhez"
+    IDS_OPENSERVERFAILED_HUN 
+                            "A csatlakozás a szerverhez nem sikerült.\nLehetséges okok: a szerver nem fut, vagy már egy másik klienst szolgál ki."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_OPENSERVERFAILED    "Connecting to server has failed.\nPossible reasons: server is not running or it is already connected to another client."
+END
+
+#endif    // Hungarian resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
